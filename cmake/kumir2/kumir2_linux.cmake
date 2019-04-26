@@ -45,9 +45,10 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 set(CMAKE_INSTALL_RPATH "")
 
 # Compile flags
-set(KUMIR2_CXXFLAGS "-fno-exceptions -std=c++0x -fPIC")
-set(KUMIR2_CXXFLAGS_Release "-O2 -DNDEBUG -DQT_NO_DEBUG")
-set(KUMIR2_CXXFLAGS_Debug "-g -O0 -Werror -Wreorder -Wreturn-type -Wno-error=unused-variable -Wno-error=unused-parameter")
+set(KUMIR2_CXXFLAGS "-fno-exceptions -std=c++0x -fPIC -Wall -W ")
+set(KUMIR2_CXXFLAGS_Release "-O2 -UNDEBUG")
+set(KUMIR2_CXXFLAGS_RelWithDebInfo "-O2 -g1 -UNDEBUG -UQT_NO_DEBUG")
+set(KUMIR2_CXXFLAGS_Debug "-g -O1")
 
 # Linkage flags
 if(KUMIR2_ROOT)

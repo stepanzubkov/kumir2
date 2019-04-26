@@ -240,3 +240,57 @@ dist:mac:
     - macdeployqt Kumir.app -dmg
     - mv Kumir.dmg ../Kumir-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID.dmg
 
+
+configure:linux:
+  stage: configure
+  tags:
+    - linux
+  artifacts:
+    name: arts-$CI_PIPELINE_ID-linux-cfg
+    expire_in: 1 hour
+    when: always
+    paths:
+      - build/
+  script:
+    - rm -rf build
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=4 -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+
+build:linux:
+  stage: build
+  tags:
+    - linux
+  dependencies:
+    - configure:linux
+  artifacts:
+    name: arts-$CI_PIPELINE_ID-linux-build
+    expire_in: 1 hour
+    when: always
+    paths:
+      - build/
+  script:
+    - cd build
+    - date
+    - make -k -j8
+    - date
+    - du -k --max=1 . |sort -n
+
+dist:linux:
+  stage: dist
+  tags:
+    - linux
+  dependencies:
+    - build:linux
+  artifacts:
+    name: arts-$CI_PIPELINE_ID-linux-dist
+    paths:
+      - Kumir2X-$CI_PIPELINE_ID.tar.gz
+  script:
+    - rm -rf Kumir2X-$CI_PIPELINE_ID.tar.gz
+    - cd build
+    - rm -rf Kumir2X-$CI_COMMIT_SHORT_SHA
+    - mkdir Kumir2X-$CI_COMMIT_SHORT_SHA
+    - mv bin lib share Kumir2X-$CI_COMMIT_SHORT_SHA/
+    - tar zcpf ../Kumir2X-$CI_PIPELINE_ID.tar.gz Kumir2X-$CI_COMMIT_SHORT_SHA/
+
