@@ -1,8 +1,8 @@
 # Actors not ready for production use
-complexnumbers
+#complexnumbers
 #draw
-grasshopper
-turtle
+#grasshopper
+#turtle
 
 # Tools used by developers only
 as

@@ -40,9 +40,9 @@ if(NOT DEFINED USE_QT)
     set(USE_QT 4)
 endif(NOT DEFINED USE_QT)
 
-if(NOT USE_QT GREATER 4)
-    message(WARNING "Support for Qt4 will be discontinued soon. Please upgrade to Qt5!")
-endif()
+#if(NOT USE_QT GREATER 4)
+#    message(WARNING "Support for Qt4 will be discontinued soon. Please upgrade to Qt5!")
+#endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import re
 import subprocess
 import os
@@ -6,6 +8,8 @@ import sys
 import time
 from urllib.parse import unquote
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 def to_str(x):
     assert isinstance(x, str) or isinstance(x, bytes)
@@ -66,6 +70,19 @@ def get_version_information(top_level_dir):
     }
 
     if os.path.exists(top_level_dir + os.path.sep + ".git"):
+        hash_tag = ""
+        try:
+            hash_tag = to_str(subprocess.check_output(
+                "git rev-parse --short=12 --verify HEAD",
+                shell=True
+            )).strip()
+        except subprocess.CalledProcessError:
+            pass
+        if not hash_tag:
+            hash_tag = os.environ.get("CI_COMMIT_SHA", "").strip()[:12]
+        if hash_tag:
+            result["hash"] = hash_tag
+
         try:
             version_info = subprocess.check_output(
                 "git describe --abbrev=0 --tags --exact-match",
@@ -78,6 +95,7 @@ def get_version_information(top_level_dir):
             pass
 
         if result["version"]:
+            eprint("get_version_information: tresult=",  result)
             return result
 
         branch_name = ""
@@ -92,23 +110,7 @@ def get_version_information(top_level_dir):
             branch_name = os.environ.get("CI_COMMIT_REF_NAME", "").strip()
         if not branch_name:
             branch_name = "NONE"
-
-        hash_tag = ""
-        try:
-            hash_tag = to_str(subprocess.check_output(
-                "git rev-parse --short=12 --verify HEAD",
-                shell=True
-            )).strip()
-        except subprocess.CalledProcessError:
-            pass
-        if not hash_tag:
-            hash_tag = os.environ.get("CI_COMMIT_SHA", "").strip()
-        if not hash_tag:
-            hash_tag = "0000000000000000000000000000000000000000"
-
-        result["taggedRelease"] = False
         result["branch"] = branch_name
-        result["hash"] = hash_tag
 
     else:
         dir_name = os.path.basename(top_level_dir)
@@ -118,14 +120,8 @@ def get_version_information(top_level_dir):
             result["version"] = version_info
             result["taggedRelease"] = True
 
+    eprint("get_version_information: result=",  result)
     return result
-
-
-def get_date(top_level_dir):
-    timestamp = int(get_timestamp(top_level_dir))
-    localtime = time.localtime(timestamp)
-    assert isinstance(localtime, time.struct_time)
-    return "{:04}{:02}{:02}".format(localtime.tm_year, localtime.tm_mon, localtime.tm_mday)
 
 
 def get_timestamp(top_level_dir):
@@ -140,23 +136,30 @@ def get_timestamp(top_level_dir):
         return "{}".format(int(time.time()))
 
 
+def get_date(top_level_dir):
+    timestamp = int(get_timestamp(top_level_dir))
+    localtime = time.localtime(timestamp)
+    assert isinstance(localtime, time.struct_time)
+    return "{:04}{:02}{:02}".format(localtime.tm_year, localtime.tm_mon, localtime.tm_mday)
+
+
 def is_tag(version):
     return version.startswith("2")
 
 
-def find_suitable_list_file_name(version_info):
+def find_suitable_list_file_name(info):
     base = os.getcwd() + os.path.sep + "subdirs-disabled-{}.txt"
-    if version_info["taggedRelease"]:
-        name = base.format(version_info["version"])
+    if info["taggedRelease"]:
+        name = base.format(info["version"])
     else:
-        name = base.format(version_info["branch"])
+        name = base.format(info["branch"])
     if os.path.exists(name):
         return name
-    if version_info["taggedRelease"]:
-        match = re.match(r"(.+)-(alpha|beta|rc|pt|test)[0-9]+", version_info["version"])
+    if info["taggedRelease"]:
+        match = re.match(r"(.+)-(alpha|beta|rc|pt|test)[0-9]+", info["version"])
         version_base = match.group(1)
     else:
-        version_base = version_info["branch"]
+        version_base = info["branch"]
     if version_base:
         name = base.format(version_base)
         if os.path.exists(name):
@@ -164,8 +167,8 @@ def find_suitable_list_file_name(version_info):
 
 
 def disabled_modules():
-    version_info = get_version_information(os.getcwd())
-    disabled_list_file_name = find_suitable_list_file_name(version_info)
+    info = get_version_information(os.getcwd())
+    disabled_list_file_name = find_suitable_list_file_name(info)
     disabled_list = []
     if disabled_list_file_name:
         with open(disabled_list_file_name) as source:
@@ -186,47 +189,47 @@ def cmake_disabled_modules():
 
 
 def cmake_version_info():
-    version_name = get_version_information(os.getcwd())
-    assert isinstance(version_name, dict)
+    info = get_version_information(os.getcwd())
     timestamp = get_timestamp(os.getcwd())
     output = ""
-    if version_name["taggedRelease"]:
-        output += "-DGIT_TAG=\"{}\";".format(version_name["version"])
+    if info["taggedRelease"]:
+        output += "-DGIT_TAG=\"{}\";".format(info["version"])
         output += "-DGIT_BRANCH=\"unknown\";"
-        output += "-DGIT_HASH=\"unknown\";"
     else:
         output += "-DGIT_TAG=\"unknown\";"
-        output += "-DGIT_BRANCH=\"{}\";".format(version_name["branch"])
-        output += "-DGIT_HASH=\"{}\";".format(version_name["hash"])
+        output += "-DGIT_BRANCH=\"{}\";".format(info["branch"])
+    output += "-DGIT_HASH=\"{}\";".format(info["hash"])
     output += "-DGIT_TIMESTAMP=\"{}\";".format(timestamp)
+    eprint("cmake_version_info: output=",  output)
     return output
 
 
 def cmake_version_info_tbht():
-    version_name = get_version_information(os.getcwd())
-    assert isinstance(version_name, dict)
+    info = get_version_information(os.getcwd())
     timestamp = get_timestamp(os.getcwd())
     output_values = []
-    if version_name["taggedRelease"]:
-        output_values += to_str(version_name["version"])
-        output_values += ["unknown"] * 2
+    if info["taggedRelease"]:
+        output_values += [to_str(info["version"])]
+        output_values += ["unknown"]
     else:
         output_values += ["unknown"]
-        output_values += [to_str(version_name["branch"])]
-        output_values += [to_str(version_name["hash"])]
+        output_values += [to_str(info["branch"])]
+    output_values += [to_str(info["hash"])]
     output_values += [to_str(timestamp)]
-    return ";".join(output_values)
+    output = ";".join(output_values)
+    eprint("cmake_version_info_tbht: output=",  output)
+    return output
 
 
 def source_file_name(prefix: str, suffix: str):
-    version_info = get_version_information(os.getcwd())
-    if version_info["taggedRelease"]:
-        version_name = version_info["version"]
+    info = get_version_information(os.getcwd())
+    if info["taggedRelease"]:
+        name = info["version"]
     else:
-        version_name = version_info["branch"] + "-"
-        version_name += version_info["hash"] + "-"
-        version_name += version_info["date"]
-    return prefix + version_name + suffix
+        name = info["branch"] + "-"
+        name += info["hash"] + "-"
+        name += info["date"]
+    return prefix + name + suffix
 
 
 def package_bundle_name():
@@ -248,19 +251,19 @@ def package_bundle_name():
 
 
 def nsis_include_file():
-    version_info = get_version_information(os.getcwd())
+    info = get_version_information(os.getcwd())
     data = ""
-    if version_info["taggedRelease"]:
-        data += "OutFile \"kumir2-" + version_info["version"] + "-install.exe\"\r\n"
-        data += "Name \"Кумир " + version_info["version"] + "\"\r\n"
-        data += "InstallDir \"$PROGRAMFILES\\Kumir-" + version_info["version"] + "\"\r\n"
-        data += "!define VERSION_SUFFIX \"" + version_info["version"] + "\"\r\n"
+    if info["taggedRelease"]:
+        data += "OutFile \"kumir2-" + info["version"] + "-install.exe\"\r\n"
+        data += "Name \"Кумир " + info["version"] + "\"\r\n"
+        data += "InstallDir \"$PROGRAMFILES\\Kumir-" + info["version"] + "\"\r\n"
+        data += "!define VERSION_SUFFIX \"" + info["version"] + "\"\r\n"
     else:
-        data += "OutFile \"kumir2-" + version_info["branch"] + "-"
-        data += version_info["date"] + "-" + version_info["hash"] + "-install.exe\"\r\n"
-        data += "Name \"Кумир 2.x-" + version_info["branch"] + "\"\r\n"
-        data += "InstallDir \"$PROGRAMFILES\\Kumir2x-" + version_info["branch"] + "\"\r\n"
-        data += "!define VERSION_SUFFIX \"" + version_info["branch"] + "\"\r\n"
+        data += "OutFile \"kumir2-" + info["branch"] + "-"
+        data += info["date"] + "-" + info["hash"] + "-install.exe\"\r\n"
+        data += "Name \"Кумир 2.x-" + info["branch"] + "\"\r\n"
+        data += "InstallDir \"$PROGRAMFILES\\Kumir2x-" + info["branch"] + "\"\r\n"
+        data += "!define VERSION_SUFFIX \"" + info["branch"] + "\"\r\n"
     return data
 
 
@@ -306,9 +309,12 @@ def main():
             open_mode = "w"
         OUT_FILE = open(out_file_name, open_mode)
     if mode in globals():
+        eprint("query_version_info.py: mode=",  mode)
         data = globals()[mode]()
+        eprint("main: data=",  data)
         if custom_encoding:
             data = data.encode(custom_encoding)
+            eprint("main: datae=",  data)
         OUT_FILE.write(data)
     OUT_FILE.close()
 
