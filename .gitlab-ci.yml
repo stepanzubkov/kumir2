@@ -160,6 +160,7 @@ build:mac:
     - mkdir build
     - cd build
     - export PATH=$QTDIR_MAC/bin:$PATH
+    - export MACOSX_DEPLOYMENT_TARGET=10.9
     - date
     - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=5 -DCMAKE_BUILD_TYPE=Release ..
     - make -k -j8
@@ -178,6 +179,7 @@ dist:mac:
   script:
     - cd build
     - export PATH=$QTDIR_MAC/bin:$PATH
+    - export MACOSX_DEPLOYMENT_TARGET=10.9
     - macdeployqt Kumir.app
     - echo "Libraries = Frameworks" >> Kumir.app/Contents/Resources/qt.conf
     - macdeployqt Kumir.app -dmg
