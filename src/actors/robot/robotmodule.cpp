@@ -849,8 +849,8 @@ qreal RobotModule::runCellRad(int row, int col)
 
 QChar RobotModule::runDownChar(int row, int col)
 {
-	qDebug() << "Get DC R:" << row << " C:" << col << " ROWS" << curConsoleField->Rows();
 	if (!DISPLAY) {
+		qDebug() << "Get DC R:" << row << " C:" << col << " ROWS" << curConsoleField->Rows();
 		uint32_t r = row - 1, c = col - 1;
 		if (
 			r >= curConsoleField->Rows() ||
