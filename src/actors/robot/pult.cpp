@@ -287,6 +287,5 @@ void RoboPult::CenterButton()
 void RoboPult::clearLog()
 {
 	Logger->ClearLog();
-	emit robReset();
 }
 
