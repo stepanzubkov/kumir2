@@ -148,7 +148,7 @@ dist:win32:
 build:mac:
   stage: build
   tags:
-    - mac
+    - mac_old
   artifacts:
     name: arts-$CI_PIPELINE_ID-mac-build
     expire_in: 1 hour
@@ -168,7 +168,7 @@ build:mac:
 dist:mac:
   stage: dist
   tags:
-    - mac
+    - mac_old
   dependencies:
     - build:mac
   artifacts:
