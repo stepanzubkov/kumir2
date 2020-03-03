@@ -185,8 +185,8 @@ void RobotModule::changeGlobalState(
 	msleep(2 * AnimTime);
 	view->update();
 	field->update();
-	qApp->processEvents();//Redraw event fix
-};
+	qApp->processEvents(QEventLoop::ExcludeUserInputEvents);//Redraw event fix
+}
 
 void RobotModule::reloadSettings(
 	ExtensionSystem::SettingsPtr settings,
@@ -289,7 +289,7 @@ QString RobotModule::initialize(
 		createGui();
 		redrawTimer = new QTimer();
 		connect(redrawTimer, SIGNAL(timeout()), this, SLOT(getTimer()));
-		redrawTimer->start(30);
+		redrawTimer->start(3000);
 	}
 
 	if (!fName.isEmpty()) {
@@ -1340,7 +1340,7 @@ void RobotModule::getTimer()
 	mutex.lock();
 	field->update();
 	view->update();
-	qApp->processEvents();
+	qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 	mutex.unlock();
 }
 

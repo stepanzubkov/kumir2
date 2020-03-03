@@ -1636,10 +1636,11 @@ void RoboField::reverseColor(int row, int col)
 			),
 			FillColor
 		);
-	};
+	}
 	if (mode != NORMAL_MODE) {
 		wasEdit = true;
 	}
+	update();
 }
 
 void RoboField::reverseColorCurrent()
@@ -1659,6 +1660,7 @@ void RoboField::reverseMark(int row, int col)
 		getFieldItem(row, col)->showCharMark(upLeftCorner(row, col).x(), upLeftCorner(row, col).y(), fieldSize);
 	}
 	wasEdit = true;
+	update();
 }
 
 void RoboField::setRoboPos(int roboX, int roboY)
@@ -2783,6 +2785,7 @@ bool RoboField::stepUp()
 		robot->setPos(QPointF(robot->pos().x(),
 				robot->pos().y() - fieldSize));
 		robo_y--;
+		update();
 		return true;
 	} else {
 		return false;
@@ -2794,6 +2797,7 @@ bool RoboField::stepDown()
 	if (getFieldItem(robo_y, robo_x)->canDown()) {
 		robot->moveBy(0, fieldSize);
 		robo_y++;
+		update();
 		return true;
 	} else {
 		return false;
@@ -2806,6 +2810,7 @@ bool RoboField::stepLeft()
 		robot->setPos(QPointF(robot->pos().x() - fieldSize,
 				robot->pos().y()));
 		robo_x--;
+		update();
 		return true;
 	} else {
 		return false;
@@ -2817,6 +2822,7 @@ bool RoboField::stepRight()
 	if (getFieldItem(robo_y, robo_x)->canRight()) {
 		robot->moveBy(fieldSize, 0);
 		robo_x++;
+		update();
 		return true;
 	} else {
 		return false;

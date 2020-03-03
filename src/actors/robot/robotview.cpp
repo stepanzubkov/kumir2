@@ -58,7 +58,7 @@ void RobotView::mousePressEvent(QMouseEvent *event)
 		QGraphicsView::mousePressEvent(event);
 		update();
 		repaint();
-		qApp->processEvents();
+		qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 		return;
 	}
 
