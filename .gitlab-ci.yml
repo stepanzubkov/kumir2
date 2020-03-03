@@ -1,16 +1,13 @@
 stages:
-  - configure
   - build
   - dist
-  - pack
 
-
-configure:winxp:
-  stage: configure
+build:winxp:
+  stage: build
   tags:
     - winxp
   artifacts:
-    name: arts-%CI_PIPELINE_ID%-winxp-cfg
+    name: arts-%CI_PIPELINE_ID%-winxp-build
     expire_in: 1 hour
     when: always
     paths:
@@ -20,25 +17,8 @@ configure:winxp:
     - md build
     - cd build
     - set PATH=%MINGWDIR%\bin;C:\Program Files\CMake\bin
-    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=4 -DQT_QMAKE_EXECUTABLE=%QT4DIR%/bin/qmake.exe -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=%PYTHON_EXECUTABLE% -G "MinGW Makefiles" ..
-
-
-build:winxp:
-  stage: build
-  tags:
-    - winxp
-  dependencies:
-    - configure:winxp
-  artifacts:
-    name: arts-%CI_PIPELINE_ID%-winxp-build
-    expire_in: 1 hour
-    when: always
-    paths:
-      - build/
-  script:
-    - set PATH=%MINGWDIR%\bin;C:\Program Files\CMake\bin
-    - cd build
     - echo %date% %time%
+    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=4 -DQT_QMAKE_EXECUTABLE=%QT4DIR%/bin/qmake.exe -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=%PYTHON_EXECUTABLE% -G "MinGW Makefiles" ..
     - mingw32-make -j8 -k
     - echo %date% %time%
 
@@ -81,12 +61,12 @@ dist:winxp:
     - move kumir2-*-install.exe ..\..\
 
 
-configure:win32:
-  stage: configure
+build:win32:
+  stage: build
   tags:
-    - windows
+    - win32
   artifacts:
-    name: arts-%CI_PIPELINE_ID%-win32-cfg
+    name: arts-%CI_PIPELINE_ID%-win32-build
     expire_in: 1 hour
     when: always
     paths:
@@ -101,30 +81,9 @@ configure:win32:
     - set LIBPATH=
     - call vsvars32.bat
     - call vcvars32.bat
-    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -Wno-dev -DCMAKE_PREFIX_PATH="%QTDIR%\lib\cmake" -DQt5_DIR="%QTDIR%\lib\cmake\Qt5" -DUSE_QT=5 -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=%PYTHON_EXECUTABLE% -G "Ninja" ..
-
-
-build:win32:
-  stage: build
-  tags:
-    - windows
-  dependencies:
-    - configure:win32
-  artifacts:
-    name: arts-%CI_PIPELINE_ID%-win32-build
-    expire_in: 1 hour
-    when: always
-    paths:
-      - build/
-  script:
-    - cd build
-    - set INCLUDE=
-    - set LIB=
-    - set LIBPATH=
-    - call vsvars32.bat
-    - call vcvars32.bat
     - set CL=/MP
     - echo %date% %time%
+    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -Wno-dev -DCMAKE_PREFIX_PATH="%QTDIR%\lib\cmake" -DQt5_DIR="%QTDIR%\lib\cmake\Qt5" -DUSE_QT=5 -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=%PYTHON_EXECUTABLE% -G "Ninja" ..
     - ninja -v -j8
     - echo %date% %time%
 
@@ -132,7 +91,7 @@ build:win32:
 dist:win32:
   stage: dist
   tags:
-    - windows
+    - win32
   dependencies:
     - build:win32
   artifacts:
@@ -185,12 +144,13 @@ dist:win32:
     - move kumir2-*-install.exe ..\..\
 
 
-configure:mac:
-  stage: configure
+
+build:mac:
+  stage: build
   tags:
     - mac
   artifacts:
-    name: arts-$CI_PIPELINE_ID-mac-cfg
+    name: arts-$CI_PIPELINE_ID-mac-build
     expire_in: 1 hour
     when: always
     paths:
@@ -200,27 +160,10 @@ configure:mac:
     - mkdir build
     - cd build
     - export PATH=$QTDIR_MAC/bin:$PATH
-    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=5 -DCMAKE_BUILD_TYPE=Release ..
-
-build:mac:
-  stage: build
-  tags:
-    - mac
-  dependencies:
-    - configure:mac
-  artifacts:
-    name: arts-$CI_PIPELINE_ID-mac-build
-    expire_in: 1 hour
-    when: always
-    paths:
-      - build/
-  script:
-    - cd build
-    - export PATH=$QTDIR_MAC/bin:$PATH
     - date
+    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=5 -DCMAKE_BUILD_TYPE=Release ..
     - make -k -j8
     - date
-
 
 dist:mac:
   stage: dist
@@ -241,12 +184,12 @@ dist:mac:
     - mv Kumir.dmg ../Kumir-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID.dmg
 
 
-configure:linux:
-  stage: configure
+build:linux:
+  stage: build
   tags:
     - linux
   artifacts:
-    name: arts-$CI_PIPELINE_ID-linux-cfg
+    name: arts-$CI_PIPELINE_ID-linux-build
     expire_in: 1 hour
     when: always
     paths:
@@ -255,23 +198,8 @@ configure:linux:
     - rm -rf build
     - mkdir build
     - cd build
-    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=4 -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-
-build:linux:
-  stage: build
-  tags:
-    - linux
-  dependencies:
-    - configure:linux
-  artifacts:
-    name: arts-$CI_PIPELINE_ID-linux-build
-    expire_in: 1 hour
-    when: always
-    paths:
-      - build/
-  script:
-    - cd build
     - date
+    - cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DUSE_QT=4 -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
     - make -k -j8
     - date
     - du -k --max=1 . |sort -n
