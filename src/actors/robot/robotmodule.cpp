@@ -1066,11 +1066,15 @@ void RobotModule::prepareNewWindow()
 	nwl->addWidget(lYSize, 1, 0, 1, 1, Qt::AlignCenter);
 
 	NewWindow->setFixedSize(250, 150);
-	eXSizeEdit = new QSpinBox(NewWindow);
-	eXSizeEdit->setRange(2, MAX_COLUMNS);
-	eYSizeEdit = new QSpinBox(NewWindow);
 
-	eYSizeEdit->setRange(2, MAX_ROWS);
+	eXSizeEdit = new QSpinBox(NewWindow);
+	eXSizeEdit->setRange(1, MAX_COLUMNS);
+	eXSizeEdit->setValue(9);
+
+	eYSizeEdit = new QSpinBox(NewWindow);
+	eYSizeEdit->setRange(1, MAX_ROWS);
+	eYSizeEdit->setValue(9);
+
 	nwl->addWidget(eYSizeEdit, 2, 0, 1, 1, Qt::AlignCenter);
 	nwl->addWidget(eXSizeEdit, 2, 1, 1, 1, Qt::AlignCenter);
 
