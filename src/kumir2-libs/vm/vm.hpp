@@ -1361,6 +1361,7 @@ void KumirVM::do_stdcall(uint16_t alg)
         int x = valuesStack_.pop().toInt();
         int y = Kumir::Math::iabs(x);
         valuesStack_.push(Variable(y));
+        error_ = Kumir::Core::getError();
         break;
     }
     /* алг цел imax(цел x, цел y) */

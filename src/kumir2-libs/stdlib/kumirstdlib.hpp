@@ -355,7 +355,7 @@ public:
     static int iabs(int x)
     {
         unsigned int y = (unsigned int) x;
-        if (y != 0 && y + y == 0) {
+        if (y == 0x80000000U) {
             Core::abort(L"Целочисленное переполнение");
             return 0;
         }
