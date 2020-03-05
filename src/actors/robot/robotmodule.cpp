@@ -1201,21 +1201,18 @@ int RobotModule::SaveToFile(QString p_FileName)
 
 void RobotModule::createRescentMenu()
 {
-	rescentMenu->clear();
-	QStringList lastFiles = mySettings()->value("Robot/LastFiles").toString().split(";");
-	qDebug() << lastFiles;
-	if (lastFiles.count() == 0) {
-		rescentMenu->setEnabled(false);
-	} else {
-		rescentMenu->setEnabled(true);
-	}
+	QString sFiles = mySettings()->value("Robot/LastFiles").toString();
+	QStringList lFiles = sFiles.split(';', QString::SkipEmptyParts);
+	qDebug() << lFiles;
 
-	for (int i = 0; i < lastFiles.count(); i++) {
-		if (lastFiles[i] == "") {
-			continue;
-		}
-		QAction *action = rescentMenu->addAction("&" + QString::number(i + 1) + " " + lastFiles[i], this, SLOT(openRecent()));
-		Q_UNUSED(action);
+	rescentMenu->clear();
+	rescentMenu->setEnabled(lFiles.count() > 0);
+
+	for (int i = 0; i < lFiles.count(); i++) {
+		rescentMenu->addAction(
+			"&" + QString::number(i + 1) + " " + lFiles[i],
+			this, SLOT(openRecent())
+		);
 	}
 }
 
@@ -1263,8 +1260,18 @@ void RobotModule::setWindowSize()
 
 void RobotModule::openRecent()
 {
-	QAction *s = qobject_cast<QAction *>(sender());
-	QString txt = s->text();
+	QString RobotFile;
+	{
+		QAction *s = qobject_cast<QAction *>(sender());
+		QString txt = s->text();
+		int pos = txt.indexOf(' ', 2);
+		if (pos < 0)
+			return;
+		RobotFile = txt.mid(pos + 1);
+	}
+	if (RobotFile.isEmpty())
+		return;
+
 	if (field->WasEdit()) {
 		QMessageBox::StandardButton r;
 		QMessageBox messageBox(
@@ -1278,8 +1285,8 @@ void RobotModule::openRecent()
 			QMessageBox::AcceptRole);
 		QPushButton *btnDiscard = messageBox.addButton(tr("Don't save"),
 			QMessageBox::DestructiveRole);
-		QPushButton *btnCancel =
-			messageBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+		QPushButton *btnCancel = messageBox.addButton(tr("Cancel"),
+			QMessageBox::RejectRole);
 
 		messageBox.setDefaultButton(btnSave);
 		messageBox.exec();
@@ -1305,34 +1312,43 @@ void RobotModule::openRecent()
 		}
 	}
 
-	txt.remove(0, 1);
-	QStringList words = txt.split(" ");
-
-	if (words.count() < 2)
-		return;
-
-	QString RobotFile = words[1];
 	if (LoadFromFile(RobotFile) != 0) {
-		QMessageBox::information(mainWidget(), "", QString::fromUtf8("Ошибка открытия файла! ") + RobotFile, 0, 0, 0);
+		QMessageBox::warning(
+			mainWidget(), "",
+			QString::fromUtf8("Ошибка открытия файла '%1'!").arg(RobotFile)
+		);
 	}
 	reset();
 	view->setWindowSize(view->size());
 
 }
 
-void RobotModule::updateLastFiles(const QString newFile)
+void RobotModule::updateLastFiles(QString newFile)
 {
-	QStringList lastFiles = RobotModule::robotSettings()->value("Robot/LastFiles").toString().split(";");
-	if (lastFiles.indexOf(newFile) < 0) {
-		lastFiles.prepend(newFile);
+	if (newFile.isEmpty())
+		return;
+
+	if (newFile.contains(';')) {
+		static bool warned = false;
+		if (!warned) {
+			QMessageBox::information(
+				mainWidget(), "",
+				QString::fromUtf8("Силам добра противен символ ';' в имени файла!")
+			);
+			warned = true;
+		}
+		return;
 	}
-	int max_fid = std::min(lastFiles.count(), 11);
-	QString sett = "";
-	for (int i = 0; i < max_fid; i++) {
-		sett += lastFiles.at(i) + ";";
+
+	QString sFiles = RobotModule::robotSettings()->value("Robot/LastFiles").toString();
+	QStringList lFiles = sFiles.split(';', QString::SkipEmptyParts);
+	if (!lFiles.contains(newFile)) {
+		lFiles.prepend(newFile);
+		lFiles = lFiles.mid(0, 11);
+		sFiles = lFiles.join(QChar(';'));
+		RobotModule::robotSettings()->setValue("Robot/LastFiles", sFiles);
+		createRescentMenu();
 	}
-	RobotModule::robotSettings()->setValue("Robot/LastFiles", sett);
-	createRescentMenu();
 }
 
 void RobotModule::updateRobot()
