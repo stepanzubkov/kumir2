@@ -180,9 +180,10 @@ dist:mac:
     - cd build
     - export PATH=$QTDIR_MAC/bin:$PATH
     - export MACOSX_DEPLOYMENT_TARGET=10.9
-    - macdeployqt Kumir.app $CI_MDPA
+    - security unlock-keychain -p $MAC_KEYCHAIN_PASS
+    - macdeployqt Kumir.app "$CI_MDPA"
     - echo "Libraries = Frameworks" >> Kumir.app/Contents/Resources/qt.conf
-    - macdeployqt Kumir.app $CI_MDPA -dmg
+    - macdeployqt Kumir.app "$CI_MDPA" -dmg
     - mv Kumir.dmg ../Kumir-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID.dmg
 
 
