@@ -20,5 +20,5 @@ kumir2_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
 kumir2_add_plugin(
     NAME        KumirCodeGenerator
     SOURCES     ${MOC_SOURCES} ${SOURCES}
-    LIBRARIES   ${QT_LIBRARIES} ExtensionSystem DataFormats ErrorMessages
+    LIBRARIES   ${QT_LIBRARIES} VM ExtensionSystem DataFormats ErrorMessages
 )

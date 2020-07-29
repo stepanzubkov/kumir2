@@ -37,7 +37,7 @@ kumir2_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
 kumir2_add_plugin(
     NAME        KumirAnalizer
     SOURCES     ${UI_SOURCES} ${MOC_SOURCES} ${SOURCES}
-    LIBRARIES   ${QT_LIBRARIES} ExtensionSystem ErrorMessages DataFormats Widgets
+    LIBRARIES   ${QT_LIBRARIES} VM ExtensionSystem ErrorMessages DataFormats Widgets
 )
 
 # Generate messages file
