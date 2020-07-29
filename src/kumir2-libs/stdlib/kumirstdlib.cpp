@@ -3,6 +3,7 @@
 
 namespace Kumir
 {
+void dummy() {}
 
 String Core::error = String();
 void (*Core::AbortHandler)() = 0;

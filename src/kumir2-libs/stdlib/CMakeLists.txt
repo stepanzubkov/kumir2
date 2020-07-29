@@ -10,4 +10,5 @@ set(SOURCES
 kumir2_add_library(
 	NAME        Stdlib
 	SOURCES     ${SOURCES}
+	LIBRARIES
 )
