@@ -8,7 +8,7 @@ set(SOURCES
 )
 
 kumir2_add_library(
-	NAME        Stdlib
+	NAME        KStdlib
 	SOURCES     ${SOURCES}
 	LIBRARIES
 )

@@ -16,5 +16,5 @@ set(SOURCES
 kumir2_add_library(
 	NAME        VM
 	SOURCES     ${SOURCES}
-	LIBRARIES   Stdlib
+	LIBRARIES   KStdlib
 )

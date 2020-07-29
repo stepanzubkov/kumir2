@@ -80,5 +80,5 @@ kumir2_add_resources(QRC_SOURCES ${RESOURCES})
 kumir2_add_plugin(
     NAME        CoreGUI
     SOURCES     ${UI_SOURCES} ${MOC_SOURCES} ${SOURCES} ${QRC_SOURCES}
-    LIBRARIES   ${QT_LIBRARIES} ${EXTRA_LIBS} Stdlib ExtensionSystem DataFormats Widgets DocBookViewer
+    LIBRARIES   ${QT_LIBRARIES} ${EXTRA_LIBS} KStdlib ExtensionSystem DataFormats Widgets DocBookViewer
 )
