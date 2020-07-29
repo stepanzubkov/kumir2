@@ -1,9 +1,11 @@
 #include "kumirstdlib.hpp"
 
+#if defined(WIN32)
+__declspec(dllexport) void dummy() {}
+#endif
 
 namespace Kumir
 {
-void dummy() {}
 
 String Core::error = String();
 void (*Core::AbortHandler)() = 0;
