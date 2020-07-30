@@ -347,7 +347,8 @@ protected:
 		error.clear();
 	}
 
-	static KS_DLL String error;
+	typedef String DllString;
+	static String error;
 };
 
 class Math
