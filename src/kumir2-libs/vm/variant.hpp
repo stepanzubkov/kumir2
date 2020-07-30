@@ -1,6 +1,8 @@
 #ifndef VARIANT_HPP
 #define VARIANT_HPP
 
+#include "vm_dll.h"
+
 #ifdef DO_NOT_DECLARE_STATIC
 #define DO_NOT_DECLARE_STATIC_VARIANT
 #endif
@@ -22,7 +24,7 @@ struct Record {
 	std::vector<AnyValue> fields;
 };
 
-class AnyValue
+class VM_DLL AnyValue
 {
 	ValueType type_;
 	String *svalue_;
@@ -363,7 +365,7 @@ public:
 
 
 
-class Variable
+class VM_DLL Variable
 {
 	AnyValue value_;
 	uint8_t dimension_;

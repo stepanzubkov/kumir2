@@ -348,7 +348,7 @@ protected:
 	}
 
 	typedef String DllString;
-	static String error;
+	static DllString error;
 };
 
 class Math

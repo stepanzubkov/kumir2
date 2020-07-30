@@ -1,6 +1,7 @@
 #ifndef VM_CONSOLE_HANDLERS_HPP
 #define VM_CONSOLE_HANDLERS_HPP
 
+#include "vm_dll.h"
 #include "vm_abstract_handlers.h"
 
 #ifndef _override
@@ -18,7 +19,7 @@ namespace Console
 
 using namespace Kumir;
 
-class InputFunctor :
+class VM_DLL InputFunctor :
 	public VM::InputFunctor,
 	public Kumir::AbstractInputBuffer
 {
@@ -54,7 +55,7 @@ public:
 
 };
 
-class OutputFunctor :
+class VM_DLL OutputFunctor :
 	public VM::OutputFunctor,
 	public Kumir::AbstractOutputBuffer
 {
@@ -83,7 +84,7 @@ public:
 	void writeRawString(const String &) _override;
 };
 
-class ReturnMainValueFunctor : public VM::ReturnMainValueFunctor
+class VM_DLL ReturnMainValueFunctor : public VM::ReturnMainValueFunctor
 {
 	Encoding locale_;
 	VM::CustomTypeToStringFunctor *customTypeToString_;
@@ -110,7 +111,7 @@ public:
 	}
 };
 
-class GetMainArgumentFunctor : public VM::GetMainArgumentFunctor
+class VM_DLL GetMainArgumentFunctor : public VM::GetMainArgumentFunctor
 {
 	std::deque< String > m_arguments;
 	size_t currentArgument_;
