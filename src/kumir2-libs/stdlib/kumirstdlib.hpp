@@ -160,6 +160,8 @@ public:
 	}
 };
 
+KS_DLL typedef String DllString;
+
 class KS_DLL Core
 {
 	friend class Math;
@@ -347,7 +349,6 @@ protected:
 		error.clear();
 	}
 
-	typedef String DllString;
 	static DllString error;
 };
 

@@ -1,6 +1,7 @@
 #ifndef BYTECODE_DATA_H
 #define BYTECODE_DATA_H
 
+#include "vm_dll.h"
 #include "vm_tableelem.hpp"
 #include <deque>
 #include <istream>
@@ -19,11 +20,11 @@ struct Data {
 };
 
 bool isValidSignature(const std::list<char> &ds);
-void bytecodeToDataStream(std::ostream &ds, const Data &data);
-void bytecodeToDataStream(std::list<char> &ds, const Data &data);
-void bytecodeFromDataStream(std::list<char> &ds, Data &data);
-void bytecodeFromDataStream(std::istream &is, Data &data);
-void bytecodeToTextStream(std::ostream &ts, const Data &data);
+VM_DLL void bytecodeToDataStream(std::ostream &ds, const Data &data);
+VM_DLL void bytecodeToDataStream(std::list<char> &ds, const Data &data);
+VM_DLL void bytecodeFromDataStream(std::list<char> &ds, Data &data);
+VM_DLL void bytecodeFromDataStream(std::istream &is, Data &data);
+VM_DLL void bytecodeToTextStream(std::ostream &ts, const Data &data);
 
 
 } // namespace Bytecode
