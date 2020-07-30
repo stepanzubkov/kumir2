@@ -1,6 +1,8 @@
 #ifndef VM_HPP
 #define VM_HPP
 
+#include "vm_dll.h"
+
 #include <memory>
 
 #include <kumir2-libs/stdlib/kumirstdlib.hpp>
@@ -16,7 +18,7 @@ namespace VM
 
 typedef std::shared_ptr<CriticalSectionLocker> ShPtrCSL;
 
-class KumirVM
+class VM_DLL KumirVM
 {
 public /*typedefs*/:
 	enum EntryPoint { EP_Main, EP_Testing };

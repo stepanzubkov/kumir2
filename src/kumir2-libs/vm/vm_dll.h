@@ -1,5 +1,5 @@
-#ifndef KSTDLIB_DLL_H
-#define KSTDLIB_DLL_H
+#ifndef VM_DLL_H
+#define VM_DLL_H
 
 #if !defined(DLL_IMP) && !defined(DLL_EXP)
 #if defined(_MSC_VER)
@@ -11,12 +11,12 @@
 #endif
 #endif
 
-#ifdef KSTDLIB_LIBRARY
-#define KS_DLL DLL_EXP
+#ifdef VM_LIBRARY
+#define VM_DLL DLL_EXP
 #else
-#define KS_DLL DLL_IMP
+#define VM_DLL DLL_IMP
 #endif
 
 
-#endif // KSTDLIB_DLL_H
+#endif // VM_DLL_H
 

@@ -340,12 +340,14 @@ public:
 			AbortHandler();
 		}
 	}
+
 protected:
 	inline static void unsetError()
 	{
 		error.clear();
 	}
-	static String error;
+
+	static KS_DLL String error;
 };
 
 class Math
