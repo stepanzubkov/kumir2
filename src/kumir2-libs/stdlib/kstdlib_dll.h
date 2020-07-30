@@ -2,8 +2,8 @@
 #define KSTDLIB_DLL_H
 
 #if defined(_MSC_VER)
-#define DLL_IMP __dllspec(dllimport)
-#define DLL_EXP __dllspec(dllexport)
+#define DLL_IMP __declspec(dllimport)
+#define DLL_EXP __declspec(dllexport)
 #else
 #define DLL_IMP
 #define DLL_EXP
