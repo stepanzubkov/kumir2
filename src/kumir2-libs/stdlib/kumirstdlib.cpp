@@ -1,9 +1,5 @@
 #include "kumirstdlib.hpp"
 
-#if defined(WIN32)
-__declspec(dllexport) void dummy() {}
-#endif
-
 namespace Kumir
 {
 

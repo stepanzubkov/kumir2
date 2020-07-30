@@ -1,5 +1,6 @@
 #ifndef KUMIRSTDLIB_H
 #define KUMIRSTDLIB_H
+#include "kstdlib_dll.h"
 
 #include <assert.h>
 #include <sstream>
@@ -159,7 +160,7 @@ public:
 	}
 };
 
-class Core
+class KS_DLL Core
 {
 	friend class Math;
 	friend class Random;
@@ -1228,11 +1229,9 @@ public:
 	{
 		unsigned char value = 0;
 		EncodingError error;
-//        value = KOI8RCodingTable::enc(ch, error);
 		value = CP1251CodingTable::enc(ch, error);
 		if (error) {
 			if (OutOfTable == error) {
-//                Core::abort(Core::fromUtf8("Символ вне кодировки КОИ-8"));
 				Core::abort(Core::fromUtf8("Символ вне кодировки CP-1251"));
 			} else {
 				Core::abort(Core::fromUtf8("Ошибка кодирования символа"));
@@ -1240,6 +1239,7 @@ public:
 		}
 		return static_cast<int>(value);
 	}
+
 	inline static Char symbol(int code)
 	{
 		if (code < 0 || code > 255) {
@@ -1257,6 +1257,7 @@ public:
 			return static_cast<wchar_t>(val);
 		}
 	}
+
 	inline static int unicode(Char ch)
 	{
 		return static_cast<int>(ch);
@@ -1381,7 +1382,7 @@ public:
 	}
 };
 
-class Files
+class KS_DLL Files
 {
 	friend class IO;
 public:
@@ -2061,7 +2062,7 @@ private:
 };
 
 
-class IO
+class KS_DLL IO
 {
 public:
 
