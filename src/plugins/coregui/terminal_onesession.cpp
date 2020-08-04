@@ -965,7 +965,7 @@ void OneSession::tryFinishInput()
                 }
             }
             if (actor) {
-                stream.skipDelimiters(Kumir::IO::inputDelimeters);
+                stream.skipDelimiters(Kumir::String());
                 conversionErrorStart = stream.currentPosition();
                 QString lexem = QString::fromStdWString(Kumir::IO::readString(stream));
                 QVariant value;

@@ -19,7 +19,11 @@ extern "C" {
 
 using namespace Kumir;
 
-static Encoding LOCALE;
+#if defined(WIN32) || defined(_WIN32)
+static Encoding LOCALE = CP866;
+#else
+static Encoding LOCALE = UTF8;
+#endif
 
 static void do_output(const String &s)
 {
@@ -176,11 +180,7 @@ int main(int argc, char *argv[])
     Kumir::EncodingError encodingError;
 //    sleep(15); // for remote debugger
     // Look at arguments
-#if defined(WIN32) || defined(_WIN32)
-    IO::LOCALE_ENCODING = LOCALE = CP866;
-#else
-    IO::LOCALE_ENCODING = LOCALE = UTF8;
-#endif
+    IO::setLocaleEncoding(LOCALE);
     std::string programName;
     std::deque<std::string> args;
     bool testingMode = false;
@@ -202,7 +202,8 @@ int main(int argc, char *argv[])
                 quietMode = true;
             }
             else if (arg==minus_ansi) {
-                IO::LOCALE_ENCODING = LOCALE = CP1251;
+                LOCALE = CP1251;
+                IO::setLocaleEncoding(LOCALE);
             }
             else {
                 programName = arg;
