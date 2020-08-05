@@ -5,6 +5,7 @@
 # include <Windows.h>
 #else
 # include <sys/stat.h>
+# include <errno.h>
 # include <unistd.h>
 #endif
 
