@@ -186,7 +186,7 @@ public:
 };
 
 
-class Math
+class KS_DLL Math
 {
 private:
 	static bool isCorrectDouble(double x);
@@ -245,7 +245,7 @@ public:
 	}
 };
 
-class Random
+class KS_DLL Random
 {
 private:
 	static unsigned int get_max();
@@ -262,7 +262,7 @@ public:
 };
 
 
-class Converter
+class KS_DLL Converter
 {
 private:
 	static bool validDecimal(const String &astring);
@@ -338,7 +338,7 @@ public:
 
 };
 
-class StringUtils
+class KS_DLL StringUtils
 {
 public:
 	static void init() {}
@@ -460,7 +460,7 @@ class KS_DLL IO
 public:
 	enum StreamType { File, InternalBuffer, ExternalBuffer };
 
-	class OutputStream
+	class KS_DLL OutputStream
 	{
 	public:
 		OutputStream()
@@ -505,7 +505,7 @@ public:
 	};
 
 
-	class InputStream
+	class KS_DLL InputStream
 	{
 	public:
 		InputStream()
@@ -646,7 +646,7 @@ public:
 }; // end class IO
 
 
-class System
+class KS_DLL System
 {
 public:
 	static void init() {}
