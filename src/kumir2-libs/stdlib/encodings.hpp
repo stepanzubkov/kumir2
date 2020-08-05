@@ -1,6 +1,7 @@
 #ifndef ENCODINGS_HPP
 #define ENCODINGS_HPP
 
+#include "kstdlib_dll.h"
 #include <string>
 #include <stdint.h>
 
@@ -56,7 +57,7 @@ public:
 	static uint32_t dec(charptr &from, EncodingError &error);
 };
 
-class Coder
+class KS_DLL Coder
 {
 public:
 	static std::string encode(
