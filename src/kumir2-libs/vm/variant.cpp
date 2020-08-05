@@ -1,4 +1,5 @@
 #include "variant.hpp"
+#include <string.h>
 
 namespace VM
 {
@@ -536,6 +537,35 @@ void Variable::updateBounds(int bounds[7])
 	}
 
 }
+
+void Variable::getBounds(/*out*/ int bounds[7]) const
+{
+	memcpy(bounds, bounds_, 7 * sizeof(int));
+}
+
+void Variable::getEffectiveBounds(/*out*/ int bounds[7]) const
+{
+	memcpy(bounds, restrictedBounds_, 7 * sizeof(int));
+}
+
+
+void Variable::setReference(Variable *r, int effectiveBounds[7])
+{
+	reference_ = r;
+	memcpy(bounds_, effectiveBounds, 7 * sizeof(int));
+	memcpy(restrictedBounds_, effectiveBounds, 7 * sizeof(int));
+}
+
+void Variable::setReferenceIndeces(int v[4])
+{
+	memcpy(referenceIndeces_, v, 4 * sizeof(int));
+}
+
+void Variable::getReferenceIndeces(int result[4]) const
+{
+	memcpy(result, referenceIndeces_, 4 * sizeof(int));
+}
+
 
 Variable Variable::toReference()
 {

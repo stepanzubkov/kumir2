@@ -10,6 +10,7 @@
 #define DO_NOT_DECLARE_STATIC
 #include <kumir2-libs/stdlib/kumirstdlib.hpp>
 #include "vm_enums.h"
+#include <vector>
 
 namespace VM
 {
@@ -618,15 +619,9 @@ public:
 
 	void setBounds(int bounds[7]);
 	void updateBounds(int bounds[7]);
-	void getBounds(/*out*/ int bounds[7]) const
-	{
-		memcpy(bounds, bounds_, 7 * sizeof(int));
-	}
 
-	void getEffectiveBounds(/*out*/ int bounds[7]) const
-	{
-		memcpy(bounds, restrictedBounds_, 7 * sizeof(int));
-	}
+	void getBounds(/*out*/ int bounds[7]) const;
+	void getEffectiveBounds(/*out*/ int bounds[7]) const;
 
 	bool hasValue() const;
 	bool hasValue(int indeces[4]) const;
@@ -671,27 +666,15 @@ public:
 		return reference_ != 0;
 	}
 
-	void setReference(Variable *r, int effectiveBounds[7])
-	{
-		reference_ = r;
-		memcpy(bounds_, effectiveBounds, 7 * sizeof(int));
-		memcpy(restrictedBounds_, effectiveBounds, 7 * sizeof(int));
-	}
+	void setReference(Variable *r, int effectiveBounds[7]);
 
 	Variable *reference()
 	{
 		return reference_;
 	}
 
-	void setReferenceIndeces(int v[4])
-	{
-		memcpy(referenceIndeces_, v, 4 * sizeof(int));
-	}
-
-	void getReferenceIndeces(int result[4]) const
-	{
-		memcpy(result, referenceIndeces_, 4 * sizeof(int));
-	}
+	void setReferenceIndeces(int v[4]);
+	void getReferenceIndeces(int result[4]) const;
 
 	int toInt() const
 	{

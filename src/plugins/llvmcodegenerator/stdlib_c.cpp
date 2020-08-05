@@ -1128,7 +1128,7 @@ EXTERN void String_Utilities_find(__kumir_scalar * result, const __kumir_scalar 
     const std::wstring pattern = __kumir_scalar_as_wstring(fragment);
     const std::wstring source = __kumir_scalar_as_wstring(thestring);
     __kumir_create_int(result,
-                       Kumir::StringUtils::find(pattern, source)
+                       Kumir::StringUtils::find(1, pattern, source)
                        );
 }
 

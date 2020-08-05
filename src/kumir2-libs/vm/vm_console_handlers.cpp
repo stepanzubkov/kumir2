@@ -1,4 +1,5 @@
 #include "vm_console_handlers.hpp"
+#include <iostream>
 
 
 namespace VM {

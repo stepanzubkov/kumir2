@@ -7,6 +7,7 @@ set(SOURCES
 	kcore.cpp
 	kfiles.cpp
 	kmath.cpp
+	encodings.cpp
 )
 
 kumir2_add_library(

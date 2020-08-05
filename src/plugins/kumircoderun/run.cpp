@@ -10,6 +10,7 @@ extern "C" {
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2/actorinterface.h>
 #include "util.h"
+#include <iostream>
 
 namespace KumirCodeRun {
 

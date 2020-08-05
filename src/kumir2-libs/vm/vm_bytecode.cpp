@@ -1,4 +1,5 @@
 #include "vm_bytecode.hpp"
+#include <string.h>
 
 namespace Bytecode
 {

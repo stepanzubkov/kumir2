@@ -12,5 +12,5 @@ kumir2_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
 kumir2_add_actor(
     NAME        ComplexNumbers
     SOURCES     ${SOURCES} ${MOC_SOURCES}
-    LIBRARIES   ${QT_LIBRARIES}
+    LIBRARIES   ${QT_LIBRARIES} KStdlib
 )

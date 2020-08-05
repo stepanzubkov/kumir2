@@ -1,5 +1,17 @@
 #include "kumirstdlib.hpp"
 
+#if defined(WIN32) || defined(_WIN32)
+# define NOMINMAX
+# include <Windows.h>
+#else
+# include <sys/stat.h>
+# include <unistd.h>
+#endif
+
+#include <string.h>
+#include <vector>
+#include <set>
+
 namespace Kumir {
 
 static FILE *assignedIN = stdin;
@@ -1064,7 +1076,6 @@ bool IO::readBool(InputStream &is)
 	if (YES.count(word)) {
 		yes = true;
 	}
-
 
 	if (NO.count(word)) {
 		no = true;

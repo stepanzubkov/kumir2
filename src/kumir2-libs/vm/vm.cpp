@@ -1,5 +1,6 @@
 #include "vm.hpp"
 #include <fstream>
+#include <set>
 
 const int MAX_RECURSION_SIZE = 4000;
 
@@ -1273,7 +1274,7 @@ void KumirVM::do_stdcall(uint16_t alg)
 	/* алг цел длин(лит s) */
 	case 0x001f: {
 		const String x = valuesStack_.pop().toString();
-		int y = Kumir::StringUtils::length(x);
+		int y = x.length();
 		valuesStack_.push(Variable(y));
 		break;
 	}
@@ -1627,7 +1628,7 @@ void KumirVM::do_stringscall(uint16_t alg)
 	case 0x0008: {
 		const String s = valuesStack_.pop().toString();
 		const String sub = valuesStack_.pop().toString();
-		const int y = Kumir::StringUtils::find(sub, s);
+		const int y = Kumir::StringUtils::find(1, sub, s);
 		Variable res(y);
 		valuesStack_.push(res);
 		error_ = Kumir::Core::getError();

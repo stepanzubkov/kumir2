@@ -26,20 +26,6 @@ void Core::setAbortHandler(Core::AbortHandlerType ah)
 }
 
 
-String Core::fromUtf8(const std::string &s)
-{
-	EncodingError encodingError;
-	String result = Coder::decode(UTF8, s, encodingError);
-	return result;
-}
-
-String Core::fromAscii(const std::string &s)
-{
-	EncodingError encodingError;
-	String result = Coder::decode(ASCII, s, encodingError);
-	return result;
-}
-
 std::string Core::toLowerCase(const std::string &s)
 {
 	// !!!! Only for ASCII in onebyte case !!!!!
@@ -208,6 +194,117 @@ void Core::abort(const String &e)
 	kumirError = e;
 	if (abortHandler) {
 		abortHandler();
+	}
+}
+
+
+int StringUtils::code(Char ch)
+{
+	unsigned char value = 0;
+	EncodingError error;
+	value = CP1251CodingTable::enc(ch, error);
+	if (error) {
+		if (OutOfTable == error) {
+			Core::abort(Core::fromUtf8("Символ вне кодировки CP-1251"));
+		} else {
+			Core::abort(Core::fromUtf8("Ошибка кодирования символа"));
+		}
+	}
+	return static_cast<int>(value);
+}
+
+Char StringUtils::symbol(int code)
+{
+	if (code < 0 || code > 255) {
+		Core::abort(Core::fromUtf8("Код вне диапазона [0..255]"));
+		return L'\0';
+	} else {
+		char buf[2] = { static_cast<char>(code), '\0' };
+		charptr p = reinterpret_cast<charptr>(&buf);
+		EncodingError encodingError;
+		uint32_t val = CP1251CodingTable::dec(p, encodingError);
+		if (OutOfTable == encodingError) {
+			Core::abort(Core::fromUtf8("Символ с таким кодом не определен в кодировке CP-1251"));
+		}
+		return static_cast<wchar_t>(val);
+	}
+}
+
+Char StringUtils::unisymbol(int code)
+{
+	if (code < 0 || code > 65535) {
+		Core::abort(Core::fromUtf8("Код вне диапазона [0..65535]"));
+		return L'\0';
+	} else {
+		return static_cast<wchar_t>(code);
+	}
+}
+
+int StringUtils::find(int from, const String &substr, const String &s)
+{
+	if (from < 1) {
+		Core::abort(Core::fromUtf8("Индекс меньше 1"));
+		return 0;
+	}
+	size_t start = static_cast<size_t>(from - 1);
+	size_t pos = s.find(substr, start);
+	if (pos == String::npos) {
+		return 0;
+	} else {
+		return static_cast<int>(pos + 1);
+	}
+}
+
+void StringUtils::insert(const String &substr, String &s, int pos)
+{
+	if (pos < 1) {
+		Core::abort(Core::fromUtf8("Индекс меньше 1"));
+	} else if (pos - 1 >= (int)(s.length())) {
+		s.append(substr);
+	} else {
+		size_t spos = static_cast<size_t>(pos - 1);
+		s.insert(spos, substr);
+	}
+}
+
+void StringUtils::remove(String &s, int pos, int count)
+{
+	if (pos < 1) {
+		Core::abort(Core::fromUtf8("Индекс меньше 1"));
+		return;
+	}
+	if (count < 0) {
+		Core::abort(Core::fromUtf8("Количество удаляемых символов меньше 0"));
+		return;
+	}
+	if (count == 0) {
+		return;
+	}
+	if (pos - 1 + count > (int)(s.length())) {
+		s.resize(static_cast<size_t>(pos - 1));
+	} else {
+		s.replace(static_cast<size_t>(pos - 1), static_cast<size_t>(count), String());
+	}
+}
+
+void StringUtils::replace(
+	String &s,
+	const String &oldSubstr,
+	const String &newSubstr,
+	bool all
+) {
+	size_t pos = 0;
+	while (true) {
+		pos = s.find(oldSubstr, pos);
+		if (pos == String::npos) {
+			break;
+		}
+		s.replace(pos, oldSubstr.length(), newSubstr);
+		if (all) {
+			pos += newSubstr.length();
+		} else {
+			break;
+		}
 	}
 }
 
