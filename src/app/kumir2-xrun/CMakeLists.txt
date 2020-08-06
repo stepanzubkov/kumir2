@@ -5,5 +5,5 @@ find_package(Kumir2 REQUIRED)
 
 kumir2_add_launcher(
     NAME            kumir2-xrun
-    CONFIGURATION   "!KumirCodeRun\(console\)"
+    CONFIGURATION   "!KumirCodeRun\(console\),ActorRobot"
 )
