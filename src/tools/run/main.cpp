@@ -1,21 +1,11 @@
-#include <iostream>
-#include <fstream>
-#include <kumir2-libs/stdlib/kumirstdlib.hpp>
-#include <kumir2-libs/vm/vm_abstract_handlers.h>
-#include <kumir2-libs/vm/vm_console_handlers.hpp>
-#include <kumir2-libs/vm/variant.hpp>
-#include <kumir2-libs/vm/vm_bytecode.hpp>
-#include <kumir2-libs/vm/vm.hpp>
-
+#include <stdlib.h>
 #include <algorithm>
+#include <fstream>
 
-#if defined(WIN32) || defined(_WIN32)
-#include <Windows.h>
-#else
-extern "C" {
-//#include <unistd.h>
-}
-#endif
+#include <kumir2-libs/stdlib/kumirstdlib.hpp>
+
+#include <kumir2-libs/vm/vm.hpp>
+#include <kumir2-libs/vm/vm_console_handlers.hpp>
 
 using namespace Kumir;
 
@@ -35,6 +25,7 @@ static String fromLocale(const std::string &s)
 	return Core::fromEncoding(LOCALE, s);
 }
 
+#if 0
 static void do_output(const String &s)
 {
 	std::string ls = toLocale(s);
@@ -45,11 +36,10 @@ static void do_output(const std::string &s)
 {
 	do_output(Core::fromUtf8(s));
 }
+#endif
 
-int usage(const char *programName)
+static int usage(const char *programName)
 {
-	using namespace Kumir;
-
 	String progName = fromLocale(std::string(programName));
 	Char _n = Char('\n');
 	bool russianLanguage = false;
@@ -105,11 +95,12 @@ int usage(const char *programName)
 		message += L"\t\t\tOf no use currently";
 		message.push_back(_n);
 	}
-	std::cerr << toLocale(message);
+
+	fprintf(stderr, "%s", toLocale(message).c_str());
 	return 127;
 }
 
-int showErrorMessage(const String &message, int code)
+static int showErrorMessage(const String &message, int code)
 {
 	bool toHttp = false;
 #if !defined(WIN32) && !defined(_WIN32)
@@ -118,81 +109,23 @@ int showErrorMessage(const String &message, int code)
 	toHttp = (REQUEST_METHOD != 0 && QUERY_STRING != 0);
 #endif
 	if (!toHttp) {
-		std::string localMessage = toLocale(message);
-		std::cerr << localMessage << std::endl;
+		std::string lM = toLocale(message);
+		fprintf(stderr, "%s\n", lM.c_str());
 		return code;
 	} else {
-		std::string localMessage = Core::toUtf8(message);
-		std::cout << "Content-type: text/plain;charset=utf-8\n\n";
-		std::cout << localMessage << std::endl;
+		std::string lM = Core::toUtf8(message);
+		fprintf(stdout, "%s", "Content-type: text/plain;charset=utf-8\n\n");
+		fprintf(stderr, "%s\n", lM.c_str());
 		return 0;
 	}
 }
 
-bool IsPluginExtern(const Bytecode::TableElem &e)
+static bool IsPluginExtern(const Bytecode::TableElem &e)
 {
 	bool isExtern = e.type == Bytecode::EL_EXTERN;
 	bool isKumirModule = e.fileName.length() > 4 &&
 		e.fileName.substr(e.fileName.length() - 4) == Core::fromAscii(".kod");
 	return isExtern && !isKumirModule;
-}
-
-int runKumirXRun(int , char *argv[])
-{
-	fprintf(stderr, "program has plugin dependencies, run it by kumir2-xrun instead");
-	return 1;
-
-#if defined(WIN32) || defined(_WIN32)
-	// Win32 implementation
-	char buf[MAX_PATH];
-	GetModuleFileNameA(NULL, buf, MAX_PATH);
-	std::string kumir2run(buf);
-	size_t lastSlash = kumir2run.find_last_of('\\');
-	const std::string basePath = kumir2run.substr(0, lastSlash + 1);
-	const std::string kumir2xrun = basePath + std::string("kumir2-xrun.exe");
-	std::string commandLine = kumir2xrun;
-	for (int i = 1; i < argc; i++) {
-		std::string arg(argv[i]);
-		commandLine.push_back(' ');
-		commandLine.append(arg);
-	}
-	STARTUPINFOA startupInfo;
-	ZeroMemory(&startupInfo, sizeof(startupInfo));
-	startupInfo.cb = sizeof(startupInfo);
-	PROCESS_INFORMATION processInformation;
-	ZeroMemory(&processInformation, sizeof(processInformation));
-	LPSTR lpCommandLine = const_cast<LPSTR>(commandLine.c_str());
-	BOOL success = CreateProcessA(
-			NULL, // lpApplicationName
-			lpCommandLine, // lpCommandLine
-			NULL, // lpProcessAttributes
-			NULL, // lpThreadAttributes
-			TRUE, // bInheritHandles
-			0, // dwCreationFlags
-			NULL, // lpEnvironment
-			NULL, // lpCurrentDirectory
-			&startupInfo, // lpStartupInfo
-			&processInformation // lpProcessInformation
-		);
-	if (success) {
-		return WaitForSingleObject(processInformation.hProcess, INFINITE);
-	}
-#else
-	// Posix implementation
-	std::string kumir2run = std::string(argv[0]);
-	if (kumir2run.at(0) != '/') {
-		char buf[2048];
-		getcwd(buf, 2048);
-		std::string cwd(buf);
-		cwd.push_back('/');
-		kumir2run = cwd + kumir2run;
-	}
-	size_t lastSlash = kumir2run.find_last_of('/');
-	const std::string basePath = kumir2run.substr(0, lastSlash + 1);
-	const std::string kumir2xrun = basePath + std::string("kumir2-xrun");
-	return execv(kumir2xrun.c_str(), argv);
-#endif
-	return 127;
 }
 
 int main(int argc, char *argv[])
@@ -253,7 +186,7 @@ int main(int argc, char *argv[])
 
 	std::ifstream programFile(programName.c_str(), std::ios::in | std::ios::binary);
 	if (!programFile.is_open()) {
-		std::cerr << "Can't open program file: " << programName << std::endl;
+		fprintf(stderr, "Can't open program file: '%s'\n", programName.c_str());
 		return 1;
 	}
 
@@ -273,7 +206,8 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "plugins dependency: %d \n", (int) hasPluginDependency);
 
 	if (hasPluginDependency) {
-		return runKumirXRun(argc, argv);
+		fprintf(stderr, "program has plugin dependencies, run it by kumir2-xrun instead");
+		return 127;
 	}
 
 	fprintf(stderr, "%s: %d \n", __FILE__, __LINE__);
@@ -367,12 +301,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (testingMode) {
-	fprintf(stderr, "%s: %d \n", __FILE__, __LINE__);
-		return vm.returnCode();
-	} else {
-	fprintf(stderr, "%s: %d \n", __FILE__, __LINE__);
-		return 0;
-	}
+	fprintf(stderr, "vm.returnCode = %d \n", (int) vm.returnCode());
+	return vm.returnCode();
 }
 
