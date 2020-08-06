@@ -137,18 +137,38 @@ public:
 
 	static void finalize() {}
 
-	static String fromUtf8(const std::string &s)
+	static String fromEncoding(Encoding enc, const std::string &s)
 	{
 		EncodingError encodingError;
-		String result = Coder::decode(UTF8, s, encodingError);
+		String result = Coder::decode(enc, s, encodingError);
+		return result;
+	}
+
+	static std::string toEncoding(Encoding enc, const String &s)
+	{
+		EncodingError encodingError;
+		std::string result = Coder::encode(enc, s, encodingError);
 		return result;
 	}
 
 	static String fromAscii(const std::string &s)
 	{
-		EncodingError encodingError;
-		String result = Coder::decode(ASCII, s, encodingError);
-		return result;
+		return fromEncoding(ASCII, s);
+	}
+
+	static std::string toAscii(const String &s)
+	{
+		return toEncoding(ASCII, s);
+	}
+
+	static String fromUtf8(const std::string &s)
+	{
+		return fromEncoding(UTF8, s);
+	}
+
+	static std::string toUtf8(const String &s)
+	{
+		return toEncoding(UTF8, s);
 	}
 
 	static std::string toLowerCase(const std::string &s);
