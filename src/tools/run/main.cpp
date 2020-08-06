@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "plugins dependency: %d \n", (int) hasPluginDependency);
 
 	if (hasPluginDependency) {
-		fprintf(stderr, "program has plugin dependencies, run it by kumir2-xrun instead");
+		fprintf(stderr, "program has plugin dependencies, run it by kumir2-xrun instead\n");
 		return 127;
 	}
 
