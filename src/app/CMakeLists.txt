@@ -1,4 +1,4 @@
-find_package(Kumir2 REQUIRED)
+#find_package(Kumir2 REQUIRED)
 # find_package(Llvm)
 
 if (NOT APPLE)

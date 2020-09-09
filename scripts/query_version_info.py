@@ -120,7 +120,7 @@ def get_version_information(top_level_dir):
             result["version"] = version_info
             result["taggedRelease"] = True
 
-    eprint("get_version_information: result=",  result)
+    #eprint("get_version_information: result=",  result)
     return result
 
 

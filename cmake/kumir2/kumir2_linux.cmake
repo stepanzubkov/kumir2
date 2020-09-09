@@ -47,7 +47,7 @@ set(CMAKE_INSTALL_RPATH "")
 # Compile flags
 set(KUMIR2_CXXFLAGS "-fno-exceptions -std=c++0x -fPIC -Wall -W ")
 set(KUMIR2_CXXFLAGS_Release "-O2 -UNDEBUG")
-set(KUMIR2_CXXFLAGS_RelWithDebInfo "-O2 -g1 -UNDEBUG -UQT_NO_DEBUG")
+set(KUMIR2_CXXFLAGS_RelWithDebInfo "-O2 -g -UNDEBUG -UQT_NO_DEBUG")
 set(KUMIR2_CXXFLAGS_Debug "-g -O1")
 
 # Linkage flags
