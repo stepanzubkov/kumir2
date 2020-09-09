@@ -6,5 +6,5 @@ kumir2_add_launcher(
 	NAME            Kumir
 	SPLASHSCREEN    "splashscreen-macx.png"
 	WINDOW_ICON     "window-icon-macx.png"
-	CONFIGURATION   "CourseManager,Editor,Actor*,KumirAnalizer,KumirCodeGenerator,KumirCodeRun,!CoreGUI"
+	CONFIGURATION   "CourseManager,Editor,Actor*,KumirAnalizer\(preload=Files\),KumirCodeGenerator,KumirCodeRun,!CoreGUI"
 )

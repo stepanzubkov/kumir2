@@ -12,6 +12,6 @@ kumir2_add_launcher(
 	X_NAME          "Kumir Professional Edition"
 	X_NAME_ru       "Кумир-Про"
 	X_CATEGORIES    "Education,X-KDE-Edu-Misc"
-	CONFIGURATION   "CourseManager,Editor,Actor*,KumirAnalizer,*CodeGenerator,KumirCodeRun,!CoreGUI"
+	CONFIGURATION   "CourseManager,Editor,Actor*,KumirAnalizer\(preload=Files\),*CodeGenerator,KumirCodeRun,!CoreGUI"
 )
 
