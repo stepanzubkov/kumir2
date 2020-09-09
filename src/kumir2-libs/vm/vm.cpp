@@ -340,7 +340,6 @@ void KumirVM::setProgram(const Bytecode::Data &program, bool isMain, const Strin
 				moduleContexts_[currentModuleContext].moduleNames[e.module] =
 					e.moduleLocalizedName;
 			}
-			uint8_t key = e.module;
 			moduleContexts_[currentModuleContext].inits.push_back(e);
 			breakpointsTable_.registerSourceFileName(filename, e.module);
 		}
@@ -2170,7 +2169,6 @@ void KumirVM::do_store(uint8_t s, uint16_t id)
 	Variable &variable = findVariable(s, id);
 	const int dim = variable.dimension();
 	ValueType t = variable.baseType();
-	Variable *reference = variable.reference();
 	int bounds[7];
 	if (dim > 0) {
 		value.getBounds(bounds);

@@ -9,196 +9,231 @@
 
 #ifndef _override
 #if defined(_MSC_VER)
-#   define _override
+# define _override
 #else
-#   define _override override
+# define _override override
 #endif
 #endif
 
-namespace KumirCodeRun {
+#ifndef _final
+#if defined(_MSC_VER)
+# define _final
+#else
+# define _final final
+#endif
+#endif
+
+namespace KumirCodeRun
+{
 
 class Run;
 
-namespace Gui {
+namespace Gui
+{
 
 using namespace Kumir;
 using namespace VM;
 
-class ExternalModuleLoadFunctor
-        : public VM::ExternalModuleLoadFunctor
+class ExternalModuleLoadFunctor : public VM::ExternalModuleLoadFunctor
 {
 public:
-    NamesList operator()(
-            const std::string & moduleAsciiName,
-            const Kumir::String & moduleName, Kumir::String * error)
-                _override;
+	NamesList operator()(
+		const std::string &moduleAsciiName,
+		const Kumir::String &moduleName, Kumir::String *error)
+	_override;
 };
 
-class InputFunctor
-        : private QObject
-        , public VM::InputFunctor
-        , public Kumir::AbstractInputBuffer
+class InputFunctor :
+	private QObject,
+	public VM::InputFunctor,
+	public Kumir::AbstractInputBuffer
 {
-    Q_OBJECT
-public:
-    InputFunctor();
-    void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
-    void setRunnerInstance(class Run * runner);
-    bool operator()(VariableReferencesList alist, Kumir::String * error) _override;
-    ~InputFunctor();
+	Q_OBJECT
 
-    // Raw data handling methods
-    void clear() _override;
-    bool readRawChar(Kumir::Char &ch) _override;
-    void pushLastCharBack() _override;
+public:
+	InputFunctor();
+	void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
+	void setRunnerInstance(class Run *runner);
+	bool operator()(VariableReferencesList alist, Kumir::String *error) _override;
+	~InputFunctor();
+
+	// Raw data handling methods
+	void clear() _override;
+	bool readRawChar(Kumir::Char &ch) _override;
+	void pushLastCharBack() _override;
 
 signals:
-    void requestInput(const QString & format);
+	void requestInput(const QString &format);
+
 private slots:
-    void handleInputDone(const QVariantList & values);
+	void handleInputDone(const QVariantList &values);
+
 private /*fields*/:
-    bool finishedFlag_;
-    QMutex * finishedMutex_;
-    QVariantList inputValues_;
-    VM::CustomTypeFromStringFunctor * converter_;
-    Run * runner_;
+	bool finishedFlag_;
+	QMutex *finishedMutex_;
+	QVariantList inputValues_;
+	VM::CustomTypeFromStringFunctor *converter_;
+	Run *runner_;
 
-    QString rawBuffer_;
-    QChar rawBufferLastReadChar_;
+	QString rawBuffer_;
+	QChar rawBufferLastReadChar_;
 };
 
-class SimulatedInputBuffer
-        : public Kumir::AbstractInputBuffer
+class SimulatedInputBuffer _final : public Kumir::AbstractInputBuffer
 {
 public:
-    inline explicit SimulatedInputBuffer(QTextStream * stream): io_(stream), prevChar_(QChar::Null), lastChar_(QChar::Null) {}
+	explicit SimulatedInputBuffer(QTextStream *stream):
+		io_(stream), prevChar_(QChar::Null), lastChar_(QChar::Null)
+	{}
 
-    void clear() _override;
-    bool readRawChar(Kumir::Char &ch) _override;
-    void pushLastCharBack() _override;
+	void clear() _override;
+	bool readRawChar(Kumir::Char &ch) _override;
+	void pushLastCharBack() _override;
 
 private:
-    QTextStream *io_;
-    QChar prevChar_;
-    QChar lastChar_;
-
+	QTextStream *io_;
+	QChar prevChar_;
+	QChar lastChar_;
 };
 
-class OutputFunctor
-        : private QObject
-        , public VM::OutputFunctor
-        , public Kumir::AbstractOutputBuffer
+class OutputFunctor:
+	private QObject,
+	public VM::OutputFunctor,
+	public Kumir::AbstractOutputBuffer
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    OutputFunctor();
-    void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
-    void setRunnerInstance(class Run * runner);
-    void operator()(VariableReferencesList alist, FormatsList formats, Kumir::String * error) _override;
-    void writeRawString(const String & s) _override;
+	OutputFunctor();
+	void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
+	void setRunnerInstance(class Run *runner);
+	void operator()(VariableReferencesList alist, FormatsList formats, Kumir::String *error) _override;
+	void writeRawString(const String &s) _override;
+
 signals:
-    void requestOutput(const QString & data);
+	void requestOutput(const QString &data);
+
 private:
-    VM::CustomTypeToStringFunctor * converter_;
+	VM::CustomTypeToStringFunctor *converter_;
 };
 
-class SimulatedOutputBuffer
-        : public Kumir::AbstractOutputBuffer
+class SimulatedOutputBuffer _final : public Kumir::AbstractOutputBuffer
 {
 public:
-    inline explicit SimulatedOutputBuffer(QTextStream * stream): io_(stream) {}
-    void writeRawString(const Kumir::String &) _override;
+	explicit SimulatedOutputBuffer(QTextStream *stream): io_(stream) {}
+	void writeRawString(const Kumir::String &) _override;
+
 private:
-    QTextStream *io_;
+	QTextStream *io_;
 };
 
-class GetMainArgumentFunctor
-        : private QObject
-        , public VM::GetMainArgumentFunctor
+class GetMainArgumentFunctor:
+	private QObject,
+	public VM::GetMainArgumentFunctor
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    GetMainArgumentFunctor();
-    void operator()(Variable & reference, Kumir::String * error) _override;
-    void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
-    void setRunnerInstance(class Run * runner);
-    ~GetMainArgumentFunctor();
+	GetMainArgumentFunctor();
+	void operator()(Variable &reference, Kumir::String *error) _override;
+	void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
+	void setRunnerInstance(class Run *runner);
+	~GetMainArgumentFunctor();
+
 signals:
-    void requestInput(const QString & format);
-    void requestOutput(const QString & data);
+	void requestInput(const QString &format);
+	void requestOutput(const QString &data);
+
 private:
-    bool inputScalarArgument(const QString & name,
-                             const QString & indeces,
-                             const QString & messageSuffix,
-                             const QString & format,
-                             AnyValue & value);
+	bool inputScalarArgument(
+		const QString &name,
+		const QString &indeces,
+		const QString &messageSuffix,
+		const QString &format,
+		AnyValue &value
+	);
+
 private slots:
-    void handleInputDone(const QVariantList & values);
+	void handleInputDone(const QVariantList &values);
+
 private /*fields*/:
-    bool finishedFlag_;
-    QMutex * finishedMutex_;
-    QVariantList inputValues_;
-    VM::CustomTypeFromStringFunctor * converter_;
-    Run * runner_;
+	bool finishedFlag_;
+	QMutex *finishedMutex_;
+	QVariantList inputValues_;
+	VM::CustomTypeFromStringFunctor *converter_;
+	Run *runner_;
 };
 
-class ReturnMainValueFunctor
-        : private QObject
-        , public VM::ReturnMainValueFunctor
+class ReturnMainValueFunctor:
+	private QObject,
+	public VM::ReturnMainValueFunctor
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    ReturnMainValueFunctor();
-    void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
-    void setRunnerInstance(class Run * runner);
-    void operator()(const Variable & reference, Kumir::String * error) _override;
+	ReturnMainValueFunctor();
+	void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
+	void setRunnerInstance(class Run *runner);
+	void operator()(const Variable &reference, Kumir::String *error) _override;
+
 signals:
-    void requestOutput(const QString & data);
+	void requestOutput(const QString &data);
+
 private:
-    VM::CustomTypeToStringFunctor * converter_;
+	VM::CustomTypeToStringFunctor *converter_;
 };
 
 
-class PauseFunctor
-        : public QObject
-        , public VM::PauseFunctor
+class PauseFunctor:
+	public QObject,
+	public VM::PauseFunctor
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    PauseFunctor();
-    void operator()() _override;
+	PauseFunctor();
+	void operator()() _override;
+
 signals:
-    void requestPause();
+	void requestPause();
 };
 
-class DelayFunctor
-        : public QThread
-        , public VM::DelayFunctor
+class DelayFunctor:
+	public QThread,
+	public VM::DelayFunctor
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    DelayFunctor();
-    void operator()(quint32 msec) _override;
-    void stop();
+	DelayFunctor();
+	void operator()(quint32 msec) _override;
+	void stop();
+
 private:
-    bool stopFlag_;
-    QScopedPointer<QMutex> stopMutex_;
+	bool stopFlag_;
+	QScopedPointer<QMutex> stopMutex_;
 };
 
-class ExternalModuleResetFunctor
-        : public QObject
-        , public VM::ExternalModuleResetFunctor
+class ExternalModuleResetFunctor :
+	public QObject,
+	public VM::ExternalModuleResetFunctor
 {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    ExternalModuleResetFunctor();
-    virtual void operator()(const std::string & moduleName, const String & localizedName, Kumir::String * error) _override;
+	ExternalModuleResetFunctor();
+	virtual void operator()(
+		const std::string &moduleName,
+		const String &localizedName,
+		Kumir::String *error
+	) _override;
+
 signals:
-    void showActorWindow(const QByteArray & actorAsciiName);
+	void showActorWindow(const QByteArray &actorAsciiName);
 };
 
-}
+} // namespace Gui
 
-}
+} // namespace KumirCodeRun
 
 #endif // GUIRUN_H

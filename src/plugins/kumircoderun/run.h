@@ -51,17 +51,18 @@ public:
 	{
 		delete m;
 	}
+
 private:
 	QMutex *m;
 };
 
-class Run
-	: public QThread
-	, public VM::DebuggingInteractionHandler
+class Run :
+	public QThread,
+	public VM::DebuggingInteractionHandler
 {
 	Q_OBJECT
-public:
 
+public:
 	explicit Run(QObject *parent);
 	std::shared_ptr<VM::KumirVM> vm;
 	bool programLoaded;
@@ -96,16 +97,18 @@ public:
 	void reset();
 	void evaluateNextInstruction();
 	bool canStepOut() const;
+
 	inline Shared::RunInterface::RunMode currentRunMode() const
 	{
 		return _runMode ;
 	}
+
 	QVariant valueStackTopItem() const;
+
 	inline QAbstractItemModel *variablesModel() const
 	{
 		return _variablesModel;
 	}
-
 
 public slots:
 	void lockVMMutex();
@@ -134,8 +137,10 @@ public slots:
 	void debuggerNoticeBeforeArrayInitialize(const VM::Variable &, const int[7]);
 	void debuggerNoticeAfterArrayInitialize(const VM::Variable &);
 	void debuggerNoticeOnValueChanged(const VM::Variable &, const int *);
-	void debuggerNoticeOnBreakpointHit(const Kumir::String &filename, const quint32 lineNo);
-
+	void debuggerNoticeOnBreakpointHit(
+		const Kumir::String &filename,
+		const quint32 lineNo
+	);
 
 	void handleAlgorhitmDone(int lineNo, quint32 colStart, quint32 colEnd);
 	void handlePauseRequest();
@@ -144,7 +149,6 @@ public slots:
 	void insertOrChangeBreakpoint(bool enabled, const QString &fileName, quint32 lineNo, quint32 ignoreCount, const QString &condition);
 	void insertSingleHitBreakpoint(const QString &fileName, quint32 lineNo);
 	void removeBreakpoint(const QString &fileName, quint32 lineNo);
-
 
 signals:
 	void breakpointHit(const QString &fileName, int lineNo);
@@ -156,9 +160,11 @@ signals:
 	void input(const QString &format);
 	void marginText(int lineNo, const QString &text);
 	void marginTextReplace(int lineNo, const QString &text, bool redFgColor);
-	void externalFunctionCall(const QString &pluginName,
+	void externalFunctionCall(
+		const QString &pluginName,
 		quint16 algId,
-		const QVariantList &arguments);
+		const QVariantList &arguments
+	);
 	void resetModule(const QString &pluginName);
 	void aboutToStop();
 	void clearMarginRequest(int, int);
@@ -199,7 +205,6 @@ protected :
 
 	bool supportBreakpoints_;
 	QMap<BreakpointLocation, BreakpointData> breakpoints_;
-
 };
 
 } // namespace KumirCodeRun

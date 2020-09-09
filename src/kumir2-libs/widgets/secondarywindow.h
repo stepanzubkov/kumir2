@@ -11,73 +11,71 @@
 #define WIDGETS_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace Widgets {
-
-class WIDGETS_EXPORT SecondaryWindow
-        : public QObject
+namespace Widgets
 {
-    Q_OBJECT
+
+class WIDGETS_EXPORT SecondaryWindow : public QObject
+{
+	Q_OBJECT
 public:
-    class SecondaryWindowImplementationInterface * dockContainer() const;
-    class SecondaryWindowImplementationInterface * windowContainer() const;
+	class SecondaryWindowImplementationInterface *dockContainer() const;
+	class SecondaryWindowImplementationInterface *windowContainer() const;
 
-    const QString & settingsKey() const;
+	const QString &settingsKey() const;
 
-    static SecondaryWindow * createSecondaryWindow(
-            QWidget * centralWidget,
-            const QString & title,
-            const QIcon & icon,
-            QWidget * topLevelParent,
-            class DockWindowPlace * dockPlace,
-            const QString & settingsKey,
-            bool resizable
-            );
+	static SecondaryWindow *createSecondaryWindow(
+		QWidget *centralWidget,
+		const QString &title,
+		const QIcon &icon,
+		QWidget *topLevelParent,
+		class DockWindowPlace *dockPlace,
+		const QString &settingsKey,
+		bool resizable
+	);
 
-    void changeDockPlace(class DockWindowPlace * dockPlace);
-    bool isSeparateWindow() const;
-
-
+	void changeDockPlace(class DockWindowPlace *dockPlace);
+	bool isSeparateWindow() const;
 
 signals:
-    
+
 public slots:
-    void activate();
-    void updateSettings(ExtensionSystem::SettingsPtr settings,
-                        const QStringList & keys);
-    void saveState();
-    void restoreState();
+	void activate();
+	void updateSettings(ExtensionSystem::SettingsPtr settings,
+		const QStringList &keys);
+	void saveState();
+	void restoreState();
 
 private /*methods*/:
-    bool event(QEvent *evt);
+	bool event(QEvent *evt);
 
-    explicit SecondaryWindow(QWidget * topLevelParent,
-                             class SecondaryWindowImplementationInterface * windowContainer,
-                             class SecondaryWindowImplementationInterface * dockContainer,
-                             const QString & settingsKey,
-                             QWidget * centralWidget
-                             );
+	explicit SecondaryWindow(QWidget *topLevelParent,
+		class SecondaryWindowImplementationInterface *windowContainer,
+		class SecondaryWindowImplementationInterface *dockContainer,
+		const QString &settingsKey,
+		QWidget *centralWidget
+	);
 
-    static SecondaryWindowImplementationInterface * createWindowContainer(
-            const QString & title,
-            const QIcon & icon,
-            QWidget * topLevelParent,
-            bool resizable
-            );
+	static SecondaryWindowImplementationInterface *createWindowContainer(
+		const QString &title,
+		const QIcon &icon,
+		QWidget *topLevelParent,
+		bool resizable
+	);
 
-    static SecondaryWindowImplementationInterface * createDockContainer(
-            const QString & title,
-            class DockWindowPlace * dockPlace
-            );
+	static SecondaryWindowImplementationInterface *createDockContainer(
+		const QString &title,
+		class DockWindowPlace *dockPlace
+	);
 
-    class SecondaryWindowImplementationInterface * currentContainer() const;
+	class SecondaryWindowImplementationInterface *currentContainer() const;
 
 private /*fields*/:
-    class SecondaryWindowImplementationInterface * dockContainer_;
-    class SecondaryWindowImplementationInterface * windowContainer_;
-    QString settingsKey_;
-    ExtensionSystem::SettingsPtr settings_;
-    QWidget * topLevelParent_;
-    QWidget * centralWidget_;
+	class SecondaryWindowImplementationInterface *dockContainer_;
+	class SecondaryWindowImplementationInterface *windowContainer_;
+	QString settingsKey_;
+	ExtensionSystem::SettingsPtr settings_;
+	QWidget *topLevelParent_;
+	QWidget *centralWidget_;
 
 };
 
