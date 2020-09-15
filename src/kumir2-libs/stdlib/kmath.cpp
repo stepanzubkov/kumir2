@@ -407,7 +407,7 @@ int Math::ipow(int a, int b)
 			return 0;
 		}
 		unsigned int res = 1U << b;
-		return (b & 1) ? -res : res;
+		return (b & 1) ? 0 - res : res;
 	}
 
 	int64_t y = a, res = 1;
@@ -766,7 +766,7 @@ String Converter::sprintfReal(
 				expform = true;
 			}
 			if (!expform) {
-				sdecimals -= ::floor(::log(absVal) / ::log(10.0));
+				sdecimals -= (int) ::floor(::log(absVal) / ::log(10.0));
 			}
 		}
 	}
