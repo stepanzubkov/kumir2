@@ -1409,6 +1409,7 @@ void KumKuznec::NetOKClick(void)
 }
 
 
+#if 0
 void KumKuznec::DrawText(QString Text, qreal Scale)
 {
 	QString t = Text;
@@ -1453,6 +1454,7 @@ void KumKuznec::DrawText(QString Text, qreal Scale)
 	GoVector(0, 0);   // Чтобы цвет пера был правильным
 	WindowRedraw();
 }
+#endif
 
 void KumKuznec::InfoOKClick(void)
 {

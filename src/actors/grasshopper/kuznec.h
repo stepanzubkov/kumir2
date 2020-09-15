@@ -159,7 +159,8 @@ public:
 
 	void closeEvent(QCloseEvent *event);
 	void SetWindowSize(int x1, int y1, int x2, int y2);
-	void DrawText(QString Text, qreal Scale);
+
+	//void DrawText(QString Text, qreal Scale);
 
 	bool init();
 	bool isReady() const
