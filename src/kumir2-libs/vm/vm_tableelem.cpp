@@ -545,6 +545,7 @@ static String screenString(String s)
 	return s;
 }
 
+#if 0
 static String unscreenString(String s)
 {
 	replaceAll(s, Kumir::Core::fromAscii("\\n"), Kumir::Core::fromAscii("\n"));
@@ -554,6 +555,7 @@ static String unscreenString(String s)
 	replaceAll(s, Kumir::Core::fromAscii("\\\\"), Kumir::Core::fromAscii("\\"));
 	return s;
 }
+#endif
 
 static std::string constantToTextStream(const TableElem &e)
 {
