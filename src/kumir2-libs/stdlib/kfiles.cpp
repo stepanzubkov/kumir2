@@ -33,6 +33,15 @@ static Encoding LOCALE_ENCODING = UTF8;
 #endif
 
 
+AbstractInputBuffer::~AbstractInputBuffer()
+{
+}
+
+AbstractOutputBuffer::~AbstractOutputBuffer()
+{
+}
+
+
 AbstractInputBuffer *Files::getConsoleInputBuffer()
 {
 	return consoleInputBuffer;

@@ -8,11 +8,6 @@
 #include <deque>
 
 
-namespace VM
-{
-class Variable;
-}
-
 namespace Kumir
 {
 
@@ -100,35 +95,13 @@ struct FileType {
 	FILE *handle;
 };
 
-class AbstractInputBuffer
-{
-public:
-	virtual bool readRawChar(Char &ch) = 0;
-	virtual void pushLastCharBack() = 0;
-	virtual void clear() = 0;
-};
-
-class AbstractOutputBuffer
-{
-public:
-	virtual void writeRawString(const String &) = 0;
-};
-
 class KS_DLL Core
 {
-	friend class Math;
-	friend class Random;
-	friend class Files;
-	friend class StringUtils;
-	friend class System;
-	friend class IO;
-	friend class VM::Variable;
-
 	static String &takeError();
-	static void unsetError() { takeError().clear(); }
 
 public:
 	static const String &getError();
+	static void unsetError() { takeError().clear(); }
 
 	static void init()
 	{
@@ -417,9 +390,28 @@ public:
 
 };
 
+class KS_DLL AbstractInputBuffer
+{
+protected:
+	~AbstractInputBuffer();
+
+public:
+	virtual bool readRawChar(Char &ch) = 0;
+	virtual void pushLastCharBack() = 0;
+	virtual void clear() = 0;
+};
+
+class KS_DLL AbstractOutputBuffer
+{
+protected:
+	~AbstractOutputBuffer();
+
+public:
+	virtual void writeRawString(const String &) = 0;
+};
+
 class KS_DLL Files
 {
-	friend class IO;
 	static bool isOpenedFiles();
 
 public:
@@ -441,7 +433,6 @@ public:
 	static String getNormalizedPath(const String &path, Char sep);
 	static bool canOpenForRead(const String &path);
 	static bool canOpenForWrite(const String &path);
-
 
 	static bool exist(const String &fileName);
 	static bool isDirectory(const String &fileName);
