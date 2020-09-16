@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QPair>
+#include <QList>
 #include "ast_variabletype.h"
 
 namespace Shared {
