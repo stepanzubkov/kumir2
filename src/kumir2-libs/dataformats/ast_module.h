@@ -2,12 +2,9 @@
 #define AST_MODULE_H
 
 #include "ast_type.h"
-#include <kumir2/actorinterface.h>
 
 #include <QString>
 #include <QList>
-#include <QSet>
-#include <QStringList>
 #include <QSharedPointer>
 #include <QWeakPointer>
 
@@ -18,11 +15,11 @@
 #define ABSTRACTSYNTAXTREE_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace AST {
+namespace AST
+{
 
 typedef QSharedPointer<struct Module> ModulePtr;
 typedef QWeakPointer<struct Module> ModuleWPtr;
-typedef Shared::ActorInterface * ActorPtr;
 
 typedef QSharedPointer<struct Algorithm> AlgorithmPtr;
 
@@ -34,103 +31,101 @@ typedef QSharedPointer<struct Data> DataPtr;
 
 enum ModuleType {
 
-    /** User module */
-    ModTypeUser,
+	/** User module */
+	ModTypeUser,
 
-    /** Hidden (e.g. teacher) pseudo-module */
-    ModTypeTeacher,
+	/** Hidden (e.g. teacher) pseudo-module */
+	ModTypeTeacher,
 
-    /** User module in another file */
-    ModTypeCached,
+	/** User module in another file */
+	ModTypeCached,
 
-    /** External or system built-in module */
-    ModTypeExternal,
+	/** External or system built-in module */
+	ModTypeExternal,
 
-    ModTypeUserMain,
-    ModTypeTeacherMain
-
+	ModTypeUserMain,
+	ModTypeTeacherMain
 };
 
 
 /** Module public header */
 struct ModuleHeader {
 
-    /** Module name, may be empty (for program itself)*/
-    QString name;
+	/** Module name, may be empty (for program itself)*/
+	QString name;
+	QByteArray asciiName;
 
-//    QString nameTemplate;
-//    QVariantList templateParameters;
-//    QList<QVariant::Type> templateTypes;
+	/** Module source file name (might be used in case of name is empty) */
+	QString sourceFileName;
 
-    QByteArray asciiName;
+	/** Module type */
+	enum ModuleType type;
 
-    /** Module source file name (might be used in case of name is empty) */
-    QString sourceFileName;
+	/** List of public (i.e. not underscore-starting named) algorithms,
+	  * represented as references to corresponding functions */
+	QList<AlgorithmPtr> algorhitms;
 
-    /** Module type */
-    enum ModuleType type;
+	/** List of overrided operators,
+	 * each represented as algorithm */
+	QList<AlgorithmPtr> operators;
 
-    /** List of public (i.e. not underscore-starting named) algorithms,
-      * represented as references to corresponding functions */
-    QList<AlgorithmPtr> algorhitms;
+	/** Module custom types */
+	QList<struct Type> types;
 
-    /** List of overrided operators,
-     * each represented as algorithm */
-    QList<AlgorithmPtr> operators;
-
-    /** Module custom types */
-    QList<struct Type> types;
-
-    /** True, if module is enabled to use */
-    QList<ModuleWPtr> usedBy;
+	/** True, if module is enabled to use */
+	QList<ModuleWPtr> usedBy;
 };
 
 /** Module body (private to other modules) */
 struct ModuleImplementation {
 
-    /** Global variables and constants table */
-    QList<VariablePtr> globals;
+	/** Global variables and constants table */
+	QList<VariablePtr> globals;
 
-    /** Module algorhitms table */
-    QList<AlgorithmPtr> algorhitms;
+	/** Module algorhitms table */
+	QList<AlgorithmPtr> algorhitms;
 
-    /** Body of module initializer (i.e. statements before
-      * first algorhitm declaration) */
-    QList<StatementPtr> initializerBody;
+	/** Body of module initializer (i.e. statements before
+	  * first algorhitm declaration) */
+	QList<StatementPtr> initializerBody;
 
-    /** Module begin lexems */
-    QList<struct Lexem*> beginLexems;
+	/** Module begin lexems */
+	QList<struct Lexem *> beginLexems;
 
-    /** Module end lexems */
-    QList<struct Lexem*> endLexems;
+	/** Module end lexems */
+	QList<struct Lexem *> endLexems;
 
-    ActorPtr actor;
+	ActorPtr actor;
 
-    int firstLineNumber;
-    int lastLineNumber;
+	int firstLineNumber;
+	int lastLineNumber;
 
-    explicit ModuleImplementation() { actor = nullptr; }
-
+	explicit ModuleImplementation()
+	{
+		actor = nullptr;
+	}
 };
 
 
 /** Module representation */
 struct ABSTRACTSYNTAXTREE_EXPORT Module {
 
-    /** Public interface of module */
-    struct ModuleHeader header;
+	/** Public interface of module */
+	struct ModuleHeader header;
 
-    quint8 builtInID;
+	quint8 builtInID;
 
-    /** Module internal representation */
-    struct ModuleImplementation impl;
+	/** Module internal representation */
+	struct ModuleImplementation impl;
 
-    explicit Module();
-    explicit Module(const ModulePtr src);
-    void updateReferences(const Module * src,
-                          const struct Data* srcData,
-                          const struct Data * data);
-    bool isEnabledFor(const ModulePtr reference) const;
+	explicit Module();
+	explicit Module(const ModulePtr src);
+	void updateReferences(
+		const Module *src,
+		const struct Data *srcData,
+		const struct Data *data
+	);
+	bool isEnabledFor(const ModulePtr reference) const;
 
 };
 

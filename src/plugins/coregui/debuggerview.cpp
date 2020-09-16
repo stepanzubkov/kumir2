@@ -1,101 +1,105 @@
 #include "debuggerview.h"
+#include <QPainter>
+#include <QPaintEvent>
+#include <QTextOption>
+#include <QPen>
 
-namespace CoreGUI {
-
-DebuggerView::DebuggerView(Shared::RunInterface * runner, QWidget *parent)
-    : QTreeView(parent)
-    , runner_(runner)
-    , debuggerEnabled_(false)
+namespace CoreGUI
 {
-    setAnimated(false);
-    setHeaderHidden(true);
+
+DebuggerView::DebuggerView(Shared::RunInterface *runner, QWidget *parent) :
+	QTreeView(parent),
+	runner_(runner),
+	debuggerEnabled_(false)
+{
+	setAnimated(false);
+	setHeaderHidden(true);
 }
 
 QSize DebuggerView::minimumSizeHint() const
 {
-    const int PreferredMinWidth = 150;
-    const int PreferredMinHeight = 70;
-    const QSize currentSize = sizeHint();
-//    const QSize minimumSizeHint(qMax(PreferredMinWidth, currentSize.width()),
-//                                qMax(PreferredMinHeight, currentSize.height()));
-    const QSize minimumSizeHint(PreferredMinWidth, PreferredMinHeight);
-    return minimumSizeHint;
+	int PreferredMinWidth = 150;
+	int PreferredMinHeight = 70;
+	QSize currentSize = sizeHint();
+	QSize minimumSizeHint(PreferredMinWidth, PreferredMinHeight);
+	return minimumSizeHint;
 }
 
 QSize DebuggerView::sizeHint() const
 {
-    QSize content;
-    if (debuggerEnabled_ && model()) {
-        content = sizeHintForIndex(rootIndex());
-    }
-    return QSize(content.width(), content.height());
+	QSize content;
+	if (debuggerEnabled_ && model()) {
+		content = sizeHintForIndex(rootIndex());
+	}
+	return QSize(content.width(), content.height());
 }
 
 void DebuggerView::setDebuggerEnabled(bool enabled)
 {
-    debuggerEnabled_ = enabled;
-    if (enabled && runner_ && runner_->debuggerVariablesViewModel()) {
-        QAbstractItemModel * newModel = runner_->debuggerVariablesViewModel();
-        if (model() != newModel) {
-            setModel(runner_->debuggerVariablesViewModel());
-            connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-                    this, SLOT(handleRowsInserted(QModelIndex,int,int)));
-            for (int column = 0; column < model()->columnCount(); ++column)
-                resizeColumnToContents(column);
-            handleRowsInserted(QModelIndex(),
-                               model()->rowCount() - 1,
-                               model()->rowCount() - 1);
-        }
-    }
-    else {
-        if (model()) {
-            disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-                       this, SLOT(handleRowsInserted(QModelIndex,int,int)));
-        }
-        setModel(0);
-    }
+	debuggerEnabled_ = enabled;
+	if (enabled && runner_ && runner_->debuggerVariablesViewModel()) {
+		QAbstractItemModel *newModel = runner_->debuggerVariablesViewModel();
+		if (model() != newModel) {
+			setModel(runner_->debuggerVariablesViewModel());
+			connect(model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+				this, SLOT(handleRowsInserted(QModelIndex, int, int)));
+			for (int column = 0; column < model()->columnCount(); ++column) {
+				resizeColumnToContents(column);
+			}
+			handleRowsInserted(QModelIndex(),
+				model()->rowCount() - 1,
+				model()->rowCount() - 1);
+		}
+	} else {
+		if (model()) {
+			disconnect(model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+				this, SLOT(handleRowsInserted(QModelIndex, int, int)));
+		}
+		setModel(0);
+	}
 }
 
 void DebuggerView::paintEvent(QPaintEvent *event)
 {
-    if (debuggerEnabled_ && model()) {
-        QTreeView::paintEvent(event);
-    }
-    else {
-        static const QString message =
-                tr("Current values available only while running program in step-by-step mode");
-        event->accept();
-        QPainter p(viewport());
-        QStyleOptionFrame opt;
-        opt.initFrom(viewport());
-        opt.rect = viewport()->rect();
-        opt.palette.setCurrentColorGroup(QPalette::Disabled);
-        style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, viewport());
-        QTextOption textOpt;
-        textOpt.setAlignment(Qt::AlignCenter);
-        textOpt.setWrapMode(QTextOption::WordWrap);
-        p.setPen(QPen(opt.palette.buttonText().color()));
-        p.drawText(viewport()->rect().adjusted(5,5,-10,-10),
-                   message,
-                   textOpt
-                   );
-
-
-    }
+	if (debuggerEnabled_ && model()) {
+		QTreeView::paintEvent(event);
+	} else {
+		static const QString message =
+			tr("Current values available only while running program in step-by-step mode");
+		event->accept();
+		QPainter p(viewport());
+		QStyleOptionFrame opt;
+		opt.initFrom(viewport());
+		opt.rect = viewport()->rect();
+		opt.palette.setCurrentColorGroup(QPalette::Disabled);
+		style()->drawPrimitive(QStyle::PE_Frame, &opt, &p, viewport());
+		QTextOption textOpt;
+		textOpt.setAlignment(Qt::AlignCenter);
+		textOpt.setWrapMode(QTextOption::WordWrap);
+		p.setPen(QPen(opt.palette.buttonText().color()));
+		p.drawText(viewport()->rect().adjusted(5, 5, -10, -10),
+			message,
+			textOpt
+		);
+	}
 }
 
-void DebuggerView::handleRowsInserted(const QModelIndex &index, int start, int end)
-{
-    if (!index.isValid() && start == end) { // top level context
-        const QModelIndex elementIndex = model()->index(start, 0, index);
-        if (elementIndex.isValid()) {
-            setExpanded(elementIndex, true);
-        }
-    }
+void DebuggerView::handleRowsInserted(
+	const QModelIndex &index,
+	int start, int end
+) {
+	if (!index.isValid() && start == end) { // top level context
+		const QModelIndex elementIndex = model()->index(start, 0, index);
+		if (elementIndex.isValid()) {
+			setExpanded(elementIndex, true);
+		}
+	}
 }
 
-void DebuggerView::handleRowsRemoved(const QModelIndex &index, int start, int end)
-{
+void DebuggerView::handleRowsRemoved(
+	const QModelIndex &index,
+	int start, int end
+) {
 
 }
 

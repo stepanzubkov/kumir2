@@ -16,6 +16,7 @@
 #include <kumir2/runinterface.h>
 #include <kumir2/guiinterface.h>
 #include <kumir2/coursesinterface.h>
+#include <kumir2/analizerinterface.h>
 #include <kumir2/startpage_widget_interface.h>
 #include <kumir2-libs/widgets/secondarywindow.h>
 #include <kumir2-libs/widgets/dockwindowplace.h>

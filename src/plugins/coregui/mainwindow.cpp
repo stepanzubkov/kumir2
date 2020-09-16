@@ -12,6 +12,7 @@
 #include "guisettingspage.h"
 #include <kumir2-libs/widgets/iconprovider.h>
 #include "toolbarcontextmenu.h"
+#include "kumir2/editor_instanceinterface.h"
 
 #include <algorithm>
 #include <QSharedPointer>

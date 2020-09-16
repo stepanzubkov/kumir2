@@ -6,7 +6,6 @@
 #include <QList>
 #include <QDateTime>
 #include <QSharedPointer>
-#include <QWeakPointer>
 
 #undef ABSTRACTSYNTAXTREE_EXPORT
 #ifdef DATAFORMATS_LIBRARY
@@ -15,20 +14,19 @@
 #define ABSTRACTSYNTAXTREE_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace AST {
+namespace AST
+{
 
 typedef QSharedPointer<struct Data> DataPtr;
 
-struct ABSTRACTSYNTAXTREE_EXPORT Data
-{
-    QList<ModulePtr> modules;
-    QDateTime lastModified;
+struct ABSTRACTSYNTAXTREE_EXPORT Data {
+	QList<ModulePtr> modules;
+	QDateTime lastModified;
 
-    explicit Data();
-    explicit Data(const DataPtr src);
+	explicit Data();
+	explicit Data(const DataPtr src);
 
-
-    AST::ModulePtr findModuleByType(const ModuleType moduleType) const;
+	AST::ModulePtr findModuleByType(const ModuleType moduleType) const;
 };
 
 }

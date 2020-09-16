@@ -1,6 +1,8 @@
 #include "kumirprogram.h"
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2/actorinterface.h>
+#include <kumir2/analizerinterface.h>
+#include <kumir2/editor_instanceinterface.h>
 #include <kumir2-libs/dataformats/ast_algorhitm.h>
 #include <kumir2/coursesinterface.h>
 #include <kumir2-libs/widgets/iconprovider.h>

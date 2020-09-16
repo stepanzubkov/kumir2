@@ -3,6 +3,7 @@
 
 #include <kumir2-libs/extensionsystem/kplugin.h>
 #include <kumir2/editorinterface.h>
+#include <kumir2/analizerinterface.h>
 #include <kumir2-libs/dataformats/kumfile.h>
 #include <kumir2-libs/extensionsystem/pluginspec.h>
 #include "macro.h"
