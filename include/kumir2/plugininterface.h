@@ -1,6 +1,7 @@
 #ifndef PLUGININTERFACE_H
 #define PLUGININTERFACE_H
 
+#include <QtPlugin>
 class QString;
 
 namespace Shared
@@ -55,7 +56,7 @@ public:
 	virtual void changeGlobalState(GlobalState old, GlobalState current) = 0;
 };
 
-}
+} // namespace Shared
 
 Q_DECLARE_INTERFACE(Shared::PluginInterface, "kumir2.Plugin")
 

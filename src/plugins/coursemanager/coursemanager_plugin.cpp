@@ -2,6 +2,7 @@
 #include <kumir2-libs/dataformats/kumfile.h>
 #include "task/coursemanager_window.h"
 #include <kumir2/analizerinterface.h>
+#include "kumir2/analizer_instanceinterface.h"
 #include <kumir2/runinterface.h>
 #include <kumir2/generatorinterface.h>
 #include <kumir2/runinterface.h>

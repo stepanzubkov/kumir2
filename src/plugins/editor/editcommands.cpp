@@ -1,6 +1,7 @@
 #include "editcommands.h"
 #include "textdocument.h"
 #include "textcursor.h"
+#include "kumir2/analizer_instanceinterface.h"
 
 namespace Editor {
 

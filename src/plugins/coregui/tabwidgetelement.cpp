@@ -4,6 +4,7 @@
 
 #include <kumir2/actorinterface.h>
 #include <kumir2/editor_instanceinterface.h>
+#include "kumir2/analizer_instanceinterface.h"
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 
 namespace CoreGUI {

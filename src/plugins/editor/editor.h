@@ -10,6 +10,7 @@
 #include "editorplugin.h"
 
 #include <kumir2/editor_instanceinterface.h>
+#include <kumir2/analizer_instanceinterface.h>
 
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>

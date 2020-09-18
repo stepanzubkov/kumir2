@@ -1,8 +1,11 @@
 #ifndef ANALIZER_SOURCEFILEINTERFACE_H
 #define ANALIZER_SOURCEFILEINTERFACE_H
 
-#include <QtCore>
 #include <QtPlugin>
+#include <QString>
+#include <QSet>
+#include <QUrl>
+#include <QTextStream>
 
 namespace Shared
 {
@@ -34,7 +37,7 @@ public /*methods*/:
 	// Generic methods to read and write from/to raw byte array. Default implementation
 	// assumes UTF-8 encoding with BOM mark, but it is possible to override
 
-	inline virtual QByteArray toBytes(
+	virtual QByteArray toBytes(
 		const Data &data,
 		const QString &forceEncoding = ""
 	) const {
@@ -51,7 +54,7 @@ public /*methods*/:
 		return buffer;
 	}
 
-	inline virtual Data fromBytes(
+	virtual Data fromBytes(
 		const QByteArray &bytes,
 		const QString &forceEncoding = ""
 	) const {
@@ -69,9 +72,9 @@ public /*methods*/:
 
 };
 
-}
+} // namespace Analizer
 
-}
+} // namespace Shared
 
 Q_DECLARE_INTERFACE(
 	Shared::Analizer::SourceFileInterface,

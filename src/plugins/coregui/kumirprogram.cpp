@@ -5,6 +5,7 @@
 #include <kumir2/editor_instanceinterface.h>
 #include <kumir2-libs/dataformats/ast_algorhitm.h>
 #include <kumir2/coursesinterface.h>
+#include "kumir2/analizer_instanceinterface.h"
 #include <kumir2-libs/widgets/iconprovider.h>
 #include <kumir2-libs/widgets/actionproxy.h>
 
