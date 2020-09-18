@@ -1,7 +1,9 @@
 #ifndef RUN_INTERFACE
 #define RUN_INTERFACE
 
+#include <QtPlugin>
 #include <QMetaType>
+#include <QString>
 #include <QPair>
 
 class QTextStream;
