@@ -10,6 +10,7 @@
 #include "tabwidget.h"
 #include <kumir2-libs/widgets/iconprovider.h>
 #include <kumir2-libs/widgets/actionproxy.h>
+#include "kumir2/browser_instanceinterface.h"
 
 #include "guisettingspage.h"
 #include "iosettingseditorpage.h"

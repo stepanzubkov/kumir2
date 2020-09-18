@@ -3,9 +3,7 @@
 
 #include "ast_module.h"
 
-#include <QList>
 #include <QDateTime>
-#include <QSharedPointer>
 
 #undef ABSTRACTSYNTAXTREE_EXPORT
 #ifdef DATAFORMATS_LIBRARY

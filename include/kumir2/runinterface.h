@@ -1,7 +1,11 @@
 #ifndef RUN_INTERFACE
 #define RUN_INTERFACE
 
-#include <QtCore>
+#include <QMetaType>
+#include <QPair>
+
+class QTextStream;
+class QAbstractItemModel;
 
 namespace Shared
 {
@@ -37,12 +41,12 @@ public:
 		RM_Blind
 	};
 
-	inline virtual bool hasBreakpointsSupport() const
+	virtual bool hasBreakpointsSupport() const
 	{
 		return false;
 	}
 
-	inline virtual void setBreakpoint(
+	virtual void setBreakpoint(
 		const QString & /*sourceFileName*/,
 		const quint16 /*lineNumber*/,
 		const QString & /*condition*/,
@@ -78,22 +82,28 @@ public:
 	virtual void setStdInTextStream(QTextStream *) = 0;
 	virtual void setStdOutTextStream(QTextStream *) = 0;
 
-	inline virtual void setSourceHelper(Analizer::HelperInterface *) {}
+	virtual void setSourceHelper(Analizer::HelperInterface *) {}
 
-	inline virtual void removeAllBreakpoints() {}
+	virtual void removeAllBreakpoints() {}
 
-	inline virtual void insertOrChangeBreakpoint(bool /*enabled*/, const QString &/*fileName*/,
+	virtual void insertOrChangeBreakpoint(
+		bool /*enabled*/, const QString &/*fileName*/,
 		quint32 /*lineNo*/, quint32 /*ignoreCount*/,
-		const QString & /*condition*/) {}
+		const QString & /*condition*/
+	) {}
 
-	inline virtual void insertSingleHitBreakpoint(const QString &/*fileName*/, quint32 /*lineNo*/) {}
+	virtual void insertSingleHitBreakpoint(
+		const QString &/*fileName*/, quint32 /*lineNo*/
+	) {}
 
-	inline virtual void removeBreakpoint(const QString & /*fileName*/, quint32 /*lineNo*/) {}
+	virtual void removeBreakpoint(
+		const QString & /*fileName*/, quint32 /*lineNo*/
+	) {}
 
 };
 
+} // namespace Shared
 
-}
 Q_DECLARE_METATYPE(Shared::RunInterface::StopReason)
 Q_DECLARE_INTERFACE(Shared::RunInterface, "kumir2.run")
 

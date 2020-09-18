@@ -24,12 +24,13 @@ public:
 	virtual QAction *actionPerformCheck() const = 0;
 	virtual QList<QMenu *> menus() const = 0;
 
-	inline virtual QStringList getListOfCourses() const
+	virtual QStringList getListOfCourses() const
 	{
 		return QStringList();
 
 	}
-	inline virtual void activateCourseFromList(QString file)
+
+	virtual void activateCourseFromList(QString file)
 	{
 		Q_UNUSED(file);
 	}
@@ -42,6 +43,5 @@ public slots:
 }
 
 Q_DECLARE_INTERFACE(Shared::CoursesInterface, "kumir2.CourseManager")
-
 
 #endif // COURSESINTERFACE_H

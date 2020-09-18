@@ -3,8 +3,6 @@
 
 #include "ast_type.h"
 
-#include <QString>
-#include <QList>
 #include <QSharedPointer>
 #include <QWeakPointer>
 

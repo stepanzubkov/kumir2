@@ -2,9 +2,7 @@
 #define STARTPAGE_WIDGET_INTERFACE_H
 
 #include <QtPlugin>
-#include <QString>
-#include <QList>
-class QObject;
+
 class QWidget;
 class QAction;
 class QMenu;
@@ -17,12 +15,12 @@ class StartpageWidgetInterface
 public:
 	virtual QWidget *startPageWidget() = 0;
 
-	inline virtual QMenu *editMenuForStartPage()
+	virtual QMenu *editMenuForStartPage()
 	{
 		return nullptr;
 	}
 
-	inline virtual QList<QAction *> startPageActions()
+	virtual QList<QAction *> startPageActions()
 	{
 		return QList<QAction *>();
 	}
