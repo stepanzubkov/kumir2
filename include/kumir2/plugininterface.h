@@ -2,7 +2,6 @@
 #define PLUGININTERFACE_H
 
 #include <QtPlugin>
-class QString;
 
 namespace Shared
 {

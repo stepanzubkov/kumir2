@@ -3,119 +3,117 @@
 
 #include <kumir2-libs/extensionsystem/settings.h>
 
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
+#include <QtCore>
+#include <QWidget>
+class QToolButton;
 
-namespace Editor {
+namespace Editor
+{
 
-
-
-namespace Ui {
-    class SettingsPage;
+namespace Ui
+{
+class SettingsPage;
 }
 
 class SettingsPage : public QWidget
 {
-    Q_OBJECT
-    Q_ENUMS(FreeCursorMovementType)
+	Q_OBJECT
+	Q_ENUMS(FreeCursorMovementType)
 
 public:
 
-    enum FreeCursorMovementType {
-        CommentsAndTexts = 0,
-        Always = 1,
-        TextsOnly = 2
-    };
+	enum FreeCursorMovementType {
+		CommentsAndTexts = 0,
+		Always = 1,
+		TextsOnly = 2
+	};
 
-    explicit SettingsPage(ExtensionSystem::SettingsPtr settings, QWidget *parent = 0);
-    void changeSettings(ExtensionSystem::SettingsPtr settings);
-    ~SettingsPage();
+	explicit SettingsPage(ExtensionSystem::SettingsPtr settings, QWidget *parent = 0);
+	void changeSettings(ExtensionSystem::SettingsPtr settings);
+	~SettingsPage();
 
-    static QString KeyInvertColorsIfDarkSystemTheme;
-    static bool DefaultInvertColorsIfDarkSystemTheme;
+	static QString KeyInvertColorsIfDarkSystemTheme;
+	static bool DefaultInvertColorsIfDarkSystemTheme;
 
-    static QString KeyColorKw;
-    static QString KeyColorType;
-    static QString KeyColorNumeric;
-    static QString KeyColorLiteral;
-    static QString KeyColorAlg;
-    static QString KeyColorMod;
-    static QString KeyColorDoc;
-    static QString KeyColorComment;
+	static QString KeyColorKw;
+	static QString KeyColorType;
+	static QString KeyColorNumeric;
+	static QString KeyColorLiteral;
+	static QString KeyColorAlg;
+	static QString KeyColorMod;
+	static QString KeyColorDoc;
+	static QString KeyColorComment;
 
-    static QString KeyBoldKw;
-    static QString KeyBoldType;
-    static QString KeyBoldNumeric;
-    static QString KeyBoldLiteral;
-    static QString KeyBoldAlg;
-    static QString KeyBoldMod;
-    static QString KeyBoldDoc;
-    static QString KeyBoldComment;
-    static QString KeyFontName;
-    static QString KeyFontSize;
-    static QString KeyProgramTemplateFile;
+	static QString KeyBoldKw;
+	static QString KeyBoldType;
+	static QString KeyBoldNumeric;
+	static QString KeyBoldLiteral;
+	static QString KeyBoldAlg;
+	static QString KeyBoldMod;
+	static QString KeyBoldDoc;
+	static QString KeyBoldComment;
+	static QString KeyFontName;
+	static QString KeyFontSize;
+	static QString KeyProgramTemplateFile;
 
-    static QString KeyForcePressTextToLeft;
-    static bool DefaultForcePressTextToLeft;
+	static QString KeyForcePressTextToLeft;
+	static bool DefaultForcePressTextToLeft;
 
-    static QString DefaultColorKw;
-    static QString DefaultColorType;
-    static QString DefaultColorNumeric;
-    static QString DefaultColorLiteral;
-    static QString DefaultColorAlg;
-    static QString DefaultColorMod;
-    static QString DefaultColorDoc;
-    static QString DefaultColorComment;
-    static QString DefaultProgramTemplateFile;
+	static QString DefaultColorKw;
+	static QString DefaultColorType;
+	static QString DefaultColorNumeric;
+	static QString DefaultColorLiteral;
+	static QString DefaultColorAlg;
+	static QString DefaultColorMod;
+	static QString DefaultColorDoc;
+	static QString DefaultColorComment;
+	static QString DefaultProgramTemplateFile;
 
-    static bool DefaultBoldKw;
-    static bool DefaultBoldType;
-    static bool DefaultBoldNumeric;
-    static bool DefaultBoldLiteral;
-    static bool DefaultBoldAlg;
-    static bool DefaultBoldMod;
-    static bool DefaultBoldDoc;
-    static bool DefaultBoldComment;
-    static bool DefaultFontName;
+	static bool DefaultBoldKw;
+	static bool DefaultBoldType;
+	static bool DefaultBoldNumeric;
+	static bool DefaultBoldLiteral;
+	static bool DefaultBoldAlg;
+	static bool DefaultBoldMod;
+	static bool DefaultBoldDoc;
+	static bool DefaultBoldComment;
+	static bool DefaultFontName;
 
-    static QString defaultFontFamily();
-    static int DefaultFontSize;
+	static QString defaultFontFamily();
+	static int DefaultFontSize;
 
-    static QString KeyTempSwitchLayoutButton;
+	static QString KeyTempSwitchLayoutButton;
 
-    static QString DefaultPlayMacroShortcut;
-    static quint32 DefaultTempSwitchLayoutButton;
+	static QString DefaultPlayMacroShortcut;
+	static quint32 DefaultTempSwitchLayoutButton;
 
-    static QString KeyShowTrailingSpaces;
-    static bool DefaultShowTrailingSpaces;
+	static QString KeyShowTrailingSpaces;
+	static bool DefaultShowTrailingSpaces;
 
-    static QString KeyAutoInsertPairingBraces;
-    static bool DefaultAutoInsertPairingBraces;
+	static QString KeyAutoInsertPairingBraces;
+	static bool DefaultAutoInsertPairingBraces;
 
-    static QString KeyFreeCursorMovement;
-    static FreeCursorMovementType DefaultFreeCursorMovement;
+	static QString KeyFreeCursorMovement;
+	static FreeCursorMovementType DefaultFreeCursorMovement;
 
 public slots:
-    void accept();
-    void init();
-    void resetToDefaults();
+	void accept();
+	void init();
+	void resetToDefaults();
 signals:
-    void settingsChanged(const QStringList & keys);
+	void settingsChanged(const QStringList &keys);
 private slots:
-    void showColorDialog();
-    void setButtonColor(QToolButton * b, const QColor &color);
-    QColor buttonColor(const QToolButton *b) const;
-    void updateFontPreview();
-    void validateProgramTemplateFile();
-    void browseInitialProgramTemplateFile();
+	void showColorDialog();
+	void setButtonColor(QToolButton *b, const QColor &color);
+	QColor buttonColor(const QToolButton *b) const;
+	void updateFontPreview();
+	void validateProgramTemplateFile();
+	void browseInitialProgramTemplateFile();
 
 private:
 
-    Ui::SettingsPage *ui;
-    ExtensionSystem::SettingsPtr settings_;
+	Ui::SettingsPage *ui;
+	ExtensionSystem::SettingsPtr settings_;
 };
 
 

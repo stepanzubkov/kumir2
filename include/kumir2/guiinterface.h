@@ -2,7 +2,7 @@
 #define GUIINTERFACE_H
 
 #include <QtPlugin>
-#include <kumir2/analizer_sourcefileinterface.h>
+#include "kumir2/analizer_sourcefileinterface.h"
 
 namespace Shared
 {

@@ -1,7 +1,7 @@
 #ifndef LEXEM_H
 #define LEXEM_H
 
-#include <kumir2/lexemtype.h>
+#include "lexemtype.h"
 #include <QString>
 #include <QSharedPointer>
 

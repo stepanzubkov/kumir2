@@ -1,13 +1,13 @@
 #include "analizer.h"
-#include <kumir2/lexemtype.h>
 #include "lexer.h"
 #include "pdautomata.h"
 #include "syntaxanalizer.h"
+#include "kumiranalizerplugin.h"
+#include "stdlibmodules.h"
+
 #include <kumir2-libs/errormessages/errormessages.h>
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2/actorinterface.h>
-#include "kumiranalizerplugin.h"
-#include "stdlibmodules.h"
 
 namespace KumirAnalizer
 {

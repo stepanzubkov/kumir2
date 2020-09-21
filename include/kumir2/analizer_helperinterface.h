@@ -1,9 +1,9 @@
 #ifndef ANALIZER_HELPERINTERFACE_H
 #define ANALIZER_HELPERINTERFACE_H
 
-#include <kumir2/lexemtype.h>
-
 #include <QtPlugin>
+#include "kumir2-libs/dataformats/lexemtype.h"
+
 
 namespace Shared
 {

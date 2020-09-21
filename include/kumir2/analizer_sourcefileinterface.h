@@ -2,7 +2,6 @@
 #define ANALIZER_SOURCEFILEINTERFACE_H
 
 #include <QtPlugin>
-#include <QString>
 #include <QSet>
 #include <QUrl>
 #include <QTextStream>

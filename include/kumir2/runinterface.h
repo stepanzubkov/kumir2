@@ -3,7 +3,6 @@
 
 #include <QtPlugin>
 #include <QMetaType>
-#include <QString>
 #include <QPair>
 
 class QTextStream;

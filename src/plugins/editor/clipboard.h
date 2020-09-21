@@ -1,38 +1,40 @@
 #ifndef CLIPBOARD_H
 #define CLIPBOARD_H
 
-#include <QtCore>
+#include <QObject>
+#include <QStringList>
 
-namespace Editor {
+namespace Editor
+{
 
 struct ClipboardData {
-    enum Type { Invalid, Text, Block } type;
-    QString text;
-    QByteArray rtf;
-    QStringList block;
+	enum Type { Invalid, Text, Block } type;
+	QString text;
+	QByteArray rtf;
+	QStringList block;
 };
 
 class Clipboard : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static QString BlockMimeType;
-    static Clipboard * instance();
+	static QString BlockMimeType;
+	static Clipboard *instance();
 public slots:
-    void push(const ClipboardData & data);
-    void select(int index);
-    bool hasContent() const;
-    ClipboardData content() const;
-    void clear();
-    int entriesCount() const;
+	void push(const ClipboardData &data);
+	void select(int index);
+	bool hasContent() const;
+	ClipboardData content() const;
+	void clear();
+	int entriesCount() const;
 signals:
-    void bufferEntriesCountChanged(int c);
+	void bufferEntriesCountChanged(int c);
 private slots:
-    void checkForChanged();
+	void checkForChanged();
 private:
-    explicit Clipboard();
-    QList<ClipboardData> data_;
-    int selection_;
+	explicit Clipboard();
+	QList<ClipboardData> data_;
+	int selection_;
 
 };
 

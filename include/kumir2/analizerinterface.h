@@ -1,9 +1,6 @@
 #ifndef ANALIZER_INTERFACE_H
 #define ANALIZER_INTERFACE_H
 
-//#include "analizer_instanceinterface.h"
-//#include "analizer_sourcefileinterface.h"
-
 #include <QtPlugin>
 
 class QWidget;
@@ -54,7 +51,7 @@ public:
 
 };
 
-}
+} // namespace Shared
 
 Q_DECLARE_INTERFACE(Shared::AnalizerInterface, "kumir2.Analizer")
 

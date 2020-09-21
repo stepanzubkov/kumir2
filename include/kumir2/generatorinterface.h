@@ -1,7 +1,13 @@
 #ifndef GENERATOR_INTERFACE_H
 #define GENERATOR_INTERFACE_H
 
-#include <kumir2-libs/dataformats/ast.h>
+#include <QtPlugin>
+
+namespace AST
+{
+	struct Data;
+	typedef QSharedPointer<Data> DataPtr;
+}
 
 namespace Shared
 {

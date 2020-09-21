@@ -2,7 +2,12 @@
 #define ANALIZER_COMPILERINTERFACE_H
 
 #include <QtPlugin>
-#include <kumir2-libs/dataformats/ast.h>
+
+namespace AST
+{
+	struct Data;
+	typedef QSharedPointer<Data> DataPtr;
+}
 
 namespace Shared
 {

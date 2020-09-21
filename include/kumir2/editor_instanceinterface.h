@@ -6,7 +6,6 @@
 
 #include <QtPlugin>
 #include <QMetaType>
-#include <QList>
 
 class QWidget;
 class QMenu;
