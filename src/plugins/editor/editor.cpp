@@ -22,6 +22,11 @@
 
 #include <deque>
 
+#include <QScrollBar>
+#include <QLayout>
+#include <QPainter>
+#include <QPaintEvent>
+
 
 namespace Editor
 {

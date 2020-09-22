@@ -2,6 +2,7 @@
 #define GUIINTERFACE_H
 
 #include <QtPlugin>
+#include <QDateTime>
 #include "kumir2/analizer_sourcefileinterface.h"
 
 namespace Shared

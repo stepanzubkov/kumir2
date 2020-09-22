@@ -3,6 +3,9 @@
 #include "dockwindowplace.h"
 #include "secondarywindow_generic.h"
 #include "dockwindowplace_container.h"
+
+#include <kumir2-libs/extensionsystem/settings.h>
+
 #include <QApplication>
 #include <QDesktopWidget>
 

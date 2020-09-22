@@ -4,44 +4,41 @@
 #include "secondarywindow_interface.h"
 #include "secondarywindow_generic.h"
 
-#include <QWidget>
-#include <QPushButton>
-#include <QLabel>
 #include <QIcon>
 
-namespace Widgets {
-
-class DockWindowPlaceContainer
-        : public SecondaryWindowGenericImplementation
+namespace Widgets
 {
-    friend class SecondaryWindow;
-    Q_OBJECT
-public:        
+
+class DockWindowPlaceContainer : public SecondaryWindowGenericImplementation
+{
+	friend class SecondaryWindow;
+	Q_OBJECT
+public:
 
 signals:
-    void resizeRequest(const QString & size);
+	void resizeRequest(const QString &size);
 
 public slots:
-    virtual void activate(const QPoint &ps, const QSize &sz);
-    virtual void deactivate();
+	virtual void activate(const QPoint &ps, const QSize &sz);
+	virtual void deactivate();
 
 private /*methods*/:
-    explicit DockWindowPlaceContainer(class DockWindowPlace *parent);
+	explicit DockWindowPlaceContainer(class DockWindowPlace *parent);
 
-    QIcon createIconMathcingColorTheme(const QString & fileName) const;
+	QIcon createIconMathcingColorTheme(const QString &fileName) const;
 
-    virtual void paintWindowFrame();
-    virtual void setupWindow();
-    virtual void setupWidgetsAppearance();
-    virtual HitTestResult hitTest(const QPoint & mousePosition) const;
-    virtual void notifyOnDocked();
+	virtual void paintWindowFrame();
+	virtual void setupWindow();
+	virtual void setupWidgetsAppearance();
+	virtual HitTestResult hitTest(const QPoint &mousePosition) const;
+	virtual void notifyOnDocked();
 
 private slots:
-    void resizePlaceToLastSize();
+	void resizePlaceToLastSize();
 
 private /*fields*/:
-    class DockWindowPlace * place_;
-    QSize lastPlaceSize_;
+	class DockWindowPlace *place_;
+	QSize lastPlaceSize_;
 
 };
 

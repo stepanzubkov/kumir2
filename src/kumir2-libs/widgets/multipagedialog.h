@@ -10,23 +10,23 @@
 #define WIDGETS_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace Widgets {
-
-class WIDGETS_EXPORT MultiPageDialog
-        : public QDialog
+namespace Widgets
 {
-    Q_OBJECT
+
+class WIDGETS_EXPORT MultiPageDialog : public QDialog
+{
+	Q_OBJECT
 
 public:
-    explicit MultiPageDialog(QWidget *parent = 0);
-    void addPage(const QString & groupTitle, QWidget* page);
+	explicit MultiPageDialog(QWidget *parent = 0);
+	void addPage(const QString &groupTitle, QWidget *page);
 
 public slots:
-    int exec();
-    void accept();
+	int exec();
+	void accept();
 
 private:
-    class MultiPageDialogImpl * pImpl_;
+	class MultiPageDialogImpl *pImpl_;
 };
 
 

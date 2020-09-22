@@ -1,8 +1,7 @@
 #ifndef KUMFILE_KUMFILE_H
 #define KUMFILE_KUMFILE_H
 
-#include <QtCore>
-#include <kumir2/analizer_sourcefileinterface.h>
+#include <QtGlobal>
 
 #ifdef DATAFORMATS_LIBRARY
 #define KUMFILE_EXPORT Q_DECL_EXPORT
@@ -10,11 +9,20 @@
 #define KUMFILE_EXPORT Q_DECL_IMPORT
 #endif
 
+
+namespace Shared
+{
+namespace Analizer {
+struct SFData;
+}
+}
+
+
 namespace KumFile
 {
 
-KUMFILE_EXPORT Shared::Analizer::SourceFileInterface::Data insertTeacherMark(
-	Shared::Analizer::SourceFileInterface::Data &data
+KUMFILE_EXPORT Shared::Analizer::SFData insertTeacherMark(
+	Shared::Analizer::SFData &data
 );
 
 KUMFILE_EXPORT bool hasCryptographicRoutines();
@@ -25,7 +33,7 @@ KUMFILE_EXPORT void generateKeyPair(
 );
 
 KUMFILE_EXPORT void signHiddenText(
-	Shared::Analizer::SourceFileInterface::Data &data,
+	Shared::Analizer::SFData &data,
 	const QString &privateKey,
 	const QString &passPhrase
 );
@@ -38,7 +46,7 @@ enum VerifyResult {
 };
 
 KUMFILE_EXPORT VerifyResult verifyHiddenText(
-	const Shared::Analizer::SourceFileInterface::Data &data,
+	const Shared::Analizer::SFData &data,
 	const QString &publicKey
 );
 

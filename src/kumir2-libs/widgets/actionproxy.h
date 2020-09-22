@@ -9,19 +9,20 @@
 #define WIDGETS_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace Widgets {
+namespace Widgets
+{
 
 class WIDGETS_EXPORT ActionProxy : public QAction
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ActionProxy(QAction * target, QObject *parent = 0);
+	explicit ActionProxy(QAction *target, QObject *parent = 0);
 
 protected Q_SLOTS:
-    void handleTargetChanged();
+	void handleTargetChanged();
 
 private:
-    QAction * target_;
+	QAction *target_;
 
 };
 

@@ -3,6 +3,7 @@
 
 #include "ast_module.h"
 
+#include <QtGlobal>
 #include <QDateTime>
 
 #undef ABSTRACTSYNTAXTREE_EXPORT

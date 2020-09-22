@@ -49,6 +49,6 @@ enum VariableAccessType {
 
 };
 
-}
+} // namespace AST
 
 #endif // AST_VARIABLETYPE_H

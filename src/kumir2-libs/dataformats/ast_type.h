@@ -1,7 +1,7 @@
 #ifndef AST_MODULE_TYPE_H
 #define AST_MODULE_TYPE_H
 
-#include <QString>
+#include <QtGlobal>
 #include <QPair>
 #include <QList>
 #include "ast_variabletype.h"

@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QResizeEvent>
 #include <QTimer>
+#include <QLabel>
+#include <QPushButton>
 
 namespace Widgets
 {

@@ -1,9 +1,10 @@
 #ifndef WIDGETS_SECONDARYWINDOW_H
 #define WIDGETS_SECONDARYWINDOW_H
 
-#include <kumir2-libs/extensionsystem/settings.h>
 #include <QObject>
-#include <QWidget>
+#include <QSharedPointer>
+
+class QIcon;
 
 #ifdef WIDGETS_LIBRARY
 #define WIDGETS_EXPORT Q_DECL_EXPORT
@@ -11,15 +12,23 @@
 #define WIDGETS_EXPORT Q_DECL_IMPORT
 #endif
 
+namespace ExtensionSystem
+{
+	class Settings;
+	typedef QSharedPointer<Settings> SettingsPtr;
+}
+
 namespace Widgets
 {
+class SecondaryWindowImplementationInterface;
+class DockWindowPlace;
 
 class WIDGETS_EXPORT SecondaryWindow : public QObject
 {
 	Q_OBJECT
 public:
-	class SecondaryWindowImplementationInterface *dockContainer() const;
-	class SecondaryWindowImplementationInterface *windowContainer() const;
+	SecondaryWindowImplementationInterface *dockContainer() const;
+	SecondaryWindowImplementationInterface *windowContainer() const;
 
 	const QString &settingsKey() const;
 
@@ -28,29 +37,32 @@ public:
 		const QString &title,
 		const QIcon &icon,
 		QWidget *topLevelParent,
-		class DockWindowPlace *dockPlace,
+		DockWindowPlace *dockPlace,
 		const QString &settingsKey,
 		bool resizable
 	);
 
-	void changeDockPlace(class DockWindowPlace *dockPlace);
+	void changeDockPlace(DockWindowPlace *dockPlace);
 	bool isSeparateWindow() const;
 
 signals:
 
 public slots:
 	void activate();
-	void updateSettings(ExtensionSystem::SettingsPtr settings,
-		const QStringList &keys);
+	void updateSettings(
+		ExtensionSystem::SettingsPtr settings,
+		const QStringList &keys
+	);
 	void saveState();
 	void restoreState();
 
 private /*methods*/:
 	bool event(QEvent *evt);
 
-	explicit SecondaryWindow(QWidget *topLevelParent,
-		class SecondaryWindowImplementationInterface *windowContainer,
-		class SecondaryWindowImplementationInterface *dockContainer,
+	explicit SecondaryWindow(
+		QWidget *topLevelParent,
+		SecondaryWindowImplementationInterface *windowContainer,
+		SecondaryWindowImplementationInterface *dockContainer,
 		const QString &settingsKey,
 		QWidget *centralWidget
 	);
@@ -64,14 +76,14 @@ private /*methods*/:
 
 	static SecondaryWindowImplementationInterface *createDockContainer(
 		const QString &title,
-		class DockWindowPlace *dockPlace
+		DockWindowPlace *dockPlace
 	);
 
-	class SecondaryWindowImplementationInterface *currentContainer() const;
+	SecondaryWindowImplementationInterface *currentContainer() const;
 
 private /*fields*/:
-	class SecondaryWindowImplementationInterface *dockContainer_;
-	class SecondaryWindowImplementationInterface *windowContainer_;
+	SecondaryWindowImplementationInterface *dockContainer_;
+	SecondaryWindowImplementationInterface *windowContainer_;
 	QString settingsKey_;
 	ExtensionSystem::SettingsPtr settings_;
 	QWidget *topLevelParent_;
