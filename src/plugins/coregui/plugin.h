@@ -26,6 +26,9 @@
 //#endif
 class QLabel;
 class QMainWindow;
+class QTimerEvent;
+class QSharedMemory;
+
 
 namespace CoreGUI
 {

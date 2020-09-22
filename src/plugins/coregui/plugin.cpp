@@ -30,6 +30,11 @@
 #include <unistd.h>
 #endif
 
+#if defined(Q_OS_WIN32)
+#include <QSharedMemory>
+#include <QTimerEvent>
+#endif
+
 namespace CoreGUI
 {
 
