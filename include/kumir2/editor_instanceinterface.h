@@ -51,7 +51,7 @@ public:
 	) /* throws QString */ = 0;
 
 	virtual void loadDocument(
-		const Analizer::SourceFileInterface::Data &data, QString *error
+		const Analizer::SFData &data, QString *error
 	) /* throws QString */ = 0;
 
 	virtual void saveDocument(
@@ -61,18 +61,23 @@ public:
 		QIODevice *device, QString *error
 	) /* throws QString */ = 0;
 
-	virtual Analizer::SourceFileInterface::Data documentContents() const = 0;
-
+	virtual Analizer::SFData documentContents() const = 0;
 	virtual Analizer::InstanceInterface *analizer() = 0;
 	virtual quint32 errorLinesCount() const = 0;
 	virtual void ensureAnalized() = 0;
 
-	virtual void highlightLineGreen(int lineNo, quint32 colStart, quint32 colEnd) = 0;
-	virtual void highlightLineRed(int lineNo, quint32 colStart, quint32 colEnd) = 0;
+	virtual void highlightLineGreen(
+		int lineNo, quint32 colStart, quint32 colEnd
+	) = 0;
+	virtual void highlightLineRed(
+		int lineNo, quint32 colStart, quint32 colEnd
+	) = 0;
 	virtual void unhighlightLine() = 0;
 
 	virtual void appendMarginText(int lineNo, const QString &text) = 0;
-	virtual void setMarginText(int lineNo, const QString &text, const QColor &fgColor) = 0;
+	virtual void setMarginText(
+		int lineNo, const QString &text, const QColor &fgColor
+	) = 0;
 	virtual void clearMarginText(int fromLine = 0, int toLine = -1) = 0;
 
 	virtual bool supportsContextHelp() const = 0;

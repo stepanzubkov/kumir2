@@ -16,16 +16,19 @@ class InsertCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const InsertCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, InsertCommand &command);
 public:
-	explicit InsertCommand(class TextDocument *doc,
-		class TextCursor *cursor,
+	explicit InsertCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer,
 		int line,
 		int pos,
 		const QString &text
 	);
-	explicit InsertCommand(class TextDocument *doc,
-		class TextCursor *cursor,
-		Shared::Analizer::InstanceInterface *analizer);
+	explicit InsertCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
+		Shared::Analizer::InstanceInterface *analizer
+	);
 	void redo();
 	void undo();
 	int id() const
@@ -35,8 +38,8 @@ public:
 	bool mergeWith(const QUndoCommand *other);
 
 private:
-	class TextDocument *doc;
-	class TextCursor *cursor;
+	TextDocument *doc;
+	TextCursor *cursor;
 	Shared::Analizer::InstanceInterface *analizer;
 	int line;
 	int pos;
@@ -53,8 +56,9 @@ class RemoveCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const RemoveCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, RemoveCommand &command);
 public:
-	explicit RemoveCommand(class TextDocument *doc,
-		class TextCursor *cursor,
+	explicit RemoveCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer,
 		int line,
 		int pos,
@@ -63,9 +67,11 @@ public:
 		int newCursorRow,
 		int newCursorColumn
 	);
-	explicit RemoveCommand(class TextDocument *doc,
-		class TextCursor *cursor,
-		Shared::Analizer::InstanceInterface *analizer);
+	explicit RemoveCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
+		Shared::Analizer::InstanceInterface *analizer
+	);
 	void redo();
 	void undo();
 	int id() const
@@ -74,8 +80,8 @@ public:
 	}
 	bool mergeWith(const QUndoCommand *other);
 private:
-	class TextDocument *doc;
-	class TextCursor *cursor;
+	TextDocument *doc;
+	TextCursor *cursor;
 	Shared::Analizer::InstanceInterface *analizer;
 	int line;
 	int pos;
@@ -94,15 +100,18 @@ class InsertBlockCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const InsertBlockCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, InsertBlockCommand &command);
 public:
-	explicit InsertBlockCommand(class TextDocument *doc,
-		class TextCursor *cursor,
+	explicit InsertBlockCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer,
 		int row,
 		int column,
 		const QStringList &block);
-	explicit InsertBlockCommand(class TextDocument *doc,
-		class TextCursor *cursor,
-		Shared::Analizer::InstanceInterface *analizer);
+	explicit InsertBlockCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
+		Shared::Analizer::InstanceInterface *analizer
+	);
 	void redo();
 	void undo();
 	int id() const
@@ -111,8 +120,8 @@ public:
 	}
 
 private:
-	class TextDocument *doc;
-	class TextCursor *cursor;
+	TextDocument *doc;
+	TextCursor *cursor;
 	Shared::Analizer::InstanceInterface *analizer;
 	int row;
 	int column;
@@ -128,13 +137,17 @@ class RemoveBlockCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const RemoveBlockCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, RemoveBlockCommand &command);
 public:
-	explicit RemoveBlockCommand(class TextDocument *doc,
-		class TextCursor *cursor,
+	explicit RemoveBlockCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer,
-		const QRect &block);
-	explicit RemoveBlockCommand(class TextDocument *doc,
-		class TextCursor *cursor,
-		Shared::Analizer::InstanceInterface *analizer);
+		const QRect &block
+	);
+	explicit RemoveBlockCommand(
+		TextDocument *doc,
+		TextCursor *cursor,
+		Shared::Analizer::InstanceInterface *analizer
+	);
 	void redo();
 	void undo();
 	int id() const
@@ -143,8 +156,8 @@ public:
 	}
 
 private:
-	class TextDocument *doc;
-	class TextCursor *cursor;
+	TextDocument *doc;
+	TextCursor *cursor;
 	Shared::Analizer::InstanceInterface *analizer;
 	QRect block;
 	int cursorRow;
@@ -158,8 +171,8 @@ class InsertImportCommand : public QUndoCommand
 	friend QDataStream &operator>> (QDataStream &, InsertImportCommand &);
 public:
 	explicit InsertImportCommand(
-		class TextDocument *document,
-		class TextCursor *cursor,
+		TextDocument *document,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer,
 		const QString &importName
 	);
@@ -172,8 +185,8 @@ public:
 	}
 
 private:
-	class TextDocument *document_;
-	class TextCursor *cursor_;
+	TextDocument *document_;
+	TextCursor *cursor_;
 	Shared::Analizer::InstanceInterface *analizer_;
 	QString importName_;
 	uint lineNo_;
@@ -184,7 +197,7 @@ class ToggleLineProtectedCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const ToggleLineProtectedCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, ToggleLineProtectedCommand &command);
 public:
-	explicit ToggleLineProtectedCommand(class TextDocument *Doc, int lineNo);
+	explicit ToggleLineProtectedCommand(TextDocument *Doc, int lineNo);
 	void redo();
 	void undo();
 	int id() const
@@ -192,7 +205,7 @@ public:
 		return 0xA0;
 	}
 private:
-	class TextDocument *doc;
+	TextDocument *doc;
 	int lineNo;
 
 };
@@ -202,13 +215,15 @@ class ChangeHiddenLineDelimeterCommand: public QUndoCommand
 	friend QDataStream &operator<< (QDataStream &stream, const ChangeHiddenLineDelimeterCommand &command);
 	friend QDataStream &operator>> (QDataStream &stream, ChangeHiddenLineDelimeterCommand &command);
 public:
-	explicit ChangeHiddenLineDelimeterCommand(class TextDocument *doc,
-		int firstHiddenLineNo);
+	explicit ChangeHiddenLineDelimeterCommand(
+		TextDocument *doc,
+		int firstHiddenLineNo
+	);
 	void redo();
 	void undo();
 private:
-	class TextDocument *doc;
-	struct Shared::Analizer::SourceFileInterface::Data prevData;
+	TextDocument *doc;
+	Shared::Analizer::SFData prevData;
 	int firstHiddenLineNo;
 };
 
@@ -218,10 +233,10 @@ class ToggleCommentCommand: public QUndoCommand
 	friend QDataStream &operator>> (QDataStream &stream, ToggleCommentCommand &command);
 public:
 	explicit ToggleCommentCommand(
-		class TextDocument *Doc,
+		TextDocument *Doc,
 		uint FromLineInclusive,
 		uint ToLineInclusive,
-		class TextCursor *cursor,
+		TextCursor *cursor,
 		Shared::Analizer::InstanceInterface *analizer
 	);
 	void redo();
@@ -231,8 +246,8 @@ public:
 		return 0xB0;
 	}
 private:
-	class TextDocument *doc;
-	class TextCursor *cursor;
+	TextDocument *doc;
+	TextCursor *cursor;
 	Shared::Analizer::InstanceInterface *analizer;
 	uint fromLineInclusive;
 	uint toLineInclusive;

@@ -17,7 +17,7 @@ public:
 		Language language;
 		QDateTime saved;
 		QDateTime changed;
-		Shared::Analizer::SourceFileInterface::Data content;
+		Shared::Analizer::SFData content;
 		QString title;
 		QUrl url;
 	};

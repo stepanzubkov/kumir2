@@ -12,32 +12,34 @@ namespace Shared
 namespace Analizer
 {
 
+struct SFData {
+	QString visibleText;
+	QSet<int> protectedLineNumbers;
+	QString hiddenText;
+	bool hasHiddenText;
+	QString sourceEncoding;
+	QByteArray hiddenTextSignature;
+	QString canonicalSourceLanguageName; // the same as file suffix after '.'
+	QUrl sourceUrl;
+};
+
 class SourceFileInterface
 {
-public /*types*/:
-	struct Data {
-		QString visibleText;
-		QSet<int> protectedLineNumbers;
-		QString hiddenText;
-		bool hasHiddenText;
-		QString sourceEncoding;
-		QByteArray hiddenTextSignature;
-		QString canonicalSourceLanguageName; // the same as file suffix after '.'
-		QUrl sourceUrl;
-	};
+public:
+	typedef Shared::Analizer::SFData Data;
 
 public /*methods*/:
 
 	// Abstract methods to read and write from/to string in language-specific way
 
-	virtual QString toString(const Data &data) const = 0;
-	virtual Data fromString(const QString &string) const = 0;
+	virtual QString toString(const SFData &data) const = 0;
+	virtual SFData fromString(const QString &string) const = 0;
 
 	// Generic methods to read and write from/to raw byte array. Default implementation
 	// assumes UTF-8 encoding with BOM mark, but it is possible to override
 
 	virtual QByteArray toBytes(
-		const Data &data,
+		const SFData &data,
 		const QString &forceEncoding = ""
 	) const {
 		QByteArray buffer;
@@ -53,7 +55,7 @@ public /*methods*/:
 		return buffer;
 	}
 
-	virtual Data fromBytes(
+	virtual SFData fromBytes(
 		const QByteArray &bytes,
 		const QString &forceEncoding = ""
 	) const {

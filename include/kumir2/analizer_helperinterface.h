@@ -56,33 +56,47 @@ struct ApiHelpItem {
 class HelperInterface
 {
 public:
-	virtual QList<Suggestion> suggestAutoComplete(int lineNo, const QString &before, const QString &after) const = 0;
+	virtual QList<Suggestion> suggestAutoComplete(
+		int lineNo,
+		const QString &before,
+		const QString &after
+	) const = 0;
 	virtual TextAppend closingBracketSuggestion(int lineNo) const = 0;
 	virtual QStringList importModuleSuggestion(int lineNo) const = 0;
-	virtual ApiHelpItem itemUnderCursor(const QString &text, int lineNo, int colNo, bool includeRightBound) const = 0;
+	virtual ApiHelpItem itemUnderCursor(
+		const QString &text,
+		int lineNo, int colNo,
+		bool includeRightBound
+	) const = 0;
 	virtual QStringList imports() const = 0;
-	virtual QString createImportStatementLine(const QString &importName) const = 0;
+	virtual QString createImportStatementLine(
+		const QString &importName
+	) const = 0;
 	virtual QString suggestFileName() const = 0;
 	virtual QRegExp lineCommentStartLexemPattern() const = 0;
 
 	virtual void connectSignalImportsChanged(
 		QObject *receiver,
 		const char *slot  /* void (QStringList localizedNames) */
-	)
-	{
+	) {
 		Q_UNUSED(receiver);
 		Q_UNUSED(slot);
 	}
 
 	/** Corrects lexem capitalization for case-insensetive grammatics (optional)
 	 */
-	virtual QString correctCapitalization(const QString &name, LexemType lxType) const
-	{
+	virtual QString correctCapitalization(
+		const QString &name,
+		LexemType lxType
+	) const {
 		return name;
 	}
 
-	virtual bool isKnownLexem(const QString &lexem, int lineNo, int colNo, const QString &context) const
-	{
+	virtual bool isKnownLexem(
+		const QString &lexem,
+		int lineNo, int colNo,
+		const QString &context
+	) const {
 		return false;
 	}
 };

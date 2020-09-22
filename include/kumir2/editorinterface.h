@@ -1,13 +1,17 @@
 #ifndef EDITOR_INTERFACE
 #define EDITOR_INTERFACE
 
-#include "analizer_sourcefileinterface.h"
+#include <QtPlugin>
 
 namespace Shared
 {
 
 namespace Editor {
 	class InstanceInterface;
+}
+
+namespace Analizer {
+	struct SFData;
 }
 
 class EditorInterface
@@ -27,7 +31,7 @@ public:
 	) = 0;
 
 	virtual Editor::InstanceInterface *loadDocument(
-		const Analizer::SourceFileInterface::Data &data,
+		const Analizer::SFData &data,
 		QString *error
 	) = 0;
 
