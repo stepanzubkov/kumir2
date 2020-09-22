@@ -20,6 +20,9 @@
 #include <kumir2/runinterface.h>
 #include <kumir2/editor_instanceinterface.h>
 
+#include <deque>
+
+
 namespace Editor
 {
 

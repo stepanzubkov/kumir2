@@ -20,12 +20,12 @@ Settings::Settings(const QString & pluginName) :
 #else
 	static const QString DataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 #endif
-	const QString scope = defaultSettingsScope();
-	const QString fileName = pluginName + ".conf";
+	QString scope = defaultSettingsScope();
+	QString fileName = pluginName + ".conf";
 #ifdef Q_OS_WIN32
-	QSettings * sett = new QSettings(DataLocation+"/"+fileName, QSettings::IniFormat);
+	QSettings *sett = new QSettings(DataLocation+"/"+fileName, QSettings::IniFormat);
 #else
-	QSettings * sett = new QSettings(scope, pluginName);
+	QSettings *sett = new QSettings(scope, pluginName);
 #endif
 	qsettings_.reset(sett);
 	qsettings_->setIniCodec("UTF-8");

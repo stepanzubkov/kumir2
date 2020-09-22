@@ -18,9 +18,6 @@
 
 namespace ExtensionSystem {
 
-typedef QSharedPointer<class Settings> SettingsPtr;
-typedef QWeakPointer<class Settings> SettingsWPtr;
-
 class EXTENSIONSYSTEM_EXPORT Settings
 {
 	friend class PluginManager;
@@ -48,6 +45,9 @@ private:
 	QScopedPointer<QSettings> qsettings_;
 	QString settingsFile_;
 };
+
+typedef QSharedPointer<Settings> SettingsPtr;
+typedef QWeakPointer<Settings> SettingsWPtr;
 
 } // namespace ExtensionSystem
 

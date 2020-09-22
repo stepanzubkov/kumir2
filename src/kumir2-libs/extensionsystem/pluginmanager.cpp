@@ -2,6 +2,7 @@
 #include "pluginmanager_impl.h"
 #include "kplugin.h"
 
+#include <QCoreApplication>
 #if QT_VERSION >= 0x050000
 #include <QStandardPaths>
 #else

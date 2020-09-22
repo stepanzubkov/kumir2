@@ -1,37 +1,31 @@
 #ifndef PLUGINSPEC_H
 #define PLUGINSPEC_H
 
-#include <QString>
-#include <QList>
 #include <QStringList>
 
-
-#include <string>
-#include <deque>
-#include <wchar.h>
-
-namespace ExtensionSystem {
-
-
-struct PluginSpec
+namespace ExtensionSystem
 {
-    // Mandatory fields filled by plugin itself
-    bool gui;
-    QByteArray name;
-    QList<QByteArray> dependencies;
-    QList<QByteArray> provides;
 
-    // Fields filled by launcher
-    bool main;
-    QByteArray libraryFileName;
-    QString nonStandardPluginDir;
-    QStringList arguments;
+struct PluginSpec {
+	// Mandatory fields filled by plugin itself
+	bool gui;
+	bool main;
 
-    inline explicit PluginSpec() { gui = false; main = false; }
+	QByteArray name;
+	QList<QByteArray> dependencies;
+	QList<QByteArray> provides;
+
+	// Fields filled by launcher
+	QByteArray libraryFileName;
+	QString nonStandardPluginDir;
+	QStringList arguments;
+
+	explicit PluginSpec()
+	{
+		gui = false;
+		main = false;
+	}
 };
-
-
-extern QString readSpecFromFile(const QString & fileName, PluginSpec & spec);
 
 } // namespace ExtensionSystem
 
