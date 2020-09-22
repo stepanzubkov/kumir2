@@ -20,7 +20,6 @@ QSize DebuggerView::minimumSizeHint() const
 {
 	int PreferredMinWidth = 150;
 	int PreferredMinHeight = 70;
-	QSize currentSize = sizeHint();
 	QSize minimumSizeHint(PreferredMinWidth, PreferredMinHeight);
 	return minimumSizeHint;
 }

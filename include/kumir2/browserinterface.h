@@ -2,6 +2,7 @@
 #define BROWSER_INTERFACE
 
 #include <QtPlugin>
+#include <QUrl>
 
 namespace Shared
 {

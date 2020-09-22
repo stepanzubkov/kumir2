@@ -3,71 +3,68 @@
 
 #include <kumir2/startpage_widget_interface.h>
 
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#   include <QtWidgets>
-#else
-#   include <QtGui>
-#endif
+#include <QWidget>
 
+namespace CoreGUI
+{
 
-namespace CoreGUI {
-
-namespace Ui {
+namespace Ui
+{
 class DefaultStartPage;
 }
 
 class Plugin;
 class MainWindow;
 
-class DefaultStartPage
-        : public QWidget
-        , public Shared::StartpageWidgetInterface
+class DefaultStartPage :
+	public QWidget,
+	public Shared::StartpageWidgetInterface
 {
-    Q_OBJECT
-    Q_INTERFACES(Shared::StartpageWidgetInterface)
+	Q_OBJECT
+	Q_INTERFACES(Shared::StartpageWidgetInterface)
 public:
-    explicit DefaultStartPage(Plugin* plugin, MainWindow * mw, QWidget * parent = 0);
-    QString startPageTabStyle() const;
+	explicit DefaultStartPage(Plugin *plugin, MainWindow *mw, QWidget *parent = 0);
+	QString startPageTabStyle() const;
 
 protected /*methods*/:
-    void createConnections();
-    void reloadStyleSheet();
-    void relayoutBlocks(const int width);
+	void createConnections();
+	void reloadStyleSheet();
+	void relayoutBlocks(const int width);
 
-    void updateContents();
-    void updateRecentFiles();
-    void updateRecentCourses();
-    void updateHelp();
+	void updateContents();
+	void updateRecentFiles();
+	void updateRecentCourses();
+	void updateHelp();
 
-    QString makeShortText(const QString &s, const int maxWidth, const QFontMetrics & fm);
+	QString makeShortText(const QString &s, const int maxWidth, const QFontMetrics &fm);
 
-    bool eventFilter(QObject *obj, QEvent *evt);
+	bool eventFilter(QObject *obj, QEvent *evt);
 
 protected Q_SLOTS:
-    void handleShowCoursesPressed();
-    void handleShowHelpPressed();
-    void handleRecentFileClicked();
-    void handleRecentCourseClicked();
-    void handleHelpItemClicked();
+	void handleShowCoursesPressed();
+	void handleShowHelpPressed();
+	void handleRecentFileClicked();
+	void handleRecentCourseClicked();
+	void handleHelpItemClicked();
 
 protected /*fields*/:
-    Plugin* _plugin;
-    MainWindow* _mainWindow;
-    bool _coursesAvailable;
+	Plugin *_plugin;
+	MainWindow *_mainWindow;
+	bool _coursesAvailable;
 
-    Ui::DefaultStartPage * ui;
+	Ui::DefaultStartPage *ui;
 
-
-    // StartpageWidgetInterface interface
 public:
-    inline QWidget *startPageWidget() { return this; }
-    QString startPageTitle() const;
-    inline void setStartPageTitleChangeHandler(const QObject *, const char *) {}
+	QWidget *startPageWidget()
+	{
+		return this;
+	}
+	QString startPageTitle() const;
+	void setStartPageTitleChangeHandler(const QObject *, const char *) {}
 };
 
 
 
-}
+} // namespace CoreGUI
 
 #endif
