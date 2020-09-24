@@ -1,8 +1,8 @@
 #ifndef TEXTBLOCKDATA_H
 #define TEXTBLOCKDATA_H
 
-#include <QtCore>
 #include <QColor>
+#include <QPoint>
 class QUndoCommand;
 class QUndoStack;
 

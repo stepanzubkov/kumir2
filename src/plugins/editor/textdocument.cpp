@@ -12,10 +12,10 @@
 namespace Editor
 {
 
-TextDocument::TextDocument(EditorInstance *editor)
-	: QObject(editor)
-	, editor_(editor)
-	, undoStack_(new QUndoStack(this))
+TextDocument::TextDocument(EditorInstance *editor) :
+	QObject(editor),
+	editor_(editor),
+	undoStack_(new QUndoStack(this))
 {
 	wasHiddenTextFlag_ = false;
 	if (editor->analizer()) {
@@ -146,7 +146,7 @@ void TextDocument::removeSelection()
 
 const TextLine::Margin &TextDocument::marginAt(uint index) const
 {
-	if (index < data_.size()) {
+	if (index < (uint) data_.size()) {
 		return data_.at(index).margin;
 	} else {
 		static const TextLine::Margin dummy = TextLine::Margin();
@@ -156,7 +156,7 @@ const TextLine::Margin &TextDocument::marginAt(uint index) const
 
 TextLine::Margin &TextDocument::marginAt(uint index)
 {
-	if (index < data_.size()) {
+	if (index < (uint) data_.size()) {
 		return data_[index].margin;
 	} else {
 		static TextLine::Margin dummy;
@@ -256,7 +256,7 @@ void TextDocument::insertLine(const QString &text, const uint beforeLineNo)
 	if (editor_->analizerInstance_ && AnalizerInterface::IndependentLinesHighlight == _syntaxHighlightBehaviour) {
 		textLine.highlight = editor_->analizerInstance_->lineProp(qMin(beforeLineNo, uint(data_.size())), text).toList();
 	}
-	for (uint i = 0; i < text.length(); i++) {
+	for (int i = 0; i < text.length(); i++) {
 		textLine.selected.push_back(false);
 	}
 	data_.insert(qMin(beforeLineNo, uint(data_.size())), textLine);
@@ -286,7 +286,7 @@ uint TextDocument::indentAt(uint lineNo) const
 		result = qMax(0, result);
 		result += data_[i].indentEnd;
 	}
-	if (lineNo < data_.size()) {
+	if (lineNo < (uint) data_.size()) {
 		result += data_[lineNo].indentStart;
 		result = qMax(0, result);
 	}
@@ -359,7 +359,7 @@ void TextDocument::setPlainText(const QString &t)
 int TextDocument::hiddenLineStart() const
 {
 	int result = -1;
-	for (int i = 0; i < data_.size(); i++) {
+	for (int i = 0; i < (uint) data_.size(); i++) {
 		if (data_[i].hidden) {
 			result = i;
 			break;
@@ -670,7 +670,7 @@ static QList<Chunk> splitLineIntoChunks(const ExtensionSystem::SettingsPtr s,
 	const QList<LexemType> &highlight = textLine.highlight;
 
 	// Split text into chunks of various formats
-	for (uint i = 0; i < text.length(); i++) {
+	for (int i = 0; i < text.length(); i++) {
 		bool latin = text[i] != '\0' &&
 			text[i].isLetter() &&
 			text[i].toLatin1() != '\0';
@@ -709,7 +709,7 @@ static QList<Chunk> splitLineIntoChunks(const ExtensionSystem::SettingsPtr s,
 	static const uint32_t TypeDoc = LxTypeDoc;
 	static const uint32_t TypeComment = LxTypeComment;
 
-	for (uint i = 0; i < result.size(); i++) {
+	for (int i = 0; i < result.size(); i++) {
 		Chunk &chunk = result[i];
 		chunk.error = (chunk.format & LxTypeError) > 0;
 		chunk.format = (chunk.format << 1) >> 1;
@@ -766,7 +766,7 @@ static QList<Chunk> splitLineIntoChunks(const ExtensionSystem::SettingsPtr s,
 	}
 
 	// Make RTF data for chunks
-	for (uint i = 0; i < result.size(); i++) {
+	for (int i = 0; i < result.size(); i++) {
 		QByteArray &d = result[i].data;
 		const Chunk &chunk = result[i];
 		d.append("{");
@@ -902,7 +902,7 @@ QByteArray TextDocument::toRtf(uint fromLine, uint toLine) const
 				textLine,
 				primaryAlphabetIsLatin
 			);
-		for (uint j = 0; j < chunks.size(); j++) {
+		for (int j = 0; j < chunks.size(); j++) {
 			result.append(chunks[j].data);
 		}
 		if (fromLine != toLine && i < toLine) {

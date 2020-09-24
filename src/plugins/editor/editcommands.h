@@ -1,10 +1,10 @@
 #ifndef EDITCOMMANDS_H
 #define EDITCOMMANDS_H
 
-#include <QtCore>
-#include <QUndoCommand>
 #include <kumir2/analizerinterface.h>
 #include <kumir2/analizer_sourcefileinterface.h>
+#include <QRect>
+#include <QUndoCommand>
 
 namespace Editor
 {
