@@ -4,7 +4,6 @@
 #include <kumir2-libs/extensionsystem/settings.h>
 #include <kumir2-libs/docbookviewer/docbookview.h>
 
-#include <QtCore>
 #include <QStandardItem>
 #include <QStyledItemDelegate>
 

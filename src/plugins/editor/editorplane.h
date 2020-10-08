@@ -6,8 +6,8 @@
 #include <kumir2/analizer_instanceinterface.h>
 #include <kumir2/analizerinterface.h>
 
-#include <QtCore>
 class QLabel;
+class QMimeData;
 
 
 namespace Editor

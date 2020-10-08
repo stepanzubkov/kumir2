@@ -9,9 +9,7 @@
 #include "editor.h"
 
 #include <stdint.h>
-#ifdef Q_OS_UNIX
-//#include <unistd.h>
-#endif
+#include <math.h>
 
 #include <QLabel>
 #include <QMenu>
@@ -21,6 +19,7 @@
 #include <QContextMenuEvent>
 #include <QMouseEvent>
 #include <QDrag>
+#include <QMimeData>
 
 
 namespace Editor
@@ -177,7 +176,7 @@ void EditorPlane::mousePressEvent(QMouseEvent *e)
 	const int editableAreaLeftBorder = leftTextAreaPosition();
 
 	// Right border of editable area
-	const int editableAreaRightBorder = rightTextAreaPosition();
+	// const int editableAreaRightBorder = rightTextAreaPosition();
 
 	// Force text cursor (managed primarily from keyboard) to temporary hide
 	editor_->cursor()->setViewMode(TextCursor::VM_Hidden);
@@ -1799,9 +1798,9 @@ uint EditorPlane::leftTextAreaPosition() const
 
 uint EditorPlane::rightTextAreaPosition() const
 {
-	const uint left = leftTextAreaPosition();
-	const uint areaWidth = widthInChars() * charWidth();
-	const uint result = left + areaWidth;
+	uint left = leftTextAreaPosition();
+	uint areaWidth = widthInChars() * charWidth();
+	uint result = left + areaWidth;
 	return result;
 }
 
@@ -2280,10 +2279,13 @@ void EditorPlane::paintLineNumbers(QPainter *p, const QRect &rect)
 		// Visible line number accounting Y-scroll offset
 		uint realLineNumber = i + qMax(0, -offset().y()) / lineHeight();
 
-
-
-		if (-1 != highlightedTextLineNumber_ && highlightedTextLineNumber_ + 1 == realLineNumber) {
-			paintLineHighlight(p, QRect(
+		if (
+			-1 != highlightedTextLineNumber_ &&
+			(uint) (highlightedTextLineNumber_ + 1) == realLineNumber
+		) {
+			paintLineHighlight(
+				p,
+				QRect(
 					0,
 					highlightedTextLineNumber_ * lineHeight() + 1 + offset().y(),
 					charWidth() * 5 + lockSymbolOffset + breakpointPaneWidth,
@@ -2304,7 +2306,10 @@ void EditorPlane::paintLineNumbers(QPainter *p, const QRect &rect)
 			textColor = textColor.darker();  // make it more contrast to real line numbers
 		}
 		p->setPen(textColor);
-		if (-1 != highlightedTextLineNumber_ && highlightedTextLineNumber_ + 1 == realLineNumber) {
+		if (
+			-1 != highlightedTextLineNumber_ &&
+			(uint) (highlightedTextLineNumber_ + 1) == realLineNumber
+		) {
 			p->setPen(QColor(Qt::black));
 		}
 		// Calculate number width to align it centered
@@ -2317,21 +2322,25 @@ void EditorPlane::paintLineNumbers(QPainter *p, const QRect &rect)
 
 		if (editor_->plugin_->teacherMode_) {
 			// Paint 'lock' symbol to the left of line number
-			const QRect lockSymbolRect(
+			QRect lockSymbolRect(
 				0,
 				i * lineHeight(),
 				LOCK_SYMBOL_WIDTH,
 				lineHeight()
 			);
-			if (realLineNumber < editor_->document()->linesCount() &&
-				editor_->document()->isProtected(realLineNumber)) {
+			if (
+				realLineNumber < editor_->document()->linesCount() &&
+				editor_->document()->isProtected(realLineNumber)
+			) {
 				// Draw 'locked' symbol if line is protected
 				paintLockSymbol(p, true, lockSymbolRect);
 			}
 
-			if (realLineNumber == highlightedLockSymbolLineNumber_ &&
-				realLineNumber < editor_->document()->linesCount() &&
-				!editor_->document()->isProtected(realLineNumber)) {
+			if (
+				realLineNumber == (uint) highlightedLockSymbolLineNumber_ &&
+				realLineNumber < (uint) editor_->document()->linesCount() &&
+				!editor_->document()->isProtected(realLineNumber)
+			) {
 				// Draw 'locked' symbol outline in case of mouse over
 				paintLockSymbol(p, false, lockSymbolRect);
 			}
@@ -2499,7 +2508,7 @@ void EditorPlane::paintMarginText(QPainter *p, const QRect &rect)
 			// Set corresponding text color
 			QColor color = editor_->document()->marginAt(i).text.length() > 0
 				? marginColor : errorColor ;
-			if (darkness / 3 <= 127 && highlightedTextLineNumber_ == i) {
+			if (darkness / 3 <= 127 && (uint) highlightedTextLineNumber_ == i) {
 				color = QColor(Qt::black);
 			}
 			p->setPen(color);
@@ -2599,22 +2608,21 @@ void EditorPlane::paintText(QPainter *p, const QRect &rect)
 			.toBool()
 		) {
 			// Check for dark background
-			const QColor bgColor = palette().color(QPalette::Base);
+			QColor bgColor = palette().color(QPalette::Base);
 			int darkness = bgColor.red() + bgColor.green() + bgColor.blue();
 			if (darkness / 3 <= 127) {
 				// Invert color for dark backround
-				if (i != highlightedTextLineNumber_) {
+				if (i != (uint) highlightedTextLineNumber_) {
 					p->setBrush(Qt::white);
 				}
 			}
 		}
 		p->setPen(Qt::NoPen);
 		for (uint j = 0; j < indent; j++) {
-			const uint dotSize = qMin(lineHeight() / 3u,
-					charWidth() / 3u);
-			const uint dotX = j * charWidth() * 2 + (charWidth() - dotSize);
-			const uint dotY = y - lineHeight() + (lineHeight() - dotSize);
-			const QRect dotRect(dotX, dotY, dotSize, dotSize);
+			uint dotSize = qMin(lineHeight() / 3u, charWidth() / 3u);
+			uint dotX = j * charWidth() * 2 + (charWidth() - dotSize);
+			uint dotY = y - lineHeight() + (lineHeight() - dotSize);
+			QRect dotRect(dotX, dotY, dotSize, dotSize);
 			p->drawRect(dotRect);
 		}
 
@@ -2654,8 +2662,8 @@ void EditorPlane::paintText(QPainter *p, const QRect &rect)
 
 			// Set proper format for lexem type and current character
 			setProperFormat(p, curType, text[j]);
-			if (i == highlightedTextLineNumber_) {
-				const QColor bgColor = palette().color(QPalette::Base);
+			if (i == (uint) highlightedTextLineNumber_) {
+				QColor bgColor = palette().color(QPalette::Base);
 				int darkness = bgColor.red() + bgColor.green() + bgColor.blue();
 				if (darkness / 3 <= 127) {
 					p->setPen(QColor(Qt::black));
@@ -2669,7 +2677,7 @@ void EditorPlane::paintText(QPainter *p, const QRect &rect)
 
 			// If line is highlighted, then make text some darker
 			// for better accessibility
-			if (highlightedTextLineNumber_ == i) {
+			if ((uint) highlightedTextLineNumber_ == i) {
 				p->setPen(p->pen().color().darker());
 			}
 

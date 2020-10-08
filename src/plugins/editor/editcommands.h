@@ -3,6 +3,7 @@
 
 #include <kumir2/analizerinterface.h>
 #include <kumir2/analizer_sourcefileinterface.h>
+#include <QStringList>
 #include <QRect>
 #include <QUndoCommand>
 

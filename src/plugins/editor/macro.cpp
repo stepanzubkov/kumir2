@@ -1,7 +1,8 @@
-#include <QtCore>
-#include <QtXml>
-
 #include "macro.h"
+
+#include <QFile>
+#include <QIODevice>
+#include <QTextStream>
 
 namespace Editor
 {

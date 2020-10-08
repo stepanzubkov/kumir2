@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QFocusEvent>
 #include <QAction>
+#include <QDebug>
 
 namespace Editor
 {

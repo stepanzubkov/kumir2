@@ -2,6 +2,7 @@
 #define EDITOR_PLUGIN_H
 
 #include "macro.h"
+#include <QVector>
 #include <QFont>
 
 #include <kumir2/editorinterface.h>

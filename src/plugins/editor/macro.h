@@ -2,10 +2,12 @@
 #define MACRO_H
 
 #include "keycommand.h"
-#include <QtCore>
+
+#include <QList>
+#include <QSharedPointer>
+#include <QDomElement>
 
 class QAction;
-class QDomElement;
 class QDomDocument;
 
 

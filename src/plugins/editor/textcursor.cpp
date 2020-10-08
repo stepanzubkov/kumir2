@@ -6,6 +6,7 @@
 #include "settingspage.h"
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <QApplication>
+#include <QDebug>
 
 namespace Editor
 {

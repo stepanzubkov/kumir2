@@ -2,6 +2,7 @@
 #define EDITOR_INTERFACE
 
 #include <QtPlugin>
+class QUrl;
 
 namespace Shared
 {

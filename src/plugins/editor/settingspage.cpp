@@ -248,7 +248,7 @@ void SettingsPage::init()
 		settings_->value(KeyFreeCursorMovement, DefaultFreeCursorMovement)
 		.toUInt();
 
-	if (freeCursorMovement < ui->freeCursorPositioning->count()) {
+	if (freeCursorMovement < (uint) ui->freeCursorPositioning->count()) {
 		ui->freeCursorPositioning->setCurrentIndex(freeCursorMovement);
 	}
 
@@ -339,7 +339,7 @@ void SettingsPage::resetToDefaults()
 
 	uint freeCursorMovement = DefaultFreeCursorMovement;
 
-	if (freeCursorMovement < ui->freeCursorPositioning->count()) {
+	if (freeCursorMovement < (uint) ui->freeCursorPositioning->count()) {
 		ui->freeCursorPositioning->setCurrentIndex(freeCursorMovement);
 	}
 

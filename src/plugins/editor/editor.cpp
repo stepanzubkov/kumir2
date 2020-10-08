@@ -26,6 +26,8 @@
 #include <QLayout>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QTextCodec>
+#include <QApplication>
 
 
 namespace Editor
@@ -589,12 +591,12 @@ void EditorInstance::updateFromAnalizer()
 	for (int i = 0; i < (int)doc_->linesCount(); i++) {
 		oldIndents[i] = doc_->indentAt(i);
 	}
-	for (int i = 0; i < (int)doc_->linesCount(); i++) {
+	for (unsigned int i = 0; i < doc_->linesCount(); i++) {
 		int oldIndent = oldIndents[i];
-		if (i < ranks.size()) {
+		if (i < (unsigned int) ranks.size()) {
 			doc_->setIndentRankAt(i, ranks[i]);
 		}
-		if (i < props.size()) {
+		if (i < (unsigned int) props.size()) {
 			doc_->setHighlightAt(i, props[i].toList());
 		}
 		doc_->at(i).multipleStatementsInLine = analizerInstance_->multipleStatementsInLine(i);

@@ -1,7 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <Qt>
 #include <QString>
 
 namespace Editor

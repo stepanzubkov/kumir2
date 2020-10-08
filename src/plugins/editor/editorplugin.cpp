@@ -8,6 +8,7 @@
 #include <QtPlugin>
 #include <QApplication>
 #include <QFontDatabase>
+#include <QDebug>
 
 
 namespace Editor

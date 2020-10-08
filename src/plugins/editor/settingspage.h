@@ -3,7 +3,6 @@
 
 #include <kumir2-libs/extensionsystem/settings.h>
 
-#include <QtCore>
 #include <QWidget>
 class QToolButton;
 

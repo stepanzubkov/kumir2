@@ -8,6 +8,7 @@
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 
 #include <QUndoStack>
+#include <QTextCodec>
 
 namespace Editor
 {
@@ -359,7 +360,7 @@ void TextDocument::setPlainText(const QString &t)
 int TextDocument::hiddenLineStart() const
 {
 	int result = -1;
-	for (int i = 0; i < (uint) data_.size(); i++) {
+	for (int i = 0; i < data_.size(); i++) {
 		if (data_[i].hidden) {
 			result = i;
 			break;
