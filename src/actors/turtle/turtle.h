@@ -17,94 +17,95 @@
 #define TURTLE_H
 
 #include <QMainWindow>
-#include <QCloseEvent>
-#include <QGraphicsScene>
-#include <QtSvg>
-#include <QGraphicsSvgItem>
+#include <QDir>
+#include <QBasicTimer>
 
-//class QAction;
-//class QMenu;
-//class QTextEdit;
-//#define FIELD_SX 500
-//#define FIELD_SY 00
-#define BORDER_SZ 20
+class QCloseEvent;
+class QGraphicsScene;
+class QGraphicsSvgItem;
+class QGraphicsView;
+class QGraphicsLineItem;
+class QGraphicsPathItem;
 
 class pultLogger;
 class TurtlePult;
 
-class turtle:public QMainWindow
+class turtle : public QMainWindow
 {
-      Q_OBJECT
+	Q_OBJECT
 
 public:
-      turtle(QDir mresd);
-      ~turtle();
-	QGraphicsScene *scene;
-    QGraphicsView *view;
- double   step;
- qreal grad;	
- pultLogger* logger;
- TurtlePult* Tpult;
- QDir myresdir;
- void AutoClose(){autoClose=true;close();};
-    void showTurtle(){setVisible(true); t1->show();Repaint();};
-    void hideTurtle(){setVisible(false); t1->hide();Repaint();};
+	turtle(QDir mresd);
+	~turtle();
 
 protected:
- void mousePressEvent(QMouseEvent *event);
- void timerEvent(QTimerEvent *event);
-void closeEvent ( QCloseEvent * event );
+	void mousePressEvent(QMouseEvent *event);
+	void timerEvent(QTimerEvent *event);
+	void closeEvent(QCloseEvent *event);
+
 public slots:
- void rotate();
- bool moveT();
- void TailUp();
- void TailDown();
- void reset();
- void DoRotate(double deg);
- void DoMove(int range);
-// void hideTurtle();
- void Repaint(){
-     view->repaint();
-     scene->update();};
- signals:
- void Otkaz(QString msg);
- void Ok();
+	void rotate();
+	bool moveT();
+	void TailUp();
+	void TailDown();
+	void reset();
+	void DoRotate(double deg);
+	void DoMove(int range);
+	void Repaint();
+
+signals:
+	void Otkaz(QString msg);
+	void Ok();
 
 private:
- void loadIniFile();
- void drawTail();
- void showCurTurtle();
- void rotateImages();
- void CreateBorders();
- bool checkPos()
+	void loadIniFile();
+	void drawTail();
+	void showCurTurtle();
+	void rotateImages();
+	void CreateBorders();
+	void CreateTurtle();
+	bool checkPos()
 	{
-	qreal x,y;
-	return checkPos(&x,&y);
-	};
-  bool checkPos(qreal * x,qreal *y);
+		qreal x, y;
+		return checkPos(&x, &y);
+	}
 
-QPoint Position;
- QGraphicsSvgItem * t1;
- QGraphicsSvgItem * t2;
- QGraphicsSvgItem * t3;
- QList<QGraphicsLineItem*> lines;
-QGraphicsSvgItem * curTurtle;
-  void CreateTurtle(void);      
- qreal ang;
- QList<QLineF> desertBorders; 
- bool tail;
- qreal curX,curY;
- qreal zoom,delta;
- qreal AncX,AncY;
+	bool checkPos(qreal *x, qreal *y);
 
- QGraphicsPathItem * Tail;
- QPointF tailPoint;
- int curTurtleId;
- bool autoClose,obod;
- int FIELD_SX;
- int FIELD_SY;
- QBasicTimer timer;
-// WHeader* turtleHeader;
+	void AutoClose();
+
+	void showTurtle();
+	void hideTurtle();
+
+private:
+	QGraphicsScene *scene;
+	QGraphicsView *view;
+	double   step;
+	qreal grad;
+	pultLogger *logger;
+	TurtlePult *Tpult;
+	QDir myresdir;
+
+	QPoint Position;
+	QGraphicsSvgItem *t1;
+	QGraphicsSvgItem *t2;
+	QGraphicsSvgItem *t3;
+	QList<QGraphicsLineItem *> lines;
+	QGraphicsSvgItem *curTurtle;
+	qreal ang;
+	QList<QLineF> desertBorders;
+	bool tail;
+	qreal curX, curY;
+	qreal zoom, delta;
+	qreal AncX, AncY;
+
+	QGraphicsPathItem *Tail;
+	QPointF tailPoint;
+	int curTurtleId;
+	bool autoClose, obod;
+	int FIELD_SX;
+	int FIELD_SY;
+	QBasicTimer timer;
 };
 
 #endif
