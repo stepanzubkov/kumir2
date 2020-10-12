@@ -1975,24 +1975,25 @@ void KumirVM::do_specialcall(uint16_t alg)
 		String source = second.value().toString();
 		String ch = first.value().toString();
 		error_ = Kumir::Core::getError();
+
 		if (error_.length() == 0) {
 			if (end < start && start == 0) {
 				source = ch + source;
 				Variable r(source);
 				valuesStack_.push(r);
-			} else if (start > (int)source.length()) {
+			} else if (start > (int) source.length()) {
 				error_ = Kumir::Core::fromUtf8("Левая граница вырезки за пределами строки");
 			} else if (end < start && start > 0) {
 				source.insert(start, ch);
 				Variable r(source);
 				valuesStack_.push(r);
-			} else if (start == source.length() + 1 && end <= start) {
+			} else if (start == (int) source.length() + 1 && end <= start) {
 				source.append(ch);
 				Variable r(source);
 				valuesStack_.push(r);
-			} else if (end < 1 || end > (int)source.length()) {
+			} else if (end < 1 || end > (int) source.length()) {
 				error_ = Kumir::Core::fromUtf8("Правая граница вырезки за пределами строки");
-			} else if (start < 1 || start > (int)source.length()) {
+			} else if (start < 1 || start > (int) source.length()) {
 				error_ = Kumir::Core::fromUtf8("Левая граница вырезки за пределами строки");
 			} else if (end < start) {
 				error_ = Kumir::Core::fromUtf8("Ошибка в границах вырезки");
@@ -2002,6 +2003,7 @@ void KumirVM::do_specialcall(uint16_t alg)
 				valuesStack_.push(r);
 			}
 		}
+
 		if (stacksMutex_) {
 			stacksMutex_->unlock();
 		}

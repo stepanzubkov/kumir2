@@ -104,10 +104,11 @@ bool InputFunctor::operator()(
 		}
 	}
 
-	const QString qFormat = QString::fromStdWString(format);
+	QString qFormat = QString::fromStdWString(format);
 
 	// Request input action and wait for response
 	emit requestInput(qFormat);
+
 	forever {
 		bool done = false;
 		finishedMutex_->lock();
@@ -127,11 +128,12 @@ bool InputFunctor::operator()(
 	}
 
 	// Store input values
-	Q_ASSERT(inputValues_.size() == references.size());
+	Q_ASSERT((size_t) inputValues_.size() == references.size());
 	for (int i = 0; i < inputValues_.size(); i++) {
-		const AnyValue val = Util::QVariantToValue(inputValues_.at(i), 0);
+		AnyValue val = Util::QVariantToValue(inputValues_.at(i), 0);
 		references[i].setValue(val);
 	}
+
 	return true;
 }
 

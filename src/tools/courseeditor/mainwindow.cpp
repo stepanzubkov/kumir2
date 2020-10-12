@@ -1186,10 +1186,10 @@ void MainWindowTask::openRecent()
 	ui->actionS->setEnabled(true);
 }
 
-bool MainWindowTask::checkInList(int id, QModelIndexList list) //Поиск id среди списка индексов
+bool MainWindowTask::checkInList(int id, QModelIndexList list) const//Поиск id среди списка индексов
 {
 	for (int i = 0; i < list.count(); i++) { //Ищем общий корень
-		if (list.at(i).internalId() == id) {
+		if ((size_t) list.at(i).internalId() == (size_t) id) {
 			return true;
 		}
 	}
@@ -1212,23 +1212,30 @@ void MainWindowTask::createMoveMenu()
 			qDebug() << "Par:" << course->getTitle(par.internalId());
 			rootIdx = par;
 		}
-	};
+	}
 
 	QModelIndex  rt = course->parent(rootIdx);
-
 	if (curTaskIdx == rt) {
 		return;
 	}
+
 	QAction *action = ui->menuMove->addAction(course->getTitle(rt.internalId()), this, SLOT(move()));
 	action->setData(QVariant(rt.internalId()));
 	ui->menuMove->addSeparator();
 	QList<KumTask> ct = course->childTasks(rt);
 	for (int i = 0; i < ct.count(); i++) {
-		if (ct.at(i).getId() == rootIdx.internalId() || ct.at(i).getId() == curTaskIdx.internalId() || checkInList(ct.at(i).getId(), list2sec)) {
+		int ctId = ct.at(i).getId();
+
+		if (
+			(size_t) ctId == (size_t) rootIdx.internalId() ||
+			(size_t) ctId == (size_t) curTaskIdx.internalId() ||
+			checkInList(ctId, list2sec)
+		) {
 			continue;
 		}
+
 		QAction *action = ui->menuMove->addAction(ct.at(i).getTitle(), this, SLOT(move()));
-		action->setData(QVariant(ct.at(i).getId()));
+		action->setData(QVariant(ctId));
 	}
 }
 

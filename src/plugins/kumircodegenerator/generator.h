@@ -1,8 +1,6 @@
 #ifndef KUMIRCODEGENERATOR_GENERATOR_H
 #define KUMIRCODEGENERATOR_GENERATOR_H
 
-#include <QtCore>
-
 #include <kumir2-libs/dataformats/ast.h>
 #include <kumir2-libs/dataformats/ast_variable.h>
 #include <kumir2-libs/dataformats/ast_algorhitm.h>
@@ -11,6 +9,9 @@
 #include <kumir2/generatorinterface.h>
 #include <kumir2-libs/vm/vm_enums.h>
 #include <kumir2-libs/vm/vm_instruction.hpp>
+
+#include <QVector>
+#include <QSet>
 
 namespace Bytecode
 {

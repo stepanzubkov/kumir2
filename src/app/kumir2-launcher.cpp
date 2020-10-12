@@ -1,9 +1,12 @@
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
+#include <QDateTime>
+#include <QDebug>
+#include <QMessageBox>
+#include <QTranslator>
+#include <QDir>
+#include <QIcon>
+#include <QPainter>
+#include <QSplashScreen>
+#include <QApplication>
 
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2-libs/extensionsystem/logger.h>
@@ -126,7 +129,7 @@ QList<QDir> translationsDirs()
 class Application : QObject
 {
 public:
-	inline explicit Application(int &argc, char **argv, bool gui)
+	explicit Application(int &argc, char **argv, bool gui)
 		: QObject()
 		, _qApp(0)
 		, _timerId(-1)
@@ -141,14 +144,14 @@ public:
 		_qApp->installEventFilter(this);
 	}
 
-	inline void setSplashScreen(QSplashScreen *s)
+	void setSplashScreen(QSplashScreen *s)
 	{
 		_splashScreen = s;
 	}
 
-	inline void initialize()
+	void initialize()
 	{
-		const QStringList arguments = _qApp->arguments();
+		QStringList arguments = _qApp->arguments();
 		qDebug() << "Arguments: " << arguments;
 		bool mustShowHelpAndExit = false;
 		bool mustShowVersionAndExit = false;
@@ -284,7 +287,7 @@ public:
 		}
 	}
 
-	inline bool eventFilter(QObject *obj, QEvent *event)
+	bool eventFilter(QObject *obj, QEvent *event)
 	{
 		if (event->type() == QEvent::Timer && obj == _qApp && !_started) {
 			_started = true;
@@ -298,7 +301,7 @@ public:
 		}
 	}
 
-	inline int main()
+	int main()
 	{
 		_timerId = _qApp->startTimer(250);
 		int ret = _qApp->exec();
@@ -433,7 +436,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	const bool customAppAndVendorInformation = setup_custom_vendor_information(qobject_cast<QCoreApplication *>(qApp));
+	bool customAppAndVendorInformation = setup_custom_vendor_information(qobject_cast<QCoreApplication *>(qApp));
+
+	Q_UNUSED(mustShowHelpAndExit);
+	Q_UNUSED(mustShowVersionAndExit);
 	Q_UNUSED(customAppAndVendorInformation);
 
 #ifdef SPLASHSCREEN

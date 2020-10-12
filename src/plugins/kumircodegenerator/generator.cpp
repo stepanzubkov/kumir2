@@ -1814,18 +1814,8 @@ void Generator::LOOP(
 	const AST::StatementPtr st,
 	QList<Bytecode::Instruction> &result
 ) {
-	Bytecode::Instruction ctlOn;
-	ctlOn.module = 0x00;
-	ctlOn.arg = 0x0001;
-
-	Bytecode::Instruction ctlOff;
-	ctlOff.module = 0x00;
-	ctlOff.arg = 0x0000;
-
-	ctlOn.type = ctlOff.type = Bytecode::CTL;
-
 	if (st->beginBlockError.size() > 0) {
-		const QString error = ErrorMessages::message("KumirAnalizer", QLocale::Russian, st->beginBlockError);
+		QString error = ErrorMessages::message("KumirAnalizer", QLocale::Russian, st->beginBlockError);
 		result += makeLineInstructions(st->lexems);
 		Bytecode::Instruction err;
 		err.type = Bytecode::ERRORR;

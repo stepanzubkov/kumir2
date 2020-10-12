@@ -98,7 +98,9 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private:
-	bool checkInList(int id, QModelIndexList list); //Поиск id среди списка индексов
+	//Поиск id среди списка индексов
+	bool checkInList(int id, QModelIndexList list) const;
+
 	void enableMkSect(bool flag);
 	void markProgChange();
 	void lockKursFile(const QString fileName);
