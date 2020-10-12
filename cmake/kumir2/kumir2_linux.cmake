@@ -44,8 +44,11 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 set(CMAKE_INSTALL_RPATH "")
 
+set(CMAKE_CXX_EXTENSIONS "OFF")
+set(CMAKE_CXX_STANDARD "11")
+
 # Compile flags
-set(KUMIR2_CXXFLAGS "-fno-exceptions -std=c++0x -fPIC -Wall -Wno-deprecated-declarations")
+set(KUMIR2_CXXFLAGS "-fno-exceptions -fPIC -Wall")
 set(KUMIR2_CXXFLAGS_Release "-O2 -UNDEBUG")
 set(KUMIR2_CXXFLAGS_RelWithDebInfo "-O2 -g -UNDEBUG -UQT_NO_DEBUG")
 set(KUMIR2_CXXFLAGS_Debug "-g -O1")
