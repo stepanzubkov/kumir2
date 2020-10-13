@@ -47,11 +47,6 @@ struct VisibleLine {
 		sourceLineNumber(n)
 	{}
 
-	VisibleLine &operator=(const VisibleLine &other)
-	{
-		*this = other;
-		return *this;
-	}
 };
 
 class OneSession : public QObject

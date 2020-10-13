@@ -309,7 +309,7 @@ void MainWindowTask::loadCourseFromFile(const QString &file)
 		cursWorkFile.setFileName("");
 	}
 	loadCourseData(fileName);
-	QString cText = course->courceDescr();
+	QString cText = course->courseDescr();
 
 
 	if (cText.right(4) == ".htm" || cText.right(5) == ".html") {
@@ -387,7 +387,7 @@ void MainWindowTask::loadCourse()
 	loadCourseData(fileName);
 	isReadOnly = false;
 	interface->setPreProgram(QVariant(""));
-	QString cText = course->courceDescr();
+	QString cText = course->courseDescr();
 
 
 	if (cText.right(4) == ".htm" || cText.right(5) == ".html") {

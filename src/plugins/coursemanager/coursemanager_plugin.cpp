@@ -1,16 +1,22 @@
-#include "coursemanager_plugin.h"
 #include <kumir2-libs/dataformats/kumfile.h>
+#include <kumir2-libs/widgets/declarativesettingspage.h>
+#include "coursemanager_plugin.h"
 #include "task/coursemanager_window.h"
 #include <kumir2/analizerinterface.h>
 #include "kumir2/analizer_instanceinterface.h"
 #include <kumir2/runinterface.h>
 #include <kumir2/generatorinterface.h>
-#include <kumir2/runinterface.h>
-#include <fstream>
+#include <kumir2/guiinterface.h>
+#include <kumir2/actorinterface.h>
+
 #include <iostream>
 
 #include <QMessageBox>
 #include <QProcessEnvironment>
+#include <QApplication>
+
+typedef Shared::GuiInterface GI;
+typedef Shared::ActorInterface AI;
 
 namespace CourseManager
 {
@@ -22,45 +28,59 @@ Plugin::Plugin()
 	, settingsEditorPage_(nullptr)
 	, cur_task(nullptr)
 {
+	field_no = 0;
+	DISPLAY = false;
 
 #ifdef Q_OS_LINUX
-	QProcessEnvironment pe;
-	pe = QProcessEnvironment::systemEnvironment();
+	QProcessEnvironment pe = QProcessEnvironment::systemEnvironment();
 	// qDebug()<<"PE"<<pe.toStringList();
 	qDebug() << "Display" << pe.value("DISPLAY");
-	if (!pe.keys().indexOf("DISPLAY") > 0 || pe.value("DISPLAY").isEmpty()) { //NO DISPLAY
-		qDebug() << "CourseManager:Console mode";
 
-		DISPLAY = false;
-		field_no = 0;
+	if (pe.value("DISPLAY").isEmpty()) { //NO DISPLAY
+		qDebug() << "CourseManager:Console mode";
 		return;
 	}
-	qDebug() << "CourseManager:Console Mode";
+
 #endif
+
+	qDebug() << "CourseManager:GUI Mode";
 	DISPLAY = true;
 	courseMenu = new QMenu(trUtf8("Практикум"));
 	MenuList.append(courseMenu);
 	rescentMenu = new QMenu(trUtf8("Недавние тетради/курсы..."));
 	// m_actionCourseLoadRescent->setMenu(rescentMenu);
 	MW = new MainWindowTask();
-
-
 	mainWindow_ = MW;
 
-	field_no = 0;
 	prevFld = new QAction(trUtf8("Предыдущая обстановка"), this);
 	nextFld = new QAction(trUtf8("Следующая обстановка"), this);
 	connect(nextFld, SIGNAL(triggered()), this, SLOT(nextField()));
 	connect(prevFld, SIGNAL(triggered()), this, SLOT(prevField()));
 	nextFld->setEnabled(false);
 	prevFld->setEnabled(false);
-
 }
-QList<QMenu *>  Plugin::menus()const
-{
 
+QList<ExtensionSystem::CommandLineParameter> Plugin::acceptableCommandLineParameters() const
+{
+	QList<ExtensionSystem::CommandLineParameter> params;
+	params.append(ExtensionSystem::CommandLineParameter(true, 'w', "work", tr("Work book file"), QVariant::String, false));
+	params.append(ExtensionSystem::CommandLineParameter(true, 'c', "classbook", tr("Classbook file"), QVariant::String, false));
+	params.append(ExtensionSystem::CommandLineParameter(true, 'o', "output", tr("Output file"), QVariant::String, false));
+	return params;
+}
+
+// It is virtual, do not make it inline.
+QList<QMenu *> Plugin::menus() const
+{
 	return MenuList;
-};
+}
+
+QStringList Plugin::getListOfCourses() const
+{
+	QString defaultCur = qApp->property("sharePath").toString() + "/courses/practicum/practicum.kurs.xml;";
+	return mySettings()->value("Courses/LastFiles", defaultCur).toString().split(";", QString::SkipEmptyParts);
+}
+
 int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 {
 	QDomDocument workXml;
@@ -69,13 +89,12 @@ int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 	if (!f.open(QIODevice::ReadOnly)) {
 		QMessageBox::information(0, "", trUtf8("Ошибка открытия файла: ") + wbfilename, 0, 0, 0);
 		return 5;
-
-	};
+	}
 
 	if (f.atEnd()) {
 
 		return 3;
-	};
+	}
 
 	QString error;
 	int str, pos;
@@ -86,10 +105,10 @@ int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 	if (root.tagName() != "COURSE") {
 
 		return 4;
-	};
+	}
+
 	QDomElement fileEl = root.firstChildElement("FILE");
 	QString krsFile = fileEl.attribute("fileName");
-
 	QString fileN = fileEl.attribute("fileName");
 
 	QDomNodeList marksElList = root.elementsByTagName("MARK"); //Оценки
@@ -100,7 +119,7 @@ int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 		qDebug() << "task:" << taskId << " mark:" << mark;
 		course->setMark(taskId, mark);
 		// fprintf(stdout, "%s %d %d \n",cbname.toLatin1().data(),taskId,mark);
-	};
+	}
 
 	//qDebug()<<"Loading user prgs...";
 	QDomNodeList prgElList = root.elementsByTagName("USER_PRG"); //Программы
@@ -108,12 +127,8 @@ int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 		int taskId = prgElList.at(i).toElement().attribute("testId").toInt();
 		qDebug() << "Tassk id" << taskId;
 		QString prg = prgElList.at(i).toElement().attribute("prg");
-		QModelIndex tIdx = course->getIndexById(taskId);
-
-
 		course->setUserText(taskId, prg);
-
-	};
+	}
 
 	QDomNodeList prgElListT = root.elementsByTagName("TESTED_PRG"); //Программы тестированные
 	for (int i = 0; i < prgElListT.count(); i++) {
@@ -122,37 +137,33 @@ int Plugin::loadWorkBook(QString wbfilename, QString cbname)
 
 		course->setUserTestedText(taskId, prg);
 
-	};
+	}
+
 	return 0;
 }
+
 int  Plugin::loadCourseFromConsole(QString wbname, QString cbname)
 {
-
 	QFileInfo fi(cbname);
 	if (!fi.exists()) {
-
 		return 1;
-	};
+	}
+
 	QFileInfo fi2(wbname);
 	if (!fi2.exists()) {
 
 		return 2;
-	};
+	}
+
 	cur_courseFileInfo = fi;
 	course = new courseModel();
 
 	int tasks = course->loadCourse(cbname, true);
 	qDebug() << "Tasks " << tasks << " loaded";
 	int wb_error = loadWorkBook(wbname, fi.fileName());
-
-	QString cText = course->courceDescr();
-
-
-
-
 	return wb_error;
-
 }
+
 int Plugin::checkTaskFromConsole(const int taskID)
 {
 	KumZadanie task;
@@ -161,7 +172,8 @@ int Plugin::checkTaskFromConsole(const int taskID)
 	qDebug() << "PRG FILE" << course->progFile(taskID);
 	if (ioDir.isFile()) {
 		qDebug() << "TODO: IO FILE";
-	};
+	}
+
 	task.isps = course->Modules(taskID);
 	task.fields.clear();
 	task.name = course->getTitle(taskID);
@@ -171,9 +183,9 @@ int Plugin::checkTaskFromConsole(const int taskID)
 
 			task.fields.insertMulti(task.isps[i], curDir + '/' + t_fields[j]);
 
-		};
-
+		}
 	}
+
 	Shared::AnalizerInterface *analizer = ExtensionSystem::PluginManager::instance()->findPlugin<Shared::AnalizerInterface>();
 	Shared::Analizer::SourceFileInterface::Data kumFile;
 	if (course->getUserText(taskID) != "") {
@@ -182,6 +194,7 @@ int Plugin::checkTaskFromConsole(const int taskID)
 	} else {
 		return 1;
 	}
+
 	Shared::Analizer::InstanceInterface *analizer_i =
 		analizer->createInstance();
 
@@ -200,10 +213,7 @@ int Plugin::checkTaskFromConsole(const int taskID)
 		std::cerr << errorMessage.toLocal8Bit().data();
 		std::cerr << std::endl;
 	}
-	// if(errors.size()>0)
-	// {
 
-	//  }
 	AST::DataPtr ast = analizer_i->compiler()->abstractSyntaxTree();
 	Shared::GeneratorInterface *generator_ = ExtensionSystem::PluginManager::instance()->findPlugin<Shared::GeneratorInterface>();
 	QString suffix;
@@ -218,6 +228,7 @@ int Plugin::checkTaskFromConsole(const int taskID)
 	runner->loadProgram(program);
 	int mark = 0;
 	QString error = "";
+
 	for (int i = 0; i < task.fields.count(); i++) {
 		QString testMessage = tr("++++++ ") + task.name + tr(" field no: ") + QString::number(i);
 		std::cout << testMessage.toLocal8Bit().data();
@@ -234,10 +245,8 @@ int Plugin::checkTaskFromConsole(const int taskID)
 		} else {
 			mark = testRes;
 		}
-
-
-
 	}
+
 	if (task.fields.count() == 0) {
 		qDebug() << "Check wo isps";
 		selectNext(&task);
@@ -247,17 +256,18 @@ int Plugin::checkTaskFromConsole(const int taskID)
 		}
 		mark = runner->valueStackTopItem().toInt();
 	}
+
 	if (resultStream.status() == QTextStream::Ok) { //If we can - we writes marks to file
 		resultStream << task.name + trUtf8(" Оценка:") + QString::number(mark);
 		if (error != "") {
 			resultStream << " Err:" << error;
 		}
 		resultStream << "\n";
-
 	}
-	return 0;
 
+	return 0;
 }
+
 void Plugin::start()
 {
 	qDebug() << "Starts with coursemanager";
@@ -267,9 +277,8 @@ void Plugin::start()
 		int res = checkTaskFromConsole(taskIds[i]);
 		qDebug() << "Test result " << res << " taskId" << taskIds[i];
 	}
+}
 
-
-};
 void Plugin::rebuildRescentMenu()
 {
 	rescentMenu->clear();
@@ -288,25 +297,20 @@ void Plugin::rebuildRescentMenu()
 			continue;
 		}
 
-
-
 		QAction *action = rescentMenu->addAction(QFileInfo(lastFiles[i]).fileName(), MW, SLOT(openRescent()));
 		action->setProperty("fullName", lastFiles[i]);
 		hasAnyItem = true;
 		Q_UNUSED(action);
 	}
 	rescentMenu->setEnabled(hasAnyItem);
-
-};
-
-
+}
 
 QString Plugin::getText()
 {
 	GI *gui = ExtensionSystem::PluginManager::instance()->findPlugin<GI>();
 	Shared::AnalizerInterface *analizer =
 		ExtensionSystem::PluginManager::instance()->findPlugin<Shared::AnalizerInterface>();
-	const QString text = analizer->sourceFileHandler()->toString(gui->programSource().content);
+	QString text = analizer->sourceFileHandler()->toString(gui->programSource().content);
 	qDebug() << "Text" << text;
 	return text;
 }
@@ -338,10 +342,12 @@ void Plugin::setPreProgram(QVariant param)
 		ExtensionSystem::PluginManager::instance()->switchGlobalState(PluginInterface::GS_Unlocked);
 	}
 }
+
 void Plugin::fixOldKumTeacherMark(QDataStream *ds)
 {
 
 }
+
 bool Plugin::setTextFromFile(QString fname)
 {
 	QFile file(fname);
@@ -410,12 +416,13 @@ bool  Plugin::startNewTask(QStringList isps, KumZadanie *task)
 	}
 	cur_task = task;
 	return true;
-};
+}
+
 QWidget *Plugin::mainWindow() const
 {
 	return mainWindow_;
-
 }
+
 AI *Plugin::getActor(QString name)
 {
 	QList<AI *> Actors = ExtensionSystem::PluginManager::instance()->findPlugins<AI>();
@@ -432,6 +439,7 @@ AI *Plugin::getActor(QString name)
 
 	return NULL;
 }
+
 void Plugin::showError(QString err)
 {
 	if (DISPLAY) {
@@ -439,8 +447,8 @@ void Plugin::showError(QString err)
 	} else {
 		std::cerr << err.toLocal8Bit().data();
 	}
-
 }
+
 void Plugin::selectNext(KumZadanie *task)
 {
 	QString dirName = "";
@@ -475,7 +483,6 @@ void Plugin::selectNext(KumZadanie *task)
 
 		actor->loadActorData(field_data);
 		field_data->close();
-
 	}
 }
 
@@ -485,11 +492,13 @@ void Plugin::checkNext(KumZadanie *task)
 	GI *gui = ExtensionSystem::PluginManager::instance()->findPlugin<GI>();
 	selectNext(task);
 	gui->startTesting();
-};
-void Plugin::loadCource(QString file)
+}
+
+void Plugin::activateCourseFromList(QString file)
 {
 	MW->loadCourseFromFile(file);
 }
+
 void Plugin::startProgram(QVariant param, KumZadanie *task)
 {
 	field_no = 0;
@@ -497,7 +506,8 @@ void Plugin::startProgram(QVariant param, KumZadanie *task)
 	selectNext(task);
 	GI *gui = ExtensionSystem::PluginManager::instance()->findPlugin<GI>();
 	gui->startTesting();
-};
+}
+
 QAction *Plugin::actionPerformCheck() const
 {
 	return actionPerformCheck_;
@@ -526,22 +536,22 @@ void Plugin::setEnabled(bool value)
 {
 
 }
+
 bool Plugin::isSafeToQuit()
 {
 	return MW->safeToQuit();
-};
+}
 
 void Plugin::setTestingResult(ProgramRunStatus status, int value)
 {
-
-
 	if (status == AbortedOnError || status == UserTerminated) {
 		MW->setMark(1);
 		field_no = 0;
 		prevFld->setEnabled(field_no > 0);
 		nextFld->setEnabled((field_no + 1) < cur_task->minFieldCount() && cur_task->minFieldCount() > 0);
 		return;
-	};
+	}
+
 	MW->setMark(value);
 	field_no++;
 	if (field_no < cur_task->minFieldCount() && value > 7) {
@@ -566,6 +576,7 @@ void Plugin::changeCurrentDirectory(const QString &path)
 {
 
 }
+
 void Plugin::nextField()
 {
 	if (field_no < cur_task->minFieldCount()) {
@@ -583,7 +594,8 @@ void Plugin::prevField()
 	}
 	prevFld->setEnabled(field_no > 0);
 	nextFld->setEnabled(cur_task && field_no < cur_task->minFieldCount() && cur_task->minFieldCount() > 0);
-};
+}
+
 void Plugin::lockContrls()
 {
 	prevFld->setEnabled(false);
@@ -595,24 +607,28 @@ void Plugin::createPluginSpec()
 	_pluginSpec.name = "CourseManager";
 	_pluginSpec.gui = false;
 }
-void Plugin::changeGlobalState(ExtensionSystem::GlobalState old,
-	ExtensionSystem::GlobalState current)
-{
+
+void Plugin::changeGlobalState(
+	ExtensionSystem::GlobalState old,
+	ExtensionSystem::GlobalState current
+) {
 	if (current == PluginInterface::GS_Running) {
 		MW->lockControls();
 		nextFld->setEnabled(false);
 		prevFld->setEnabled(false);
-	};
+	}
+
 	if (current == PluginInterface::GS_Observe) {
 		MW->unlockControls();
 		prevFld->setEnabled(field_no > 0);
 		nextFld->setEnabled(cur_task && field_no < cur_task->minFieldCount() && cur_task->minFieldCount() > 0);
-	};
+	}
 }
 
-QString Plugin::initialize(const QStringList &configurationArguments,
-	const ExtensionSystem::CommandLine &runtimeArguments)
-{
+QString Plugin::initialize(
+	const QStringList &configurationArguments,
+	const ExtensionSystem::CommandLine &runtimeArguments
+) {
 	qDebug() << "DIPLSY" << DISPLAY;
 	if (!DISPLAY) {
 		if (!runtimeArguments.value('w').isValid()) {
@@ -635,6 +651,7 @@ QString Plugin::initialize(const QStringList &configurationArguments,
 		}
 		return "";
 	}
+
 	MW->setup(myResourcesDir(), mySettings());
 	QList<QAction *> actions;
 	actions = MW->getActions();
@@ -644,10 +661,11 @@ QString Plugin::initialize(const QStringList &configurationArguments,
 			courseMenu->addMenu(rescentMenu);
 		}
 	}
+
 	Shared::AnalizerInterface *analizer =
 		ExtensionSystem::PluginManager::instance()
 		->findPlugin<Shared::AnalizerInterface>();
-	const QString languageName =
+	QString languageName =
 		analizer->languageName().toLower();
 
 	MW->setCS(languageName);
@@ -669,8 +687,6 @@ void Plugin::updateSettings(const QStringList &keys)
 	if (!DISPLAY) {
 		return;
 	}
-
-
 
 	if (settingsEditorPage_) {
 		settingsEditorPage_->setSettingsObject(mySettings());

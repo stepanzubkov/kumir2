@@ -43,14 +43,16 @@ public:
 	KumZadanie()
 	{
 		isps.clear();
-	};
-	QString Isp(int no)const
+	}
+
+	QString Isp(int no) const
 	{
 		if (isps.count() <= no) {
 			return "";
 		}
 		return isps[no];
 	}
+
 	QString field(QString ispName, int fieldNo)
 	{
 		QList<QString> ispFields = fields.values(ispName);
@@ -58,13 +60,15 @@ public:
 			return "";
 		}
 		return ispFields.at(fieldNo);
-	};
+	}
+
 	int fieldsCount(QString ispName)
 	{
 		QList<QString> ispFields = fields.values(ispName);
 
 		return ispFields.count();
 	}
+
 	int minFieldCount()
 	{
 		QList<QString> isps = fields.keys();
@@ -80,19 +84,35 @@ public:
 		}
 		return min_fields;
 	}
-	QString name;
-	QStringList isps;//исполнители используемые в задание
-	QStringList Scripts;//скрипты используемые в задание
-	QMap<QString, QString> fields;//Обстановки для каждого исполнителя fields[исп,обст]
 
+	QString name;
+
+	//исполнители используемые в задании
+	QStringList isps;
+
+	//Обстановки для каждого исполнителя fields[исп,обст]
+	QMap<QString, QString> fields;
 };
 
 
-class KumTask;
 namespace Ui
 {
 class MainWindowTask;
 }
+
+struct courseChanges
+{
+	courseChanges() {};
+	void cleanChanges()
+	{
+		marksChanged.clear();
+	}
+	void setMark(int testId, int newMark)
+	{
+		marksChanged.insert(testId, newMark);
+	}
+	QMap<int, int> marksChanged;
+};
 
 class MainWindowTask : public QMainWindow
 {
