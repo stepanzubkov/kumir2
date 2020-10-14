@@ -1,17 +1,11 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
-#include <QtSvg>
+#include <QtGlobal>
+#include <QImage>
+#include <QPair>
 
-#define PI 3.14159
-
-#define DEG2RAD(x) (2*PI)*x/360.0
+static const double Pi = 3.14159265358979323846;
 
 namespace Robot25D {
 
