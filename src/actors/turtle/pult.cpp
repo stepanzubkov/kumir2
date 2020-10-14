@@ -24,10 +24,6 @@
 #include <QPen>
 
 const double DegreesPerMinute = 7.0;
-const double DegreesPerSecond = DegreesPerMinute / 60;
-const int MaxMinutes = 45;
-const int MaxSeconds = 620;
-const int UpdateInterval = 5;
 
 
 OvenTimer::OvenTimer(QWidget *parent) : QWidget(parent)
@@ -112,6 +108,7 @@ void OvenTimer::paintEvent(QPaintEvent * /* event */)
 
 	draw(&painter);
 }
+
 void OvenTimer::draw(QPainter *painter)
 {
 	static const int triangle[3][2] = {
