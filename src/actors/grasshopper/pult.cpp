@@ -21,12 +21,6 @@
 
 #define TEXT_STEP 14
 
-const double DegreesPerMinute = 7.0;
-const double DegreesPerSecond = DegreesPerMinute / 60;
-const int MaxMinutes = 45;
-const int MaxSeconds = 620;
-const int UpdateInterval = 5;
-
 
 linkLight::linkLight(QWidget *parent): QWidget(parent)
 {
