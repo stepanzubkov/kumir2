@@ -4,6 +4,10 @@
 #include "statement.h"
 #include <kumir2-libs/dataformats/ast_variabletype.h>
 
+#include <QSet>
+#include <QLocale>
+class QDir;
+
 
 namespace KumirAnalizer
 {

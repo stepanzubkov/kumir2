@@ -1,5 +1,7 @@
 #include "lexer.h"
 #include <kumir2-libs/errormessages/errormessages.h>
+#include <QDir>
+#include <QTextStream>
 
 
 using namespace Shared;
@@ -18,10 +20,10 @@ Lexer::~Lexer()
 }
 
 int Lexer::splitIntoStatements(
-	const QStringList &lines
-	, int baseLineNo
-	, QList<TextStatementPtr> &statements
-	, const QStringList &extraTypeNames
+	const QStringList &lines,
+	int baseLineNo,
+	QList<TextStatementPtr> &statements,
+	const QStringList &extraTypeNames
 ) const {
 	int errorsCount = 0;
 	for (int i = 0; i < lines.size(); i++) {

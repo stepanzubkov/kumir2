@@ -1,20 +1,15 @@
 #ifndef KUMIRANALIZER_QUICKREFERENCEWIDGET_H
 #define KUMIRANALIZER_QUICKREFERENCEWIDGET_H
 
-#include <QWidget>
-#include <QGroupBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QEvent>
-#include <QScrollArea>
-
 #include <kumir2/actorinterface.h>
 
+#include <QWidget>
 
-namespace KumirAnalizer {
+namespace KumirAnalizer
+{
 
-namespace Ui {
+namespace Ui
+{
 class QuickReferenceWidget;
 }
 
@@ -22,33 +17,33 @@ class KumirAnalizerPlugin;
 
 class QuickReferenceWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit QuickReferenceWidget(KumirAnalizerPlugin * plugin);
-    static const int StatementTopic = 0;
-    static const int TypeTopic = 1;
-    static const int FunctionTopic = 2;
+	explicit QuickReferenceWidget(KumirAnalizerPlugin *plugin);
+	static const int StatementTopic = 0;
+	static const int TypeTopic = 1;
+	static const int FunctionTopic = 2;
 
 Q_SIGNALS:
-    void openTopicInDocumentation(const int topic, const QString &name);
+	void openTopicInDocumentation(const int topic, const QString &name);
 
 private Q_SLOTS:
-    void handleButtonPressed();
+	void handleButtonPressed();
 
 private:
-    void relayoutBlocks(int width);
-    bool eventFilter(QObject *obj, QEvent *evt);
-    void reloadStyleSheet();
+	void relayoutBlocks(int width);
+	bool eventFilter(QObject *obj, QEvent *evt);
+	void reloadStyleSheet();
 
-    void createKeywordsList();
-    void createTypesList();
-    void createFunctionsList();
+	void createKeywordsList();
+	void createTypesList();
+	void createFunctionsList();
 
-    KumirAnalizerPlugin* _plugin;
+	KumirAnalizerPlugin *_plugin;
 
-    Ui::QuickReferenceWidget * ui;
+	Ui::QuickReferenceWidget *ui;
 
-    QList<Shared::ActorInterface*> _builtInModules;
+	QList<Shared::ActorInterface *> _builtInModules;
 
 };
 

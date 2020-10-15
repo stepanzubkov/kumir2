@@ -5,6 +5,12 @@
 #include <deque>
 #include <algorithm>
 
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QBuffer>
+#include <QDebug>
+
 #define isTerminal(x) QRegExp(QString::fromUtf8("!?[a-zа-я][a-zа-я_,]*")).exactMatch(x)
 #define isNeterminal(x) QRegExp(QString::fromUtf8("[А-ЯA-Z][А-ЯA-Z1-9_*]*")).exactMatch(x)
 #define isNagruzka(x) ( x.startsWith("{") && x.endsWith("}") )

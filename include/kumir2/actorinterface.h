@@ -7,6 +7,7 @@
 
 class QMenu;
 class QWidget;
+class QIODevice;
 
 namespace Shared
 {

@@ -1,8 +1,10 @@
 #ifndef STATEMENT_H
 #define STATEMENT_H
 
-#include <QtCore>
 #include <kumir2-libs/dataformats/lexem.h>
+#include <QStringList>
+#include <QPair>
+#include <QPoint>
 
 namespace AST
 {
@@ -33,7 +35,8 @@ struct TextStatement {
 	QList<AST::VariablePtr> variables;
 	int conditionalIndex;
 	bool hasError() const;
-	void setError(const QString &err,
+	void setError(
+		const QString &err,
 		const AST::Lexem::ErrorStage stage,
 		const AST::Lexem::ErrorRaisePosition raise
 	);
@@ -42,6 +45,6 @@ struct TextStatement {
 	mutable QStringList suggestedImportModuleNames;
 };
 
-}
+} // namespace KumirAnalizer
 
 #endif // STATEMENT_H

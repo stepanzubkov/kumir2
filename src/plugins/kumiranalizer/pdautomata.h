@@ -7,6 +7,11 @@
 #include <kumir2-libs/dataformats/ast_algorhitm.h>
 #include <kumir2-libs/dataformats/ast_statement.h>
 
+#include <QVector>
+#include <QStack>
+#include <QMetaMethod>
+class QDir;
+
 
 namespace KumirAnalizer
 {

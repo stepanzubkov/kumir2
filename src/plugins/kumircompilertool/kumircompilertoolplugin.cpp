@@ -10,6 +10,8 @@
 #include <kumir2-libs/vm/variant.hpp>
 #include <kumir2-libs/vm/vm_bytecode.hpp>
 
+#include <QCoreApplication>
+
 using namespace KumirCompilerTool;
 using namespace KumirAnalizer;
 
