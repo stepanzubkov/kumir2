@@ -13,20 +13,13 @@ CellGraphicsItem::CellGraphicsItem(
 	const QPolygonF &polyEast,
 	const QPolygonF &polyNorth,
 	const QPolygonF &polyWest,
-	bool editable,
-	int cellX,
-	int cellY,
-	RobotView *view,
 	QGraphicsItem *parent
 ) :
 	QGraphicsPolygonItem(poly, parent),
 	p_south(polySouth),
 	p_east(polyEast),
 	p_north(polyNorth),
-	p_west(polyWest),
-	i_cellX(cellX),
-	i_cellY(cellY),
-	m_view(view)
+	p_west(polyWest)
 {
 }
 

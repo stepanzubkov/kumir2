@@ -17,27 +17,21 @@ public:
 		const QPolygonF &polyEast,
 		const QPolygonF &polyNorth,
 		const QPolygonF &polyWest,
-		bool editable,
-		int cellX,
-		int cellY,
-		RobotView *view,
 		QGraphicsItem *parent = 0
 	);
 
 protected:
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	void paint(
+		QPainter *painter,
+		const QStyleOptionGraphicsItem *option,
+		QWidget *widget
+	);
 
 private:
-	//int whichWall(const QPointF &p) const;
-
 	QPolygonF p_south;
 	QPolygonF p_east;
 	QPolygonF p_north;
 	QPolygonF p_west;
-	bool b_editable;
-	int i_cellX;
-	int i_cellY;
-	RobotView *m_view;
 };
 
 } // namespace Robot25D

@@ -466,11 +466,12 @@ QBrush RobotView::wallBrush()
 	return QBrush(QColor("sandybrown"), Qt::Dense4Pattern);
 }
 
-QRectF RobotView::createEmptyCell(int x, int y,
-	bool painted, bool pointed,
-	bool isBorder)
-{
-
+QRectF RobotView::createEmptyCell(
+	int x, int y,
+	bool painted,
+	bool pointed,
+	bool isBorder
+) {
 	qreal x1_isometric = CellSize * x;
 	qreal y1_isometric = CellSize * y;
 	qreal z1_isometric = 0.0;
@@ -555,28 +556,16 @@ QRectF RobotView::createEmptyCell(int x, int y,
 	east << mapToIsometricCoordinates(x2_isometric + CellSize / 4, y3_isometric, z3_isometric);
 	east << mapToIsometricCoordinates(x2_isometric - CellSize / 4, y4_isometric, z4_isometric);
 
-
-
 	QPolygonF polygon(points);
 	QPolygonF ps(south);
 	QPolygonF pe(east);
 	QPolygonF pn(north);
 	QPolygonF pw(west);
 
-	int cellX = -1, cellY = -1;
-	if (x != -1 && y != -1) {
-		cellX = x;
-		cellY = y;
-	}
-	if (y >= _model->field().size() || x >= _model->field()[0].size()) {
-		cellX = -1;
-		cellY = -1;
-	}
-
-	CellGraphicsItem *result = new CellGraphicsItem(polygon, ps, pe, pn, pw,
-		false,
-		cellX, cellY,
-		this);
+	CellGraphicsItem *result = new CellGraphicsItem(
+		polygon,
+		ps, pe, pn, pw
+	);
 
 	_allItems << result;
 	result->setParentItem(this);
@@ -610,8 +599,6 @@ QRectF RobotView::createEmptyCell(int x, int y,
 		points[1] = mapToIsometricCoordinates(CellSize * (x + 1) - OFFSET, CellSize * y + OFFSET, 0);
 		points[2] = mapToIsometricCoordinates(CellSize * (x + 1) - OFFSET, CellSize * (y + 1) - OFFSET, 0);
 		points[3] = mapToIsometricCoordinates(CellSize * x + OFFSET, CellSize * (y + 1) - OFFSET, 0);
-
-
 
 		QAbstractGraphicsShapeItem *item = new QGraphicsPolygonItem(QPolygonF(points));
 
