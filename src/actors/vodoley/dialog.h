@@ -13,68 +13,78 @@
 //** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 //**
 //****************************************************************************/
-
+#ifndef NDIALOG_H
+#define NDIALOG_H
 
 #include "ui_dialog.h"
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
-
 
 class Dialog : public QDialog, Ui::Dialog
 {
 	Q_OBJECT
 
-	public:
-        Dialog ( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
-		~Dialog(){};
-	int ASize(){return BaseA->value();};
-	int BSize(){return BaseB->value();};
-	int CSize(){return BaseC->value();};
+public:
+	Dialog(QWidget *parent = 0, Qt::WindowFlags fl = 0);
+	~Dialog() {};
 
-	int AFill(){return ValueA->value();};
-	int BFill(){return ValueB->value();};
-	int CFill(){return ValueC->value();};
-	
-	int ANeed(){return NeedA->value();};
-//	int BNeed(){return NeedB->value();};
-//	int CNeed(){return NeedC->value();};
+	int ASize() const
+	{
+		return BaseA->value();
+	}
 
-	void setSizes(int A,int B,int C)
-		{
-		BaseA->setValue(A);
-		BaseB->setValue(B);
-		BaseC->setValue(C);
-		};
-	void setFill(int A,int B,int C)
-		{
-		qDebug()<<A<<B<<C;
-		ValueA->setValue(A);
-		ValueB->setValue(B);
-		ValueC->setValue(C);
-		};
-	void setNeed(int A)
-		{
-		NeedA->setValue(A);
-		//NeedB->setValue(B);
-		//NeedC->setValue(C);
-		};
-	void setMaximum()
-		{
+	int BSize() const
+	{
+		return BaseB->value();
+	}
 
-		};
-    void translateButtons()
-    {
-        QList<QAbstractButton *>btns = buttonBox->buttons();
-        for(int i=0;i<btns.count();i++)
-        {
-            if(buttonBox->buttonRole(btns[i])==QDialogButtonBox::RejectRole)btns[i]->setText(trUtf8("Отмена"));
-        }
-    }
+	int CSize() const
+	{
+		return BaseC->value();
+	}
+
+	int AFill() const
+	{
+		return ValueA->value();
+	}
+
+	int BFill() const
+	{
+		return ValueB->value();
+	}
+
+	int CFill() const
+	{
+		return ValueC->value();
+	}
+
+	int getNeed() const
+	{
+		return NeedA->value();
+	}
+
+	void setSizes(int a, int b, int c)
+	{
+		BaseA->setValue(a);
+		BaseB->setValue(b);
+		BaseC->setValue(c);
+	}
+
+	void setFill(int a, int b, int c)
+	{
+		ValueA->setValue(a);
+		ValueB->setValue(b);
+		ValueC->setValue(c);
+	}
+
+	void setNeed(int a)
+	{
+		NeedA->setValue(a);
+	}
+
 public slots:
- void setMax();
-	
+	void setMax();
+
+private:
+	void translateButtons();
 };
+
+#endif // NDIALOG_H

@@ -7,6 +7,7 @@ kumir2_use_qt(Core Gui)
 set(SOURCES
 	vodoleymodule.cpp
 	vodoley.cpp
+	vial.cpp
 	pult.cpp
 	dialog.cpp
 )
@@ -14,6 +15,7 @@ set(SOURCES
 set(MOC_HEADERS
 	vodoleymodule.h
 	vodoley.h
+	vial.h
 	pult.h
 	dialog.h
 )
