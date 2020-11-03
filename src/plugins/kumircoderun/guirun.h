@@ -1,11 +1,12 @@
 #ifndef GUIRUN_H
 #define GUIRUN_H
 
-#include <QtCore>
+#include <QThread>
+#include <QMutex>
+#include <QVariantList>
+#include <QTextStream>
 #define DO_NOT_DECLARE_STATIC
 #include <kumir2-libs/vm/vm_abstract_handlers.h>
-#include <kumir2/actorinterface.h>
-#include "commonrun.h"
 
 #ifndef _override
 #if defined(_MSC_VER)
@@ -53,7 +54,7 @@ class InputFunctor :
 public:
 	InputFunctor();
 	void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
-	void setRunnerInstance(class Run *runner);
+	void setRunnerInstance(Run *runner);
 	bool operator()(VariableReferencesList alist, Kumir::String *error) _override;
 	~InputFunctor();
 
@@ -106,7 +107,7 @@ class OutputFunctor:
 public:
 	OutputFunctor();
 	void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
-	void setRunnerInstance(class Run *runner);
+	void setRunnerInstance(Run *runner);
 	void operator()(VariableReferencesList alist, FormatsList formats, Kumir::String *error) _override;
 	void writeRawString(const String &s) _override;
 
@@ -137,7 +138,7 @@ public:
 	GetMainArgumentFunctor();
 	void operator()(Variable &reference, Kumir::String *error) _override;
 	void setCustomTypeFromStringFunctor(VM::CustomTypeFromStringFunctor *f);
-	void setRunnerInstance(class Run *runner);
+	void setRunnerInstance(Run *runner);
 	~GetMainArgumentFunctor();
 
 signals:
@@ -173,7 +174,7 @@ class ReturnMainValueFunctor:
 public:
 	ReturnMainValueFunctor();
 	void setCustomTypeToStringFunctor(VM::CustomTypeToStringFunctor *f);
-	void setRunnerInstance(class Run *runner);
+	void setRunnerInstance(Run *runner);
 	void operator()(const Variable &reference, Kumir::String *error) _override;
 
 signals:

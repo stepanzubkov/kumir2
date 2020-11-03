@@ -1,16 +1,25 @@
 #ifndef KUMIRCODERUN_PLUGIN_H
 #define KUMIRCODERUN_PLUGIN_H
 
-#include <QtCore>
 #include <kumir2-libs/extensionsystem/kplugin.h>
-#include <kumir2-libs/extensionsystem/pluginspec.h>
 #include <kumir2/runinterface.h>
-#include "commonrun.h"
-#include "consolerun.h"
-#include "guirun.h"
+#include <QDateTime>
+
+
+namespace Kumir
+{
+class AbstractInputBuffer;
+class AbstractOutputBuffer;
+}
 
 namespace KumirCodeRun
 {
+
+namespace Gui {
+class SimulatedInputBuffer;
+class SimulatedOutputBuffer;
+}
+
 
 class KumirRunPlugin :
 	public ExtensionSystem::KPlugin,

@@ -1,22 +1,24 @@
 #ifndef KUMIRCODERUN_RUN_H
 #define KUMIRCODERUN_RUN_H
 
-#include <QtCore>
 #define DO_NOT_DECLARE_STATIC
 #include <kumir2-libs/vm/vm.hpp>
-#include <kumir2/actorinterface.h>
+//#include <kumir2-libs/vm/vm_abstract_handlers.h>
 #include <kumir2/runinterface.h>
-#include "kumvariablesmodel.h"
-#include "guirun.h"
+//#include "kumvariablesmodel.h"
+#include <QMutex>
+#include <QThread>
+#include <QVariantList>
 #include <memory>
 
 namespace KumirCodeRun
 {
 
-using Kumir::String;
-using Kumir::real;
-using VM::Variable;
-using VM::AnyValue;
+namespace Gui {
+class SimulatedInputBuffer;
+class SimulatedOutputBuffer;
+}
+class KumVariablesModel;
 
 typedef QPair<quint8, quint32> BreakpointLocation;
 
@@ -66,28 +68,38 @@ public:
 	explicit Run(QObject *parent);
 	std::shared_ptr<VM::KumirVM> vm;
 	bool programLoaded;
-	inline bool stopped() const
+
+	bool stopped() const
 	{
 		return stoppingFlag_;
 	}
+
 	bool mustStop() const;
 	bool isTestingRun() const;
-	inline bool supportBreakpoints() const
+
+	bool supportBreakpoints() const
 	{
 		return supportBreakpoints_;
 	}
-	inline void setSupportBreakpoints(bool v)
+
+	void setSupportBreakpoints(bool v)
 	{
 		supportBreakpoints_ = v;
 	}
 
 	// VM Access methods
 	int effectiveLineNo() const;
-	bool loadProgramFromBinaryBuffer(std::list<char> &stream, const String &filename);
-	inline void setProgramDirectory(const QString &dirName)
+
+	bool loadProgramFromBinaryBuffer(
+		std::list<char> &stream,
+		const Kumir::String &filename
+	);
+
+	void setProgramDirectory(const QString &dirName)
 	{
 		vm->setProgramDirectory(dirName.toStdWString());
 	}
+
 	QString error() const;
 	bool hasTestingAlgorithm() const;
 
@@ -98,17 +110,13 @@ public:
 	void evaluateNextInstruction();
 	bool canStepOut() const;
 
-	inline Shared::RunInterface::RunMode currentRunMode() const
+	Shared::RunInterface::RunMode currentRunMode() const
 	{
 		return _runMode ;
 	}
 
 	QVariant valueStackTopItem() const;
-
-	inline QAbstractItemModel *variablesModel() const
-	{
-		return _variablesModel;
-	}
+	QAbstractItemModel *variablesModel() const;
 
 public slots:
 	void lockVMMutex();
@@ -125,8 +133,8 @@ public slots:
 	bool noticeOnFunctionReturn();
 	bool noticeOnStepsChanged(quint64 stepsDone);
 
-	bool setTextToMargin(int lineNo, const String &s, bool red);
-	bool appendTextToMargin(int lineNo, const String &s);
+	bool setTextToMargin(int lineNo, const Kumir::String &s, bool red);
+	bool appendTextToMargin(int lineNo, const Kumir::String &s);
 	bool clearMargin(int from, int to);
 
 	void debuggerReset();

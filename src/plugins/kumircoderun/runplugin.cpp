@@ -1,24 +1,23 @@
-#include <QtCore> // include it before STL to avoid MSVC-specific errors
 #include "runplugin.h"
 #include "run.h"
-#include <kumir2-libs/extensionsystem/pluginmanager.h>
-#include <iostream>
-#include <sstream>
-#include <locale.h>
 #include "util.h"
 #include "commonrun.h"
 #include "consolerun.h"
 #include "guirun.h"
+#include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2-libs/vm/vm_console_handlers.hpp>
+#include <kumir2/actorinterface.h>
 
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
+//#include <QtCore> // include it before STL to avoid MSVC-specific errors
+#include <QWidget>
+#include <QCoreApplication>
+#include <QDebug>
+#include <iostream>
+#include <locale.h>
 
 namespace KumirCodeRun
 {
+using VM::Variable;
 
 struct CommonFunctors {
 	Common::ExternalModuleCallFunctor call;

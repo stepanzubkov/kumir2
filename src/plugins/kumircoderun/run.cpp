@@ -1,15 +1,18 @@
-#include <QtCore> // include it before STL to avoid MSVC-specific errors
+#include "run.h"
+#include "kumvariablesmodel.h"
+#include <kumir2-libs/stdlib/kumirstdlib.hpp>
+//#include <kumir2-libs/vm/variant.hpp>
+//#include <kumir2-libs/vm/vm.hpp>
+#include <kumir2-libs/extensionsystem/pluginmanager.h>
+#include <kumir2/actorinterface.h>
+#include "util.h"
+
+#include <QCoreApplication>
+
 extern "C" {
 #include <stdlib.h>
 #include <string.h>
 }
-#include <kumir2-libs/stdlib/kumirstdlib.hpp>
-#include <kumir2-libs/vm/variant.hpp>
-#include <kumir2-libs/vm/vm.hpp>
-#include "run.h"
-#include <kumir2-libs/extensionsystem/pluginmanager.h>
-#include <kumir2/actorinterface.h>
-#include "util.h"
 #include <iostream>
 
 namespace KumirCodeRun
@@ -471,6 +474,11 @@ QVariant Run::valueStackTopItem() const
 		}
 	}
 	return result;
+}
+
+QAbstractItemModel *Run::variablesModel() const
+{
+	return _variablesModel;
 }
 
 } // namespace KumirCodeRun
