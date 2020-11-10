@@ -17,6 +17,8 @@
 #include "robotmodule.h"
 #include "kumir2-libs/widgets/pultlogger.h"
 
+#include <QPainter>
+
 #define UP 1
 #define DOWN 2
 #define LEFT 3

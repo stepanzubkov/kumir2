@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QMessageBox>
 #include <QPen>
 
 const double DegreesPerMinute = 7.0;

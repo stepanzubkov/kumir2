@@ -18,6 +18,10 @@
 #include "vodoley.h"
 #include <kumir2-libs/widgets/pultlogger.h>
 
+#include <QPainter>
+#include <QClipboard>
+#include <QDebug>
+
 #define TEXT_STEP 14
 
 #if 0

@@ -14,6 +14,15 @@ You should change it corresponding to functionality.
 #include <kumir2-libs/widgets/draw_turtle_field.h>
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 
+#include <QLayout>
+#include <QMessageBox>
+#include <QScrollBar>
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QVector2D>
+#include <QTimer>
+#include <math.h>
+
 namespace ActorTurtle
 {
 const int maxBuff = 500;

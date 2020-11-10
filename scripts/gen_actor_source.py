@@ -3254,12 +3254,7 @@ every build time
 #define $headerGuard
 
 // Qt includes
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#   include <QtWidgets>
-#else
-#   include <QtGui>
-#endif
+#include <QtGlobal>
 
 namespace $namespace {
 
@@ -3304,18 +3299,17 @@ every build time
 
 // Kumir includes
 #include <kumir2-libs/extensionsystem/kplugin.h>
-#include <kumir2-libs/widgets/declarativesettingspage.h>
 #include <kumir2/actorinterface.h>
+namespace Widgets {
+class DeclarativeSettingsPage;
+}
+
 
 // Qt includes
-#include <QObject>
 #include <QtPlugin>
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#   include <QtWidgets>
-#else
-#   include <QtGui>
-#endif
+#include <QThread>
+
+class QWidget;
 
 namespace $namespace {
 
@@ -3371,6 +3365,7 @@ every build time
 #include "$headerFileName"
 #include "$moduleBaseHeaderFileName"
 #include "$moduleHeaderFileName"
+#include <kumir2-libs/widgets/declarativesettingspage.h>
 
 namespace $namespace {
 
@@ -3437,12 +3432,8 @@ $customTypeDeclarations
 #include <kumir2-libs/extensionsystem/kplugin.h>
 
 // Qt includes
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#   include <QtWidgets>
-#else
-#   include <QtGui>
-#endif
+class QMenu;
+class QAction;
 
 namespace $namespace {
 
@@ -3491,8 +3482,8 @@ every build time
 #include <kumir2-libs/extensionsystem/kplugin.h>
 
 // Qt includes
-#include <QtCore>
-#include <QtGui>
+#include <QMenu>
+#include <QAction>
 
 namespace $namespace {
 

@@ -13,6 +13,12 @@ You should change it corresponding to functionality.
 #include <kumir2-libs/widgets/pultlogger.h>
 #include <kumir2-libs/extensionsystem/kplugin.h>
 
+#include <QMenu>
+#include <QLayout>
+#include <QMessageBox>
+#include <QTimer>
+#include <QDebug>
+
 namespace ActorVodoley
 {
 

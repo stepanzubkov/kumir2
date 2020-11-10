@@ -10,6 +10,7 @@ You should change it corresponding to functionality.
 #define VODOLEYMODULE_H
 
 #include "vodoleymodulebase.h"
+class QTimer;
 
 
 namespace ExtensionSystem {

@@ -1,46 +1,46 @@
 {
-    "name": { "ascii": "_Colorer", "ru_RU": "_Цветник" },
-    "types": [
-        {
-            "name" : { "ascii": "color", "ru_RU": "цвет" },
-            "fields": [
-                { "name": "r", "baseType": "int" },
-                { "name": "g", "baseType": "int" },
-                { "name": "b", "baseType": "int" },
-                { "name": "a", "baseType": "int" }
-            ]
-        }],
-    "methods": [
-        {
-            "name": {"ascii": "input", "ru_RU": "ввод"},
-            "returnType": "color",
-            "arguments": [
-                { "name": "x", "baseType": "string" },
-                { "name": "ok", "baseType": "bool", "access": "out" }
-            ]
-        },
-        {
-            "name": {"ascii": "output", "ru_RU": "вывод"},
-            "returnType": "string",
-            "arguments": [
-                { "name": "x", "baseType": "color" }
-            ]
-        },
-        {
-            "name": {"ascii": "="},
-            "returnType": "bool",
-            "arguments": [
-                { "name": "x", "baseType": "color" },
-                { "name": "y", "baseType": "color" }
-            ]
-        },
-        {
-            "name": {"ascii": "<>"},
-            "returnType": "bool",
-            "arguments": [
-                { "name": "x", "baseType": "color" },
-                { "name": "y", "baseType": "color" }
-            ]
-        }
-    ]
+	"name": { "ascii": "_Colorer", "ru_RU": "_Цветник" },
+	"types": [
+		{
+			"name" : { "ascii": "color", "ru_RU": "цвет" },
+			"fields": [
+				{ "name": "r", "baseType": "int" },
+				{ "name": "g", "baseType": "int" },
+				{ "name": "b", "baseType": "int" },
+				{ "name": "a", "baseType": "int" }
+			]
+		}],
+	"methods": [
+		{
+			"name": {"ascii": "input", "ru_RU": "ввод"},
+			"returnType": "color",
+			"arguments": [
+				{ "name": "x", "baseType": "string" },
+				{ "name": "ok", "baseType": "bool", "access": "out" }
+			]
+		},
+		{
+			"name": {"ascii": "output", "ru_RU": "вывод"},
+			"returnType": "string",
+			"arguments": [
+				{ "name": "x", "baseType": "color" }
+			]
+		},
+		{
+			"name": {"ascii": "="},
+			"returnType": "bool",
+			"arguments": [
+				{ "name": "x", "baseType": "color" },
+				{ "name": "y", "baseType": "color" }
+			]
+		},
+		{
+			"name": {"ascii": "<>"},
+			"returnType": "bool",
+			"arguments": [
+				{ "name": "x", "baseType": "color" },
+				{ "name": "y", "baseType": "color" }
+			]
+		}
+	]
 }

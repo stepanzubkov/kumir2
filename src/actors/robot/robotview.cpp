@@ -3,6 +3,10 @@
 #include "robotview.h"
 #include "robotmodule.h"
 
+#include <QToolButton>
+#include <QDebug>
+#include <QCoreApplication>
+
 namespace ActorRobot {
 
 RobotView::RobotView(RoboField *roboField)

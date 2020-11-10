@@ -1,61 +1,61 @@
 {
-    "name": { "ascii": "Complex numbers", "ru_RU": "Комплексные числа" },
-    "types": [
-        {
-            "name": { "ascii": "complex", "ru_RU": "компл" },
-            "fields": [
+	"name": { "ascii": "Complex numbers", "ru_RU": "Комплексные числа" },
+	"types": [
+		{
+			"name": { "ascii": "complex", "ru_RU": "компл" },
+			"fields": [
 				{ "name": "re", "baseType": "double" },
 				{ "name": "im", "baseType": "double" }
 			]
-        }
-    ],
+		}
+	],
 	"methods": [
-        {
-            "name": {"ascii": "Re" },
-            "returnType": "double",
-            "arguments": [
-                { "name": "x", "baseType": "complex" }
-            ]
-        },
-        {
-            "name": {"ascii": "Im" },
-            "returnType": "double",
-            "arguments": [
-                { "name": "x", "baseType": "complex" }
-            ]
-        },
-        {
-            "name": {"ascii": "+" },
-            "returnType": "complex",
-            "arguments": [
-                { "name": "x", "baseType": "complex" },
-                { "name": "y", "baseType": "complex" }
-            ]
-        },
-        {
-            "name": {"ascii": "-" },
-            "returnType": "complex",
-            "arguments": [
-                { "name": "x", "baseType": "complex" },
-                { "name": "y", "baseType": "complex" }
-            ]
-        },
-        {
-            "name": {"ascii": "*" },
-            "returnType": "complex",
-            "arguments": [
-                { "name": "x", "baseType": "complex" },
-                { "name": "y", "baseType": "complex" }
-            ]
-        },
-        {
-            "name": {"ascii": "/" },
-            "returnType": "complex",
-            "arguments": [
-                { "name": "x", "baseType": "complex" },
-                { "name": "y", "baseType": "complex" }
-            ]
-        },
+		{
+			"name": {"ascii": "Re" },
+			"returnType": "double",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" }
+			]
+		},
+		{
+			"name": {"ascii": "Im" },
+			"returnType": "double",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" }
+			]
+		},
+		{
+			"name": {"ascii": "+" },
+			"returnType": "complex",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" },
+				{ "name": "y", "baseType": "complex" }
+			]
+		},
+		{
+			"name": {"ascii": "-" },
+			"returnType": "complex",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" },
+				{ "name": "y", "baseType": "complex" }
+			]
+		},
+		{
+			"name": {"ascii": "*" },
+			"returnType": "complex",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" },
+				{ "name": "y", "baseType": "complex" }
+			]
+		},
+		{
+			"name": {"ascii": "/" },
+			"returnType": "complex",
+			"arguments": [
+				{ "name": "x", "baseType": "complex" },
+				{ "name": "y", "baseType": "complex" }
+			]
+		},
 		{
 			"name": ":=",
 			"returnType": "complex",
@@ -85,5 +85,5 @@
 				{ "name": "x", "baseType": "complex" }
 			]
 		}
-    ]
+	]
 }

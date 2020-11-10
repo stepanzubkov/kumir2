@@ -8,7 +8,6 @@
 #include <QSettings>
 #include <QScopedPointer>
 #include <QSharedPointer>
-#include <QWeakPointer>
 
 #ifdef EXTENSIONSYSTEM_LIBRARY
 #define EXTENSIONSYSTEM_EXPORT Q_DECL_EXPORT
@@ -47,7 +46,6 @@ private:
 };
 
 typedef QSharedPointer<Settings> SettingsPtr;
-typedef QWeakPointer<Settings> SettingsWPtr;
 
 } // namespace ExtensionSystem
 

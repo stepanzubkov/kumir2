@@ -15,42 +15,29 @@ You should change it corresponding to functionality.
 // Kumir includes
 #include <kumir2-libs/extensionsystem/kplugin.h>
 
-// Qt includes
-#include <QtCore>
-#include <QtGui>
-
-namespace Actor_Colorer {
-
-
-class _ColorerModule
-    : public _ColorerModuleBase
+namespace Actor_Colorer
 {
-    Q_OBJECT
+
+class _ColorerModule : public _ColorerModuleBase
+{
+	Q_OBJECT
 public /* methods */:
-    _ColorerModule(ExtensionSystem::KPlugin * parent);
-    static QList<ExtensionSystem::CommandLineParameter> acceptableCommandLineParameters();
-    static const QStringList & standardRussianColorNames();
+	_ColorerModule(ExtensionSystem::KPlugin *parent);
+	static QList<ExtensionSystem::CommandLineParameter> acceptableCommandLineParameters();
+	static const QStringList &standardRussianColorNames();
+
 public slots:
-    void changeGlobalState(ExtensionSystem::GlobalState old, ExtensionSystem::GlobalState current);
-    void loadActorData(QIODevice * source);
-    void reloadSettings(ExtensionSystem::SettingsPtr settings, const QStringList & keys);
-    void reset();
-    inline void terminateEvaluation() {}
-    Color runOperatorINPUT(const QString& x, bool& ok);
-    QString runOperatorOUTPUT(const Color& x);
-    bool runOperatorEQUAL(const Color& x, const Color& y);
-    bool runOperatorNOTEQUAL(const Color& x, const Color& y);
-
-
-    /* ========= CLASS PRIVATE ========= */
-
-
-
-
-
-
+	void changeGlobalState(ExtensionSystem::GlobalState old, ExtensionSystem::GlobalState current);
+	void loadActorData(QIODevice *source);
+	void reloadSettings(ExtensionSystem::SettingsPtr settings, const QStringList &keys);
+	void reset();
+	void terminateEvaluation() {}
+	Color runOperatorINPUT(const QString &x, bool &ok);
+	QString runOperatorOUTPUT(const Color &x);
+	bool runOperatorEQUAL(const Color &x, const Color &y);
+	bool runOperatorNOTEQUAL(const Color &x, const Color &y);
 };
-        
+
 
 } // namespace Actor_Colorer
 

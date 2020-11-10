@@ -10,6 +10,8 @@ You should change it corresponding to functionality.
 #include "grasshoppermodule.h"
 #include "pult.h"
 #include "kuznec.h"
+#include <QLayout>
+#include <QAction>
 
 namespace ActorGrasshopper
 {

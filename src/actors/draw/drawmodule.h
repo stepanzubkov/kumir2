@@ -11,6 +11,11 @@ You should change it corresponding to functionality.
 
 // Base class include
 #include "drawmodulebase.h"
+#include <QDebug>
+#include <QLabel>
+#include <QGraphicsView>
+#include <QGraphicsLineItem>
+class QToolButton;
 
 class DrawNavigator;
 namespace ActorDraw

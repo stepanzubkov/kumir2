@@ -14,6 +14,18 @@ You should change it corresponding to functionality.
 #include "pult.h"
 #include "kumir2-libs/widgets/pultlogger.h"
 
+#include <QMenu>
+#include <QClipboard>
+#include <QLayout>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QLabel>
+#include <QSpinBox>
+#include <QDialogButtonBox>
+#include <QDebug>
+#include <QTimer>
+#include <QProcessEnvironment>
+
 static const int AnimTime = 70;
 #define MAX_COLUMNS 255
 #define MAX_ROWS 128

@@ -23,6 +23,15 @@
 
 #include <QGraphicsSimpleTextItem>
 #include <QCloseEvent>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneWheelEvent>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QMenu>
+#include <QMenuBar>
+#include <QLineEdit>
+#include <QFileDialog>
+#include <math.h>
 
 
 void DrawView:: scrollContentsBy(int dx, int dy)

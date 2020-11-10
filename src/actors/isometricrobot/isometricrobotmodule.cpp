@@ -12,6 +12,8 @@ You should change it corresponding to functionality.
 #include "remotecontrol.h"
 
 #include <QScriptEngine>
+#include <QLayout>
+#include <QTextStream>
 
 namespace ActorIsometricRobot
 {

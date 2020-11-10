@@ -11,8 +11,16 @@ You should change it corresponding to functionality.
 #include "drawmodule.h"
 
 // Kumir includes
-//#include <kumir2-libs/extensionsystem/kplugin.h>
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QScrollBar>
+#include <QToolButton>
+#include <QIcon>
+#include <QAction>
+#include <QFileDialog>
+#include <QVector2D>
+#include <QTimer>
 
 namespace ActorDraw
 {

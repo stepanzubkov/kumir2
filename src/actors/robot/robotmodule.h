@@ -2,6 +2,11 @@
 #define ROBOTMODULE_H
 
 #include "robotmodulebase.h"
+class QPushButton;
+class QSpinBox;
+class QTimer;
+
+
 class RoboPult;
 
 namespace ActorRobot
