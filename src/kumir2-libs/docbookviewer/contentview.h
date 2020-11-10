@@ -3,7 +3,6 @@
 
 #include "contentrenderer.h"
 
-#include <QtGlobal>
 #include <QTextBrowser>
 
 class QMenu;

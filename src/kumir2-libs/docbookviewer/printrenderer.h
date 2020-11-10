@@ -2,13 +2,11 @@
 #define DOCBOOKVIEWER_PRINTRENDERER_H
 
 #include "contentrenderer.h"
-#include "docbookmodel.h"
 
-//#include <QPrinter>
 class QPrinter;
-//#include <QPoint>
 #include <QPointF>
 #include <QFont>
+#include <QImage>
 
 
 namespace DocBookViewer

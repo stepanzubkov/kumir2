@@ -12,7 +12,6 @@
 #include <QString>
 #include <QWidget>
 #include <QUrl>
-#include <QSettings>
 
 #ifdef DOCBOOKVIEWER_LIBRARY
 #define EXTERN_LIB Q_DECL_EXPORT
@@ -20,54 +19,54 @@
 #define EXTERN_LIB Q_DECL_IMPORT
 #endif
 
-namespace DocBookViewer {
-
-class EXTERN_LIB DocBookView
-        : public QWidget
+namespace DocBookViewer
 {
-    Q_OBJECT
+
+class EXTERN_LIB DocBookView : public QWidget
+{
+	Q_OBJECT
 public:
-    enum DocBookViewAction {
-        NoAction,
-        ToggleNavigationPane,
-        ShowPrintDialog
-    };
+	enum DocBookViewAction {
+		NoAction,
+		ToggleNavigationPane,
+		ShowPrintDialog
+	};
 
-    explicit DocBookView(QWidget * parent = 0);
-    QAction * viewerAction(const DocBookViewAction type) const;
+	explicit DocBookView(QWidget *parent = 0);
+	QAction *viewerAction(const DocBookViewAction type) const;
 
-    QStringList booksList() const;
-    void activateBookIndex(int index);
+	QStringList booksList() const;
+	void activateBookIndex(int index);
 
-    void updateSettings(ExtensionSystem::SettingsPtr settings, const QString & prefix);
-    bool hasAlgorithm(const QString & name) const;
-    void navigateToApiFunction(const QString & package, const QString & function);
-    void navigateToIndex(const QString & index);
-    void navigateFromQuickReference(const int topicType, const QString &name);
-    void clearNavigationFilters();
-    void setInitialView();
+	void updateSettings(ExtensionSystem::SettingsPtr settings, const QString &prefix);
+	bool hasAlgorithm(const QString &name) const;
+	void navigateToApiFunction(const QString &package, const QString &function);
+	void navigateToIndex(const QString &index);
+	void navigateFromQuickReference(const int topicType, const QString &name);
+	void clearNavigationFilters();
+	void setInitialView();
 
-    void setRole(ModelType category, const QString & value);
-    QString role(ModelType category) const;
+	void setRole(ModelType category, const QString &value);
+	QString role(ModelType category) const;
 
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+	QSize minimumSizeHint() const;
+	QSize sizeHint() const;
 
-    ~DocBookView();
+	~DocBookView();
 
-    Document addDocument(const QUrl & url, QString * error = 0);
-    Document addDocuments(const QString & groupName, const QList<QUrl> & urls, QString * error = 0);
+	Document addDocument(const QUrl &url, QString *error = 0);
+	Document addDocuments(const QString &groupName, const QList<QUrl> &urls, QString *error = 0);
 
-    void removeDocument(const Document & existingDocument);
+	void removeDocument(const Document &existingDocument);
 
 protected:
-    void showEvent(QShowEvent *);
-    void closeEvent(QCloseEvent *);
-    void hideEvent(QHideEvent *);
-    void resizeEvent(QResizeEvent *);
+	void showEvent(QShowEvent *);
+	void closeEvent(QCloseEvent *);
+	void hideEvent(QHideEvent *);
+	void resizeEvent(QResizeEvent *);
 
-private:    
-    class DocBookViewImpl* pImpl_;
+private:
+	class DocBookViewImpl *pImpl_;
 };
 
 }

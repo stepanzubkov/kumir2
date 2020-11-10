@@ -6,7 +6,6 @@
 #include <kumir2/editorinterface.h>
 #include <kumir2-libs/widgets/iconprovider.h>
 
-#include <QUrl>
 #include <QMenu>
 #include <QScrollBar>
 #include <QApplication>

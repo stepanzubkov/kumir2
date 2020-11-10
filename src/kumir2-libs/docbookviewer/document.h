@@ -10,28 +10,29 @@
 #define EXTERN Q_DECL_IMPORT
 #endif
 
-namespace DocBookViewer {
+namespace DocBookViewer
+{
 
 class DocBookModel;
 typedef QSharedPointer<DocBookModel> ModelPtr;
 
 class EXTERN Document
 {
-    friend class DocBookFactory;
-    friend class DocBookViewImpl;
-    friend class PrintDialog;
-    friend class SidePanel;
+	friend class DocBookFactory;
+	friend class DocBookViewImpl;
+	friend class PrintDialog;
+	friend class SidePanel;
 public:
-    const QUrl & url() const;
-    QString title() const;
-    ModelPtr documentRoot() const;
+	const QUrl &url() const;
+	QString title() const;
+	ModelPtr documentRoot() const;
 
 protected /* methods */:
-    explicit Document(const QUrl & url, ModelPtr model);
+	explicit Document(const QUrl &url, ModelPtr model);
 
 protected /* fields */:
-    QUrl url_;
-    ModelPtr root_;
+	QUrl url_;
+	ModelPtr root_;
 };
 
 }

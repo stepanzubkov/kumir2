@@ -5,10 +5,7 @@
 #include "modeltype.h"
 
 // Qt includes
-#include <QtGlobal>
-#include <QString>
 #include <QUrl>
-#include <QObject>
 #include <QSharedPointer>
 #include <QSvgRenderer>
 #include <QImage>

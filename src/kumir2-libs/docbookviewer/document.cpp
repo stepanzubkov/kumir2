@@ -4,26 +4,26 @@
 namespace DocBookViewer
 {
 
-Document::Document(const QUrl & url, ModelPtr model)
-    : url_(url)
-    , root_(model)
+Document::Document(const QUrl &url, ModelPtr model)
+	: url_(url)
+	, root_(model)
 {
 }
 
 
-const QUrl& Document::url() const
+const QUrl &Document::url() const
 {
-    return url_;
+	return url_;
 }
 
 QString Document::title() const
 {
-    return root_ ? root_->title() : QString();
+	return root_ ? root_->title() : QString();
 }
 
 ModelPtr Document::documentRoot() const
 {
-    return root_;
+	return root_;
 }
 
 }

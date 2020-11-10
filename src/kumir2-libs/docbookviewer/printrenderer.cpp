@@ -1,4 +1,5 @@
 #include "printrenderer.h"
+#include "docbookmodel.h"
 
 #include <QFontDatabase>
 #include <QFontMetricsF>
