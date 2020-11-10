@@ -8,6 +8,7 @@ set(SOURCES
 	vm_bytecode.cpp
 	vm_breakpoints_table.cpp
 	vm_console_handlers.cpp
+	vm_abstract_handlers.cpp
 	variant.cpp
 	vm.cpp
 )

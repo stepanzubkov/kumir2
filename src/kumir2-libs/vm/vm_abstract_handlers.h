@@ -14,11 +14,7 @@
  *
  */
 
-#if defined(WIN32) || defined(_WIN32)
-#   include <windows.h>
-#else
-#   include <unistd.h>
-#endif
+#include "vm_dll.h"
 
 #ifndef _override
 #if defined(_MSC_VER)
@@ -28,10 +24,6 @@
 #endif
 #endif
 
-#include <deque>
-#include <string>
-#include <list>
-#include <vector>
 #include "variant.hpp"
 
 
@@ -79,7 +71,7 @@ protected:
 /* ====== Functors for external modules initialization ====== */
 
 /** A functor to reset external module before execution by a given name */
-class ExternalModuleResetFunctor: public Functor
+class VM_DLL ExternalModuleResetFunctor: public Functor
 {
 public:
 	ExternalModuleResetFunctor(): callFunctor_(0) {}
@@ -93,15 +85,7 @@ public:
 		const std::string & /*moduleName*/,
 		const Kumir::String &localizedName,
 		Kumir::String *error
-	) {
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Невозможно использовать \"") +
-			localizedName +
-			Kumir::Core::fromUtf8("\": исполнители не поддерживаются");
-		if (error) {
-			error->assign(errorMessage);
-		}
-	}
+	);
 
 	void setCallFunctor(class ExternalModuleCallFunctor *callFunctor)
 	{
@@ -124,7 +108,7 @@ protected:
  *        from file 'GreatModule.dll' (on Windows).
  *    --- returns a list of module provided names
  */
-class ExternalModuleLoadFunctor: public Functor
+class VM_DLL ExternalModuleLoadFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -132,23 +116,13 @@ public:
 		return ExternalModuleLoad;
 	}
 
-
 	typedef std::deque<std::string> NamesList;
+
 	virtual NamesList operator()(
 		const std::string & /*moduleAsciiName*/,
 		const Kumir::String &moduleName,
 		Kumir::String *error
-	)
-	{
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Невозможно использовать \"") +
-			moduleName +
-			Kumir::Core::fromUtf8("\": исполнители не поддерживаются");
-		if (error) {
-			error->assign(errorMessage);
-		}
-		return NamesList();
-	}
+	);
 };
 
 
@@ -158,7 +132,7 @@ public:
  *  calling function return (is any), or a dummy any value (if void).
  *
  */
-class ExternalModuleCallFunctor: public Functor
+class VM_DLL ExternalModuleCallFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -173,22 +147,13 @@ public:
 		const uint16_t /*alogrithmId*/,
 		VariableReferencesList /*arguments*/,
 		Kumir::String *error
-	) {
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Невозможно вызвать алгоритм исполнителя \"") +
-			localizedModuleName +
-			Kumir::Core::fromUtf8("\": исполнители не поддерживаются");
-		if (error) {
-			error->assign(errorMessage);
-		}
-		return AnyValue();
-	}
+	);
 
 	virtual void checkForActorConnected(const std::string & /*asciiModuleName*/) {}
 	virtual void terminate() {}
 };
 
-class CustomTypeToStringFunctor: public Functor
+class VM_DLL CustomTypeToStringFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -199,18 +164,10 @@ public:
 	virtual Kumir::String operator()(
 		const Variable &variable,
 		Kumir::String *error
-	) {
-		const Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Не могу вывести значение типа \"") +
-			variable.recordClassLocalizedName() + Kumir::Core::fromAscii("\"");
-		if (error) {
-			error->assign(errorMessage);
-		}
-		return Kumir::String();
-	}
+	);
 };
 
-class CustomTypeFromStringFunctor: public Functor
+class VM_DLL CustomTypeFromStringFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -224,15 +181,7 @@ public:
 		const std::string & /* typeAsciiName */,
 		const Kumir::String &typeLocalizedName,
 		Kumir::String *error
-	) {
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Не могу разобрать значение типа \"") +
-			typeLocalizedName + Kumir::Core::fromAscii("\"");
-		if (error) {
-			error->assign(errorMessage);
-		}
-		return VM::AnyValue();
-	}
+	);
 };
 
 /* ====== Functors for execution control function run ======= */
@@ -254,26 +203,15 @@ public:
  *
  *  Argument is a sleep time in milliseconds
  */
-class DelayFunctor : public Functor
+class VM_DLL DelayFunctor : public Functor
 {
 public:
 	Type type() const _override
 	{
 		return Delay;
 	}
-	virtual void operator()(uint32_t msec)
-	{
-#if defined(WIN32) || defined(_WIN32)
-		Sleep(msec);
-#else
-		uint32_t sec = msec / 1000;
-		uint32_t usec = (msec - sec * 1000) * 1000;
-		// usleep works in range [0, 1000000), so
-		// call sleep(sec) first for long periods
-		sleep(sec);
-		usleep(usec);
-#endif
-	}
+
+	virtual void operator()(uint32_t msec);
 };
 
 /* ====== Functors for user input and output================= */
@@ -283,7 +221,7 @@ public:
  *  Argument is a list of Reference-variables to be set.
  *
  */
-class InputFunctor: public Functor
+class VM_DLL InputFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -292,16 +230,13 @@ public:
 	}
 
 	typedef std::deque<Variable> &VariableReferencesList;
-	virtual bool operator()(VariableReferencesList /*alist*/, Kumir::String *error)
-	{
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Операция ввода не поддерживается");
-		if (error) {
-			error->assign(errorMessage);
-		}
-		return false;
-	}
+
+	virtual bool operator()(
+		VariableReferencesList /*alist*/,
+		Kumir::String *error
+	);
 };
+
 
 /** A functor to output variables values within user interface
  *
@@ -309,7 +244,7 @@ public:
  *  a list of the same size of int-pairs (format parameters).
  *
  */
-class OutputFunctor: public Functor
+class VM_DLL OutputFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -319,21 +254,15 @@ public:
 
 	typedef const std::deque<Variable> &VariableReferencesList;
 	typedef const std::deque< std::pair<int, int> > &FormatsList;
+
 	virtual void operator()(
 		VariableReferencesList /*vars*/,
 		FormatsList /*formats*/,
 		Kumir::String *error
-	)
-	{
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Операция вывода не поддерживается");
-		if (error) {
-			error->assign(errorMessage);
-		}
-	}
+	);
 };
 
-class GetMainArgumentFunctor: public Functor
+class VM_DLL GetMainArgumentFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -341,17 +270,10 @@ public:
 		return GetMainArgument;
 	}
 
-	virtual void operator()(Variable & /*reference*/, Kumir::String *error)
-	{
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Запуск первого алгоритма с аргументами не поддерживается");
-		if (error) {
-			error->assign(errorMessage);
-		}
-	}
+	virtual void operator()(Variable & /*reference*/, Kumir::String *error);
 };
 
-class ReturnMainValueFunctor: public Functor
+class VM_DLL ReturnMainValueFunctor: public Functor
 {
 public:
 	Type type() const _override
@@ -359,14 +281,10 @@ public:
 		return ReturnMainValue;
 	}
 
-	virtual void operator()(const Variable & /*reference*/, Kumir::String *error)
-	{
-		Kumir::String errorMessage =
-			Kumir::Core::fromUtf8("Возвращение значений первого алгоритма не поддерживается");
-		if (error) {
-			error->assign(errorMessage);
-		}
-	}
+	virtual void operator()(
+		const Variable & /*reference*/,
+		Kumir::String *error
+	);
 };
 
 /* ====== End all functors declarations ============== */

@@ -1,19 +1,11 @@
 #ifndef VM_CONSOLE_HANDLERS_HPP
 #define VM_CONSOLE_HANDLERS_HPP
 
-#include "vm_dll.h"
 #include "vm_abstract_handlers.h"
-
-#ifndef _override
-#if defined(_MSC_VER)
-#define _override
-#else
-#define _override override
-#endif
-#endif
 
 namespace VM
 {
+
 namespace Console
 {
 
@@ -93,7 +85,10 @@ class VM_DLL ReturnMainValueFunctor : public VM::ReturnMainValueFunctor
 public:
 	ReturnMainValueFunctor();
 
-	void operator()(const VM::Variable &reference, Kumir::String *error) _override;
+	void operator()(
+		const VM::Variable &reference,
+		Kumir::String *error
+	) _override;
 
 	void setLocale(const Encoding loc)
 	{
@@ -152,6 +147,7 @@ private:
 		const String &customTypeLocalizedName,
 		VM::AnyValue &val, Kumir::String *error
 	);
+
 	static String decodeHttpStringValue(const std::string &s);
 };
 

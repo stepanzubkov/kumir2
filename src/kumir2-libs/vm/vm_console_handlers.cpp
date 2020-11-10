@@ -47,7 +47,7 @@ bool InputFunctor::operator()(VariableReferencesList alist, Kumir::String *error
 		} else if (var.baseType() == VM::VT_string) {
 			var.setValue(VM::AnyValue(IO::readLine(stream)));
 		} else if (var.baseType() == VM::VT_record) {
-			const String s = IO::readString(stream);
+			String s = IO::readString(stream);
 			if (!stream.hasError()) {
 				VM::CustomTypeFromStringFunctor *f =
 					customTypeFromString_;
@@ -79,8 +79,7 @@ bool InputFunctor::operator()(VariableReferencesList alist, Kumir::String *error
 	return true;
 }
 
-OutputFunctor::OutputFunctor() :
-	VM::OutputFunctor(),
+OutputFunctor::OutputFunctor() : VM::OutputFunctor(),
 #if defined(WIN32) || defined(_WIN32)
 	locale_(CP866),
 #else
@@ -129,6 +128,7 @@ void OutputFunctor::writeRawString(const String &s)
 	do_output(s, locale_);
 }
 
+
 ReturnMainValueFunctor::ReturnMainValueFunctor() :
 	VM::ReturnMainValueFunctor(),
 #if defined(WIN32) || defined(_WIN32)
@@ -140,20 +140,27 @@ ReturnMainValueFunctor::ReturnMainValueFunctor() :
 	quietMode_(false)
 {}
 
-void ReturnMainValueFunctor::operator()(const VM::Variable &reference, Kumir::String * /*error*/)
-{
+void ReturnMainValueFunctor::operator()(
+	const VM::Variable &reference,
+	Kumir::String *error
+) {
+	(void) error;
+
 	if (!reference.isValid()) {
 		return;
 	}
-	String repr;
+
 	VM::CustomTypeToStringFunctor *f = customTypeToString_;
 	if (reference.baseType() == VM::VT_record && !f) {
 		static VM::CustomTypeToStringFunctor def;
 		f = &def;
 	}
+
 	if (!quietMode_) {
 		do_output(reference.name() + Core::fromAscii(" = "), locale_);
 	}
+
+	String repr;
 	if (reference.dimension() == 0) {
 		if (reference.hasValue()) {
 			repr = reference.value().toString();
@@ -246,7 +253,7 @@ void ReturnMainValueFunctor::operator()(const VM::Variable &reference, Kumir::St
 		}
 		do_output(" }", locale_);
 	}
-	if (!quietMode_) {
+	if (true) {
 		do_output("\n", locale_);
 	}
 }
@@ -382,7 +389,7 @@ bool GetMainArgumentFunctor::readScalarArgument(
 	} else if (type == VM::VT_string) {
 		val = IO::readString(stream);
 	} else if (type == VM::VT_record) {
-		const String s = IO::readString(stream);
+		String s = IO::readString(stream);
 		VM::CustomTypeFromStringFunctor *f = customTypeFromString_;
 		if (!f) {
 			static VM::CustomTypeFromStringFunctor def;
@@ -398,21 +405,25 @@ bool GetMainArgumentFunctor::readScalarArgument(
 	return error ? error->length() == 0 : true; // Core::getError().size()==0;
 }
 
-void GetMainArgumentFunctor::operator()(VM::Variable &reference, Kumir::String *error)
-{
+void GetMainArgumentFunctor::operator()(
+	VM::Variable &reference,
+	Kumir::String *error
+) {
 	String message = Core::fromUtf8("Введите ") + reference.name();
 	static const String errorMessage = Core::fromUtf8("Не все аргументы первого алгоритма введены корректно");
 	if (reference.dimension() == 0) {
 		message += Core::fromAscii(": ");
 		VM::AnyValue val;
-		if (readScalarArgument(message,
+		if (readScalarArgument(
+				message,
 				reference.name(),
 				reference.baseType(),
 				reference.recordModuleAsciiName(),
 				reference.recordModuleLocalizedName(),
 				reference.recordClassAsciiName(),
 				reference.recordClassLocalizedName(),
-				val, error)) {
+				val, error
+		)) {
 			reference.setValue(val);
 		} else {
 			if (error) {
@@ -429,14 +440,16 @@ void GetMainArgumentFunctor::operator()(VM::Variable &reference, Kumir::String *
 			message += Core::fromAscii("[");
 			message += Converter::intToString(x);
 			message += Core::fromAscii("]: ");
-			if (readScalarArgument(message,
+			if (readScalarArgument(
+					message,
 					reference.name(),
 					reference.baseType(),
 					reference.recordModuleAsciiName(),
 					reference.recordModuleLocalizedName(),
 					reference.recordClassAsciiName(),
 					reference.recordClassLocalizedName(),
-					val, error)) {
+					val, error
+			)) {
 				reference.setValue(x, val);
 			} else {
 				if (error) {
@@ -487,14 +500,16 @@ void GetMainArgumentFunctor::operator()(VM::Variable &reference, Kumir::String *
 					message += Core::fromAscii(",");
 					message += Converter::intToString(x);
 					message += Core::fromAscii("]: ");
-					if (readScalarArgument(message,
+					if (readScalarArgument(
+							message,
 							reference.name(),
 							reference.baseType(),
 							reference.recordModuleAsciiName(),
 							reference.recordModuleLocalizedName(),
 							reference.recordClassAsciiName(),
 							reference.recordClassLocalizedName(),
-							val, error)) {
+							val, error
+					)) {
 						reference.setValue(z, y, x, val);
 					} else {
 						if (error) {

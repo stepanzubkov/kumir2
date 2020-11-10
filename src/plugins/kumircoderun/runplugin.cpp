@@ -8,12 +8,15 @@
 #include <kumir2-libs/vm/vm_console_handlers.hpp>
 #include <kumir2/actorinterface.h>
 
-//#include <QtCore> // include it before STL to avoid MSVC-specific errors
 #include <QWidget>
 #include <QCoreApplication>
 #include <QDebug>
 #include <iostream>
 #include <locale.h>
+
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#endif
 
 namespace KumirCodeRun
 {
