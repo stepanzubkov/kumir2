@@ -3,6 +3,7 @@
 
 #if !defined(DLL_IMP) && !defined(DLL_EXP)
 #if defined(_MSC_VER)
+#pragma warning (disable : 4251)
 #define DLL_IMP __declspec(dllimport)
 #define DLL_EXP __declspec(dllexport)
 #else
