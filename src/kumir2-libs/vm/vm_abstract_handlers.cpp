@@ -9,6 +9,8 @@
 namespace VM
 {
 
+Functor::~Functor() {}
+
 void ExternalModuleResetFunctor::operator()(
 	const std::string & /*moduleName*/,
 	const Kumir::String &localizedName,

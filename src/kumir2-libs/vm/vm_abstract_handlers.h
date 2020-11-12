@@ -45,7 +45,7 @@ public:
 
 /* =================== Begin functors declarations ======================= */
 
-class Functor
+class VM_DLL Functor
 {
 public:
 	enum Type {
@@ -64,8 +64,8 @@ public:
 	};
 	virtual Type type() const = 0;
 protected:
-	// destructor MUST me virtual even not need
-	virtual ~Functor() {}
+	// destructor MUST be virtual even not need
+	virtual ~Functor();
 };
 
 /* ====== Functors for external modules initialization ====== */
