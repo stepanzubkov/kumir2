@@ -11,6 +11,8 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
+#include <QFontDatabase>
+#include <QDebug>
 
 namespace DocBookViewer
 {
