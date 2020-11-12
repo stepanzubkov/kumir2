@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QSplashScreen>
 #include <QApplication>
+#include <QTextCodec>
 
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2-libs/extensionsystem/logger.h>

@@ -11,6 +11,7 @@
 #include <kumir2-libs/vm/vm_bytecode.hpp>
 
 #include <QCoreApplication>
+#include <QTextCodec>
 
 using namespace KumirCompilerTool;
 using namespace KumirAnalizer;
