@@ -11,7 +11,7 @@
 
 static void send_port_number_to_process(pid_t pid, int port)
 {
-	sigval_t val;
+	sigval val;
 	val.sival_int = port;
 	sigqueue(pid, SIGUSR1, val);
 }

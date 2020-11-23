@@ -673,13 +673,13 @@ void Plugin::handleExternalProcessCommand(const QString &command)
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MACX)
 void Plugin::handleSIGUSR1(int, siginfo_t *info, void *)
 {
-	sigval_t val = info->si_value;
+	int val = info->si_value.sival_int;
 	::usleep(1000u);
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 	sockaddr_in addr;
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(val.sival_int);
+	addr.sin_port = htons(val);
 	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	::connect(sock, (const sockaddr *) &addr, sizeof(addr));
 	QByteArray data;
