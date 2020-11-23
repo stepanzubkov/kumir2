@@ -3,8 +3,8 @@
 
 #include <QtGlobal>
 #ifdef Q_OS_WIN32
-#include <Windows.h>
-typedef DWORD Pid;
+//#include <Windows.h>
+typedef quint32 Pid;
 #else
 #include <sys/types.h>
 typedef pid_t Pid;
@@ -17,18 +17,19 @@ class Messager
 {
 public:
 
-    static Messager & get();
-    void sendMessage(Pid receiver, const QString & message);
+	static Messager &get();
+	void sendMessage(Pid receiver, const QString &message);
 
-    class ImplInterface {
-    public:
-        virtual void sendMessage(Pid receiver, const QString & message) = 0;
-        virtual ~ImplInterface() {}
-    };
+	class ImplInterface
+	{
+	public:
+		virtual void sendMessage(Pid receiver, const QString &message) = 0;
+		virtual ~ImplInterface() {}
+	};
 
 private:
-    explicit Messager();
-    QScopedPointer<ImplInterface> pImpl_;
+	explicit Messager();
+	QScopedPointer<ImplInterface> pImpl_;
 };
 
 #endif

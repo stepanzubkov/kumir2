@@ -3,11 +3,10 @@
 
 #include "procmanager.h"
 
-class ProcManagerLinux
-        : public ProcessManager::ImplInterface
+class ProcManagerLinux : public ProcessManager::ImplInterface
 {
 public:
-    pid_t find(const QString &executable);
+	pid_t find(const QString &executable);
 };
 
 #endif

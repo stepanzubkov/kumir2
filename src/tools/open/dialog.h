@@ -4,20 +4,20 @@
 #include <QDialog>
 #include "appmanager.h"
 
-namespace Ui {
+namespace Ui
+{
 class OpenDialog;
 }
 
-class OpenDialog
-        : public QDialog
+class OpenDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit OpenDialog(const QList<Application> & apps);
-    quintptr selectedApplicationId() const;
-    void accept();
+	explicit OpenDialog(const QList<Application> &apps);
+	quintptr selectedApplicationId() const;
+	void accept();
 private:
-    Ui::OpenDialog * ui_;
+	Ui::OpenDialog *ui_;
 };
 
 

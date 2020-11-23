@@ -2,23 +2,22 @@
 #define SETTINGS_H
 
 #include <QSettings>
-#include <QVariant>
 
 class Settings
 {
 public:
-    static Settings & get();
+	static Settings &get();
 
-    bool skipOpenDialog() const;
-    void setSkipOpenDialog(bool value);
+	bool skipOpenDialog() const;
+	void setSkipOpenDialog(bool value);
 
-    QString lastSelectedKey() const;
-    void setLastSelectedKey(const QString & key);
+	QString lastSelectedKey() const;
+	void setLastSelectedKey(const QString &key);
 
 private:
-    explicit Settings(const QString & dir, const QString & file);
+	explicit Settings(const QString &dir, const QString &file);
 
-    QSettings q_;
+	QSettings q_;
 };
 
 #endif // SETTINGS_H

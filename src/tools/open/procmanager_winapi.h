@@ -3,11 +3,10 @@
 
 #include "procmanager.h"
 
-class ProcManagerWindows
-        : public ProcessManager::ImplInterface
+class ProcManagerWindows : public ProcessManager::ImplInterface
 {
 public:
-    Pid find(const QString &executable);
+	Pid find(const QString &executable);
 };
 
 #endif

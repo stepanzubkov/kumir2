@@ -3,11 +3,10 @@
 
 #include "messager.h"
 
-class MessagerUnix
-        : public Messager::ImplInterface
+class MessagerUnix : public Messager::ImplInterface
 {
 public:
-    void sendMessage(pid_t receiver, const QString &message);
+	void sendMessage(pid_t receiver, const QString &message);
 };
 
 

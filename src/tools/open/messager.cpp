@@ -8,22 +8,22 @@
 
 Messager::Messager() {}
 
-Messager & Messager::get()
+Messager &Messager::get()
 {
-    static Messager messager;
-    if (!messager.pImpl_) {
+	static Messager messager;
+	if (!messager.pImpl_) {
 #ifndef Q_OS_WIN32
-    messager.pImpl_.reset(new MessagerUnix);
+		messager.pImpl_.reset(new MessagerUnix);
 #else
-    messager.pImpl_.reset(new MessagerShm);
+		messager.pImpl_.reset(new MessagerShm);
 #endif
-    }
-    return messager;
+	}
+	return messager;
 }
 
 void Messager::sendMessage(Pid receiver, const QString &message)
 {
-    if (pImpl_) {
-        pImpl_->sendMessage(receiver, message);
-    }
+	if (pImpl_) {
+		pImpl_->sendMessage(receiver, message);
+	}
 }

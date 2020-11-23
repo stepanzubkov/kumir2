@@ -4,37 +4,39 @@
 #include <QtGlobal>
 #include <QString>
 #include <QIcon>
-#include <QUrl>
+class QUrl;
 
 struct Application {
-    quintptr id;
-    QString key;
-    QString name;
-    QIcon icon;
+	quintptr id;
+	QString key;
+	QString name;
+	QIcon icon;
 };
 
 class ApplicationManager
 {
 public:
-    static ApplicationManager & get();
-    QList<Application> applications() const;
-    inline void open(const Application & application,
-                     const QUrl & url) { open(application.id, url); }
-    void open(quintptr applicationId, const QUrl & url);
+	static ApplicationManager &get();
+	QList<Application> applications() const;
+	void open(const Application &application, const QUrl &url)
+	{
+		open(application.id, url);
+	}
+	void open(quintptr applicationId, const QUrl &url);
 
-    Application find(const QString & key) const;
+	Application find(const QString &key) const;
 
 private:
-    explicit ApplicationManager();
-    void scanForApplications(const QString & appsDir, const QString & iconsDir);
+	explicit ApplicationManager();
+	void scanForApplications(const QString &appsDir, const QString &iconsDir);
 
-    struct ApplicationPrivate {
-        QString name;
-        QString executableFileName;
-        QIcon icon;
-        bool mdiInterface;
-    };
-    QList<ApplicationPrivate> applications_;
+	struct ApplicationPrivate {
+		QString name;
+		QString executableFileName;
+		QIcon icon;
+		bool mdiInterface;
+	};
+	QList<ApplicationPrivate> applications_;
 
 };
 
