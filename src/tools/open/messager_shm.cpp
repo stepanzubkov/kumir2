@@ -1,5 +1,6 @@
 #include "messager_shm.h"
 
+#include <Windows.h>
 #include <Psapi.h>
 
 #include <QDebug>
