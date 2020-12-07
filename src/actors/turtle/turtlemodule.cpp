@@ -210,10 +210,14 @@ void TurtleScene::drawOnlyAxis(double startx, double endx, double starty, double
 
 
 
-void TurtleScene::drawNet(double startx, double endx, double starty, double endy, QColor color, const double step, const double stepY, bool net, qreal nw, qreal aw)
-{
-
-	QPointF pos, tail;
+void TurtleScene::drawNet(
+	double startx, double endx,
+	double starty, double endy,
+	QColor color,
+	double step, double stepY,
+	bool net,
+	qreal nw, qreal aw
+) {
 	QColor AxisColor = DRAW->axisColor();
 	auto lp = QPen(color);
 	lp.setWidthF(nw);
@@ -442,17 +446,12 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 int TurtleScene::saveToFile(const QString &p_FileName)
 {
 	QFile l_File(p_FileName);
-	QChar Bukva;
 	char ctmp[200];
 	if (!l_File.open(QIODevice::WriteOnly)) {
 		return 1;
 	}
 
-	//QString ttt = QString::fromUtf8("Чертежник - Начало");
-
-	//l_File.write( ttt.toUtf8());
 	l_File.write("%!PS-Adobe-1.0 EPSF-1.0\n");
-	QString l_String;
 	l_File.write("%%Creator: Cherteznik\n");
 	l_File.write("%%Pages: 1\n");
 	l_File.write("%%Orientation: Portrait\n");
@@ -502,8 +501,8 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 		if (VecY2 > MaxY) {
 			MaxY = VecY2;
 		}
-
 	}
+
 	double Scale;
 
 	if (MaxX - MinX > MaxY - MinY) {
@@ -512,10 +511,6 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 		Scale = (842 - 10) / (MaxY - MinY);
 	}
 	Scale = Scale * 0.9;
-
-	//  QString tmp1 = QString(ctmp)+" scale\n";
-
-
 
 	l_File.write("%%BoundingBox: 0 0 596 842\n");
 	l_File.write("%%HiResBoundingBox: 0 0 596 842\n");

@@ -466,7 +466,6 @@ void KumKuznec::unlockControls()
 int KumKuznec::SaveToFile(QString p_FileName)
 {
 	QFile l_File(p_FileName);
-	QChar Bukva;
 	char ctmp[200];
 	if (!l_File.open(QIODevice::WriteOnly)) {
 		return 1;
@@ -582,17 +581,13 @@ int KumKuznec::SaveToFile(QString p_FileName)
 
 	}
 
-//77777777777777777777777777777777777
-	QString TmpText;
-	QByteArray ccc;
-	qreal tmpX, tmpY, FontSize;
 	for (int i = 0; i < kumtexts.count(); i++) {
-		FontSize = kumtexts[i]->Size;
+		qreal FontSize = kumtexts[i]->Size;
 		sprintf(ctmp, "/Curier findfont %f scalefont setfont\n", FontSize);
 		l_File.write(ctmp);
 
-		tmpX = kumtexts[i]->x;
-		tmpY = kumtexts[i]->y;
+		qreal tmpX = kumtexts[i]->x;
+		qreal tmpY = kumtexts[i]->y;
 		sprintf(ctmp, "%f %f moveto\n", tmpX, tmpY);
 		l_File.write(ctmp);
 
@@ -602,34 +597,19 @@ int KumKuznec::SaveToFile(QString p_FileName)
 		sprintf(ctmp, "%i %i %i setrgbcolor\n", kumtexts[i]->color.Red,  kumtexts[i]->color.Green, kumtexts[i]->color.Blue);
 		l_File.write(ctmp);
 
-		TmpText = "(" + texts[i]->text() + ") show\n";
-		ccc = TmpText.toUtf8();
+		QString TmpText = "(" + texts[i]->text() + ") show\n";
+		QByteArray ccc = TmpText.toUtf8();
 		l_File.write(ccc);
 	}
-
-//777777777777777777777777777
 
 	l_File.write("stroke\n");
 	l_File.write("grestore\n");
 	l_File.write("showpage\n");
 	l_File.close();
 	return 0;
-
-
-	l_File.close();
-	return 0;
-
 }
-//--------------------------------------------
-//запись строки в файл
-//void KumKuznec::WriteLine(QFile *p_File, QString p_String)
-//{
-/*
-    p_File->writeBlock(p_String, p_String.length());
-*/
-//}
-//---------------------------------------------------------------------------
-//Загрузка из файла
+
+
 int KumKuznec::LoadFromFile(QString p_FileName)
 {
 	if ((fileName == "") && (advancedTask)) {

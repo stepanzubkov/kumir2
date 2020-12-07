@@ -199,10 +199,14 @@ void DrawScene::drawOnlyAxis(double startx, double endx, double starty, double e
 
 
 
-void DrawScene::drawNet(double startx, double endx, double starty, double endy, QColor color, double stepX, double stepY, bool net, qreal nw, qreal aw)
-{
+void DrawScene::drawNet(
+	double startx, double endx, double starty, double endy,
+	QColor color,
+	double stepX, double stepY,
+	bool net,
+	qreal nw, qreal aw
+) {
 
-	QPointF pos, tail;
 	QColor AxisColor = DRAW->axisColor();
 	auto lp = QPen(color);
 	lp.setWidthF(nw);
@@ -267,32 +271,13 @@ void DrawScene::drawNet(double startx, double endx, double starty, double endy, 
 	}
 }
 
-//bool DrawScene::event(QEvent * event)
-//  {
-//  qDebug()<<"ET"<<event->type();
-
-
-//     dr_mutex->lock();
-//     QGraphicsScene::event(event);
-//     dr_mutex->unlock();
-//      return true;
-
-//  }
-//  bool DrawScene::eventFilter(QObject *object, QEvent *event)
-//  {
-
-//    return true;
-// }
-
 
 int   DrawScene::loadFromFile(const QString &p_FileName)
 {
 	QFileInfo fi(p_FileName);
 	QString name = fi.fileName();
 	QString Title = QString::fromUtf8("Чертежник - ") + name;
-	//double CurX, CurY;
 	//  MV->setWindowTitle ( Title);
-	qreal CurrentScale = 1.0;
 
 	QString tmp = "";
 	char ctmp[200];
@@ -301,22 +286,16 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 	QColor CurColor;
 
 
-	int NStrok;
-	NStrok = 0;
+	int NStrok = 0;
 
-	//  long l_Err;
-	//int CurX,CurY;
-	//  int SizeX, SizeY;
-	qreal x1, y1, x2, y2;
+	qreal CurrentScale = 1.0;
+	qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 	if (!l_File.open(QIODevice::ReadOnly)) {
 		QMessageBox::information(NULL, "", QString::fromUtf8("Ошибка открытия файла"), 0, 0, 0);
 		return 1;
 	}
 
-	//l_String = l_File.readLine();
-	//QMessageBox::information( 0, "", tmp, 0,0,0);
-	QByteArray ttt;
-	ttt = l_File.readLine();
+	QByteArray ttt = l_File.readLine();
 	l_String = QString::fromUtf8(ttt);
 
 	//QMessageBox::information( MV, "",l_String , 0,0,0);
@@ -345,12 +324,8 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 
 	l_String = l_String.simplified();
 	l_List = l_String.split(' ');
-	if (!(l_List[1] == "Cherteznik"))
-		//if (!(l_String == "%Creator: Cherteznik"))
-	{
-
+	if (!(l_List[1] == "Cherteznik")) {
 		QMessageBox::information(NULL, "", QString::fromUtf8("Это не файл чережника"), 0, 0, 0);
-
 		l_File.close();
 		return 1;
 	}
@@ -372,7 +347,6 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 		ttt = l_File.readLine();
 		l_String = QString::fromUtf8(ttt);
 		NStrok++;
-
 
 		if (l_String.isNull()) {
 			QMessageBox::information(NULL, "", QString::fromUtf8("Ошибка чтения строки"), 0, 0, 0);
@@ -417,14 +391,9 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 			continue;
 		}
 
-
-
-
 		if (l_List[l_List.count() - 1] == "moveto") {
 			x1 = l_List[0].toFloat();
 			y1 = -l_List[1].toFloat();
-			//CurX = x1;
-			//CurY = -y1;
 			continue;
 		}
 
@@ -434,9 +403,6 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 			lines.append(addLine(x1, y1, x2, y2));
 			lines.last()->setZValue(10);
 			lines.last()->setPen(QPen(CurColor));
-			// CurZ += 0.01;
-			//CurX = x2;
-			//CurY = -y2;
 			continue;
 		}
 
@@ -455,41 +421,25 @@ int   DrawScene::loadFromFile(const QString &p_FileName)
 int DrawScene::saveToFile(const QString &p_FileName)
 {
 	QFile l_File(p_FileName);
-	QChar Bukva;
 	char ctmp[200];
 	if (!l_File.open(QIODevice::WriteOnly)) {
 		return 1;
 	}
 
-	//QString ttt = QString::fromUtf8("Чертежник - Начало");
-
-	//l_File.write( ttt.toUtf8());
 	l_File.write("%!PS-Adobe-1.0 EPSF-1.0\n");
-	QString l_String;
 	l_File.write("%%Creator: Cherteznik\n");
 	l_File.write("%%Pages: 1\n");
 	l_File.write("%%Orientation: Portrait\n");
 
-
-	// maximum, minimum
-
-	qreal MinX, MaxX, MinY, MaxY, VecX1, VecX2, VecY1, VecY2;
-
-	QLineF TmpLine;
-	MinX = 1000000;
-	MinY = 1000000;
-
-	MaxX = -1000000;
-	MaxY = -1000000;
-
+	qreal MinX = 1000000, MaxX = -1000000, MinY = 1000000, MaxY = -1000000;
 
 	for (int i = 0; i < lines.count(); i++) {
+		QLineF TmpLine = lines[i]->line();
+		qreal VecX1 =  TmpLine.x1();
+		qreal VecY1 = -TmpLine.y1();
+		qreal VecX2 =  TmpLine.x2();
+		qreal VecY2 = -TmpLine.y2();
 
-		TmpLine = lines[i]->line();
-		VecX1 = TmpLine.x1();
-		VecY1 = -TmpLine.y1();
-		VecX2 = TmpLine.x2();
-		VecY2 = -TmpLine.y2();
 		if (VecX1 < MinX) {
 			MinX = VecX1;
 		}
@@ -515,20 +465,19 @@ int DrawScene::saveToFile(const QString &p_FileName)
 		if (VecY2 > MaxY) {
 			MaxY = VecY2;
 		}
-
 	}
-	double Scale;
 
-	if (MaxX - MinX > MaxY - MinY) {
-		Scale = (596 - 10) / (MaxX - MinX);
-	} else {
-		Scale = (842 - 10) / (MaxY - MinY);
+	if (MaxX <= MinX) {
+		MaxX = MinX + 1;
 	}
+	if (MaxY <= MinY) {
+		MaxY = MinY + 1;
+	}
+
+	double scaleX = (596 - 10) / (MaxX - MinX);
+	double scaleY = (842 - 10) / (MaxY - MinY);
+	double Scale = scaleX <= scaleY ? scaleX : scaleY;
 	Scale = Scale * 0.9;
-
-	//  QString tmp1 = QString(ctmp)+" scale\n";
-
-
 
 	l_File.write("%%BoundingBox: 0 0 596 842\n");
 	l_File.write("%%HiResBoundingBox: 0 0 596 842\n");
@@ -545,76 +494,49 @@ int DrawScene::saveToFile(const QString &p_FileName)
 	l_File.write("0 setlinejoin\n");
 	l_File.write("0 setlinecap\n");
 	l_File.write("newpath\n");
-	//QColor TmpColor;
-	QPen TmpPen;
-	QColor TmpColor;
+
 	for (int i = 0; i < lines.count(); i++) {
-
-		TmpLine = lines[i]->line();
-		TmpPen = lines[i]->pen();
-		TmpColor = TmpPen.color();
-		sprintf(ctmp, "%i %i %i setrgbcolor\n", TmpColor.red(),  TmpColor.green(), TmpColor.blue());
+		QLineF TmpLine = lines[i]->line();
+		QColor c = lines[i]->pen().color();
+		sprintf(ctmp, "%i %i %i setrgbcolor\n", c.red(),  c.green(), c.blue());
 		l_File.write(ctmp);
 
-		VecX1 = TmpLine.x1();
-		VecY1 = -TmpLine.y1();
-		VecX2 = TmpLine.x2();
-		VecY2 = -TmpLine.y2();
+		qreal x1 =  TmpLine.x1();
+		qreal y1 = -TmpLine.y1();
+		qreal x2 =  TmpLine.x2();
+		qreal y2 = -TmpLine.y2();
 
-		sprintf(ctmp, "%f %f moveto\n", VecX1, VecY1);
+		sprintf(ctmp, "%f %f moveto\n", x1, y1);
 		l_File.write(ctmp);
-
-		sprintf(ctmp, "%f %f lineto\n", VecX2, VecY2);
-
+		sprintf(ctmp, "%f %f lineto\n", x2, y2);
 		l_File.write(ctmp);
-
-
 	}
 
-	//77777777777777777777777777777777777
-	QString TmpText;
-	QByteArray ccc;
-	qreal tmpX, tmpY, FontSize;
 	for (int i = 0; i < texts.count(); i++) {
-		FontSize = texts[i]->font().pointSizeF();
+		qreal FontSize = texts[i]->font().pointSizeF();
 		sprintf(ctmp, "/Curier findfont %f scalefont setfont\n", FontSize);
 		l_File.write(ctmp);
 
-		tmpX = texts[i]->pos().x();
-		tmpY = texts[i]->pos().x();
-		sprintf(ctmp, "%f %f moveto\n", tmpX, tmpY);
+		qreal x = texts[i]->pos().x();
+		qreal y = texts[i]->pos().y();
+		sprintf(ctmp, "%f %f moveto\n", x, y);
 		l_File.write(ctmp);
 
-
-		//TmpPen = texts[i]->pen();
-		//TColor = TmpPen.color();
-		sprintf(ctmp, "%i %i %i setrgbcolor\n", texts[i]->pen().color().red(), texts[i]->pen().color().green(), texts[i]->pen().color().blue());
+		QColor c = texts[i]->pen().color();
+		sprintf(ctmp, "%i %i %i setrgbcolor\n", c.red(), c.green(), c.blue());
 		l_File.write(ctmp);
 
-		TmpText = "(" + texts[i]->text() + ") show\n";
-		ccc = TmpText.toUtf8();
-		l_File.write(ccc);
+		QString text = "(" + texts[i]->text() + ") show\n";
+		l_File.write(text.toUtf8());
 	}
-
-
 
 	l_File.write("stroke\n");
 	l_File.write("grestore\n");
 	l_File.write("showpage\n");
 	l_File.close();
 	return 0;
+}
 
-
-};
-//void DrawView::paintEvent(QPaintEvent *event)
-//    {
-//     dr_mutex->lock();
-//           QGraphicsView::paintEvent(event);
-//        event->accept();
-//        qDebug()<<"DRAW EVENT";
-//            dr_mutex->unlock();
-//
-//    }
 void DrawView::resizeEvent(QResizeEvent *event)
 {
 	if (firstResize) {
@@ -631,8 +553,7 @@ void DrawView::resizeEvent(QResizeEvent *event)
 	}
 	update();
 	// setViewportUpdateMode (QGraphicsView::SmartViewportUpdate);
-};
-
+}
 
 void DrawView::mousePressEvent(QMouseEvent *event)
 {
@@ -640,20 +561,20 @@ void DrawView::mousePressEvent(QMouseEvent *event)
 	press_pos = event->pos();
 	qDebug() << "Mouse press" << mapToScene(press_pos);
 
-};
+}
+
 void DrawView::mouseReleaseEvent(QMouseEvent *event)
 {
 	pressed = false;
-
 	DRAW->drawNet();
-};
+}
+
 void DrawView::mouseMoveEvent(QMouseEvent *event)
 {
 	if (pressed) {
 		dr_mutex->lock();
 		setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 		QPointF delta = mapToScene(press_pos) - mapToScene(event->pos());
-
 
 		QPointF center = mapToScene(viewport()->rect().center());
 		//QPointF center = sceneRect().center();
@@ -672,7 +593,8 @@ void DrawView::mouseMoveEvent(QMouseEvent *event)
 		setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
 		dr_mutex->unlock();
 	}
-};
+}
+
 void DrawView::setZoom(double zoom)
 {
 	if (zoom > MAX_ZOOM) {
@@ -886,55 +808,39 @@ void  DrawModule::openFile()
 {
 	QString File = QFileDialog::getOpenFileName(mainWidget(), QString::fromUtf8("Открыть файл"), curDir.path(), "(*.ps)");
 
-
-
-	QFileInfo info(File);
-	QDir dir = info.absoluteDir();
-
-
 	if (File.isEmpty()) {
 		return;
 	}
-	// CurrentFileName = RobotFile;
 
 	if (CurScene->loadFromFile(File) != 0) { //Get troubles when loading env.
 		QMessageBox::information(CurView, "", QString::fromUtf8("Ошибка открытия файла! ") + File, 0, 0, 0);
 		return;
 	}
+}
 
-
-
-	;
-
-};
 void  DrawModule::saveFile()
 {
 	QString File = QFileDialog::getSaveFileName(CurView, QString::fromUtf8("Сохранить файл"), curDir.path(), "(*.ps)");
-
-
-	//QString   RobotFile=dialog.selectedFiles().first();
-	QFileInfo info(File);
-	QDir dir = info.absoluteDir();
-	curDir = dir.path();
 	if (File.contains("*") || File.contains("?")) {
 		QMessageBox::information(0, "", QString::fromUtf8("Недопустимый символ в имени файла!"), 0, 0, 0);
 		return;
 	}
-	//QString   RobotFile =  QFileDialog::getSaveFileName(MV,QString::fromUtf8 ("Сохранить в файл"),"/home", "(*.fil)");
-	//if ( RobotFile.isEmpty())return;
 
-	if (File.right(4) != ".ps") {
+	if (File.right(3) != ".ps") {
 		File += ".ps";
 	}
-	//CurrentFileName = RobotFile;
 
+	QFileInfo info(File);
+	QDir dir = info.absoluteDir();
+	curDir = dir.path();
 	CurScene->saveToFile(File);
-};
+}
 
 void DrawModule::showNavigator(bool state)
 {
 	navigator->setVisible(state);
-};
+}
+
 
 /* public static */ QList<ExtensionSystem::CommandLineParameter> DrawModule::acceptableCommandLineParameters()
 {
@@ -1063,7 +969,6 @@ void DrawModule::showNavigator(bool state)
 
 	penIsDrawing = false;
 	mutex.unlock();
-
 }
 
 /* public slot */ void DrawModule::runSetPenColor(const Color &color)
