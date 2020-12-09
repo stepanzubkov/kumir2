@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 class QGraphicsItem;
+class QMutex;
 
 #define KUM_MULTI 50
 
