@@ -4,11 +4,15 @@ project(ActorDraw)
 kumir2_use_qt(Core Gui Xml Svg)
 
 set(SOURCES
+	drawview.cpp
 	drawmodule.cpp
+	drawscene.cpp
 )
 
 set(MOC_HEADERS
 	drawmodule.h
+	drawscene.h
+	drawview.h
 )
 
 
