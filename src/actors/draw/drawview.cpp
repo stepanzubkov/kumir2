@@ -1,9 +1,11 @@
 #include "drawview.h"
 #include "drawmodule.h"
 
+#include <QMutex>
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QLabel>
 #include <QDebug>
 
 
@@ -157,37 +159,27 @@ void DrawView::setNet()
 			DRAW->setNetStepX(stepX);
 			DRAW->setNetStepY(stepY);
 			DRAW->drawNet();
-
-
 		}
 		DRAW->setNetStepX(stepX);
 		DRAW->setNetStepY(stepY);
-		lastStep = stepX;
 		qDebug() << "c_scale" << c_scale << "NetStep" << DRAW->NetStepX() << "PPC" << pixel_per_cell;
 		update();
 	} else {
 		double pixel_per_cell = DRAW->NetStepX() / (1 / c_scale);
-		//if(!net)pixel_per_cell=lastStep/(1/c_scale);
 		if (pixel_per_cell < 15) { //Net step too short
 			net = false;
 			smallNetLabel->show();
-			// lastStep=DRAW->NetStepX();
 		} else {
 			if (pixel_per_cell > 15 && !net && pixel_per_cell < this->width() * 2) {
 				net = true;
 				smallNetLabel->hide();
-				// DRAW->setNetStepX(lastStep);
-				// DRAW->setNetStepY(lastStep);
 			}
 			if (pixel_per_cell > this->width() * 2) {
 				net = false;
 			}
-
 		}
-
-
 	}
-};
+}
 
 void    DrawView::wheelEvent(QWheelEvent *event)
 {

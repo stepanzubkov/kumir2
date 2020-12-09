@@ -2,8 +2,8 @@
 #define DRAWVIEW_H
 
 #include <QGraphicsView>
-#include <QLabel>
 class QLabel;
+class QMutex;
 
 namespace ActorDraw
 {
@@ -42,13 +42,12 @@ protected:
 
 private:
 	DrawModule *DRAW;
+	QMutex *dr_mutex;
 	double c_scale;
 	bool pressed;
 	bool net;
 	QPoint press_pos;
 	bool firstResize;
-	double lastStep;
-	QMutex *dr_mutex;
 	QLabel *smallNetLabel;
 };
 
