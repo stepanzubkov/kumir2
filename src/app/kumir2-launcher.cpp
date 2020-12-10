@@ -71,8 +71,8 @@ static void ConsoleMessageOutput(QtMsgType type, const char *msga)
 	QString msg(QString::fromLocal8Bit(msga));
 #else
 static void ConsoleMessageOutput(QtMsgType type, const QMessageLogContext &, const QString &msg)
-#endif
 {
+#endif
 	switch (type) {
 	case QtDebugMsg:
 //        fprintf(stderr, "Debug: %s\n", msg);
