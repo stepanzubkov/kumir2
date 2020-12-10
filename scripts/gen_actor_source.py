@@ -1184,7 +1184,7 @@ class Settings:
             assert isinstance(entry, SettingsEntry)
             result += entry.get_entry_cpp_implementation("entries")
         result += """
-bool guiAvailable = true;
+bool guiAvailable = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
 guiAvailable = 0 != getenv("DISPLAY");
 #endif
@@ -2703,7 +2703,8 @@ class ModuleBaseCppClass(CppClassBase):
 %s::%s(ExtensionSystem::KPlugin* parent)
     : QObject(parent)
 {
-    bool hasGui = true;
+    //bool hasGui = true;
+    bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
     hasGui = getenv("DISPLAY")!=0;
 #endif
@@ -2794,7 +2795,8 @@ class ModuleBaseCppClass(CppClassBase):
         return """
 /* public */ QList<QMenu*> %s::moduleMenus() const
 {
-    bool hasGui = true;
+    //bool hasGui = true;
+    bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
     hasGui = getenv("DISPLAY")!=0;
 #endif
@@ -3366,6 +3368,7 @@ every build time
 #include "$moduleBaseHeaderFileName"
 #include "$moduleHeaderFileName"
 #include <kumir2-libs/widgets/declarativesettingspage.h>
+#include <QApplication>
 
 namespace $namespace {
 
@@ -3484,6 +3487,7 @@ every build time
 // Qt includes
 #include <QMenu>
 #include <QAction>
+#include <QApplication>
 
 namespace $namespace {
 

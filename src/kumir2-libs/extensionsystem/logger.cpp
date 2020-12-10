@@ -48,7 +48,7 @@ Logger::Logger(const QString &filePath, LogLevel logLevel)
 	bool process = isDebugOnLinux();
 #endif
 	if (process) {
-		writeLog("STARTED", "");
+		writeLog("INFO", "Logger started");
 	}
 }
 
@@ -60,7 +60,7 @@ Logger::~Logger()
 	bool process = isDebugOnLinux();
 #endif
 	if (process) {
-		writeLog("EXITING", "");
+		writeLog("INFO", "Logger exiting");
 	}
 	if (loggerFile_) {
 		loggerFile_->close();
@@ -88,7 +88,7 @@ static bool isInstalledInPosixSystem()
 #ifndef Q_OS_UNIX
 	return false;
 #endif
-	const QString appDir = QCoreApplication::applicationDirPath();
+	QString appDir = QCoreApplication::applicationDirPath();
 	return appDir.startsWith("/usr/") || appDir.startsWith("/opt/");
 }
 
@@ -108,9 +108,9 @@ void Logger::writeLog(const char *type, const QString &message)
 {
 	QByteArray buffer;
 	buffer += QDateTime::currentDateTime().toString("hh:mm:ss");
-	buffer += "\t";
+	buffer += "  ";
 	buffer += QByteArray(type);
-	buffer += "\t";
+	buffer += " \t";
 	buffer += message.toUtf8();
 	buffer += "\r\n";
 	if (loggerFile_) {

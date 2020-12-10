@@ -22,6 +22,9 @@ Settings::Settings(const QString & pluginName) :
 #endif
 	QString scope = defaultSettingsScope();
 	QString fileName = pluginName + ".conf";
+
+	qDebug() << "AppName: ["  << scope << "], PluginName: [" << pluginName << "]";
+
 #ifdef Q_OS_WIN32
 	QSettings *sett = new QSettings(DataLocation+"/"+fileName, QSettings::IniFormat);
 #else
@@ -106,7 +109,7 @@ QString Settings::defaultSettingsScope()
 	static const QString result = "kumir2";
 	return result;
 #else
-	const QString appLauncher = QDir::fromNativeSeparators(qApp->arguments().at(0));
+	QString appLauncher = QDir::fromNativeSeparators(qApp->arguments().at(0));
 	QString appName = QFileInfo(appLauncher).fileName();
 
 	if (appName.endsWith(".exe")) {
@@ -116,8 +119,6 @@ QString Settings::defaultSettingsScope()
 	if (appName.trimmed().isEmpty()) {
 		appName = "kumir2";
 	}
-
-	qDebug() << "AppName: ["  << appName << "]";
 
 	return appName;
 #endif

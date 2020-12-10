@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QMap>
+#include <QApplication>
 
 namespace KumirCodeRun
 {
@@ -85,7 +86,7 @@ ExternalModuleLoadFunctor::operator()(
 		}
 	}
 
-	bool gui = true;
+	bool gui = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
 	gui = gui && getenv("DISPLAY") != 0;
 #endif

@@ -146,11 +146,7 @@ QString PluginManager::sharePath() const
 QString PluginManager::loadPluginsByTemplate(const QByteArray &templ)
 {
 	QList<PluginSpec> requests;
-	QString error = "";
-	error = pImpl_->parsePluginsRequest(templ, requests);
-	if (!error.isEmpty()) {
-		return error;
-	}
+	QString error = pImpl_->parsePluginsRequest(templ, requests);
 	if (!error.isEmpty()) {
 		return error;
 	}
@@ -172,6 +168,10 @@ QString PluginManager::loadExtraModule(const std::string &canonicalFileName)
 
 bool PluginManager::isGuiRequired() const
 {
+	if (pImpl_->objects.isEmpty()) {
+		return false;
+	}
+
 	KPlugin *runtimePlugin = qobject_cast<KPlugin *>(pImpl_->objects.last());
 	if (runtimePlugin) {
 		return runtimePlugin->isGuiRequired();
@@ -229,6 +229,7 @@ QString PluginManager::commandLineHelp() const
 			break;
 		}
 	}
+
 	bool guiMode = mainSpec.gui;
 	QString result = tr("Usage:\n");
 	QString programName = QCoreApplication::applicationFilePath();
@@ -276,37 +277,41 @@ QString PluginManager::commandLineHelp() const
 			}
 		}
 	}
-	const QList<CommandLineParameter> params = pImpl_->objects.last()->acceptableCommandLineParameters();
-	foreach (const CommandLineParameter &param, params) {
-		if (param.shortDescription_.length() > 0) {
-			if (param.valueRequired_) {
-				shortLine += param.shortDescription_;
-				longLine += param.shortDescription_;
-			} else {
-				shortLine += "[";
-				longLine += "[";
-				shortLine += param.shortDescription_.arg(1);
-				longLine += param.shortDescription_.arg(1);
-				shortLine += "]...[";
-				longLine += "]...[";
-				shortLine += param.shortDescription_.arg("n");
-				longLine += param.shortDescription_.arg("n");
-				shortLine += "]";
-				longLine += "]";
+
+	if (!pImpl_->objects.isEmpty()) {
+		QList<CommandLineParameter> params = pImpl_->objects.last()->acceptableCommandLineParameters();
+		foreach (const CommandLineParameter &param, params) {
+			if (param.shortDescription_.length() > 0) {
+				if (param.valueRequired_) {
+					shortLine += param.shortDescription_;
+					longLine += param.shortDescription_;
+				} else {
+					shortLine += "[";
+					longLine += "[";
+					shortLine += param.shortDescription_.arg(1);
+					longLine += param.shortDescription_.arg(1);
+					shortLine += "]...[";
+					longLine += "]...[";
+					shortLine += param.shortDescription_.arg("n");
+					longLine += param.shortDescription_.arg("n");
+					shortLine += "]";
+					longLine += "]";
+				}
+				shortLine += " ";
+				longLine += " ";
+				details.push_back(param.toHelpLine());
 			}
-			shortLine += " ";
-			longLine += " ";
-			details.push_back(param.toHelpLine());
+		}
+		if (longLine == shortLine) {
+			result += shortLine + "\n";
+		} else {
+			result += longLine + "\n" + tr("or") + "\n" + shortLine + "\n";
+		}
+		if (details.size() > 0) {
+			result += "\n" + tr("Options") + ":\n" + details.join("\n") + "\n";
 		}
 	}
-	if (longLine == shortLine) {
-		result += shortLine + "\n";
-	} else {
-		result += longLine + "\n" + tr("or") + "\n" + shortLine + "\n";
-	}
-	if (details.size() > 0) {
-		result += "\n" + tr("Options") + ":\n" + details.join("\n") + "\n";
-	}
+
 	return result;
 }
 

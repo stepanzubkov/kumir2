@@ -279,12 +279,17 @@ QString RobotModule::initialize(
 		qDebug() << "FIELD: |" << fName << "| ";
 	}
 
-	DISPLAY = true;
+	DISPLAY = (qobject_cast<QApplication*>(qApp) != 0);
 
 #ifdef Q_OS_LINUX
 	QProcessEnvironment pe = QProcessEnvironment::systemEnvironment();
 	qDebug() << "Display" << pe.value("DISPLAY");
 	if (pe.keys().indexOf("DISPLAY") < 0 || pe.value("DISPLAY").isEmpty()) {
+		DISPLAY = false;
+	}
+#endif
+
+	if (!DISPLAY) {
 		qDebug() << "Robot:Console mode";
 		curConsoleField = new ConsoleField(10, 15);
 		DISPLAY = false;
@@ -295,7 +300,6 @@ QString RobotModule::initialize(
 	}
 
 	qDebug() << "Robot:GuiMode";
-#endif
 
 	if (!configurationParameters.contains("tablesOnly")) {
 		createGui();
