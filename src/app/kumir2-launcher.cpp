@@ -39,11 +39,13 @@ static QString resolvePath(const char *what)
 }
 
 #if QT_VERSION < 0x050000
-static void LoggerMessageOutput(QtMsgType type, const char *msg)
+static void LoggerMessageOutput(QtMsgType type, const char *msga)
+{
+	QString msg(QString::fromLocal8Bit(msga));
 #else
 static void LoggerMessageOutput(QtMsgType type, const QMessageLogContext &, const QString &msg)
-#endif
 {
+#endif
 	ExtensionSystem::Logger *logger = ExtensionSystem::Logger::instance();
 	switch (type) {
 	case QtDebugMsg:
@@ -64,7 +66,9 @@ static void LoggerMessageOutput(QtMsgType type, const QMessageLogContext &, cons
 }
 
 #if QT_VERSION < 0x050000
-static void ConsoleMessageOutput(QtMsgType type, const char *msg)
+static void ConsoleMessageOutput(QtMsgType type, const char *msga)
+{
+	QString msg(QString::fromLocal8Bit(msga));
 #else
 static void ConsoleMessageOutput(QtMsgType type, const QMessageLogContext &, const QString &msg)
 #endif
