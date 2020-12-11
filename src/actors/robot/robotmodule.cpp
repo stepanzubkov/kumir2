@@ -279,7 +279,7 @@ RobotModule::acceptableCommandLineParameters()
 	);
 	params.append(
 		ExtensionSystem::CommandLineParameter(
-			true, 'o', "output", tr("Robot field output file name"),
+			false, 0, "robotdump", tr("Robot field output file name"),
 			QVariant::String, false
 		)
 	);
@@ -296,8 +296,8 @@ QString RobotModule::initialize(
 		qDebug() << "FIELD: |" << fName << "| ";
 	}
 
-	if (runtimeParameters.value('o').isValid()) {
-		oName = runtimeParameters.value('o').toString();
+	if (runtimeParameters.value("robotdump").isValid()) {
+		oName = runtimeParameters.value("robotdump").toString();
 		qDebug() << "OUTPUT: |" << oName << "| ";
 	}
 
