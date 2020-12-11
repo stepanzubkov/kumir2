@@ -21,6 +21,8 @@ struct CFieldItem
 {
 	CFieldItem();
 	void setWalls(int wallByte);
+	int getWalls() const;
+	bool isEmpty(int wMask = 0) const;
 
 	bool isColored;
 	bool mark;
@@ -43,6 +45,7 @@ public:
 	const CFieldItem *getItem(uint32_t row, uint32_t col) const;
 	CFieldItem *getItem(uint32_t row, uint32_t col);
 	CFieldItem *getCurItem();
+	static int createWallMask(uint32_t x, uint32_t y, uint32_t mx, uint32_t my);
 
 	bool goLeft();
 	bool goRight();
@@ -59,6 +62,8 @@ public:
 	uint32_t  Cols() const { return roboCols; }
 	uint32_t  Rows() const { return roboRows; }
 
+	int saveToFile(const QString &filename) const;
+	int saveToDataStream(QIODevice &stream) const;
 	int loadFromFile(const QString &filename);
 	int loadFromDataStream(QIODevice *stream);
 

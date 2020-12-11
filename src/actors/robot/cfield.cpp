@@ -22,10 +22,36 @@ CFieldItem::CFieldItem()
 
 void CFieldItem::setWalls(int wallByte)
 {
-	upWall = (wallByte & UP_WALL) ? true : false;
-	downWall = (wallByte & DOWN_WALL) ? true : false;
 	leftWall = (wallByte & LEFT_WALL) ? true : false;
 	rightWall = (wallByte & RIGHT_WALL) ? true : false;
+	downWall = (wallByte & DOWN_WALL) ? true : false;
+	upWall = (wallByte & UP_WALL) ? true : false;
+}
+
+int CFieldItem::getWalls() const
+{
+	int res = 0;
+	if (leftWall)
+		res |= LEFT_WALL;
+	if (rightWall)
+		res |= RIGHT_WALL;
+	if (downWall)
+		res |= DOWN_WALL;
+	if (upWall)
+		res |= UP_WALL;
+	return res;
+}
+
+bool CFieldItem::isEmpty(int wMask) const
+{
+	return
+		(getWalls() & ~wMask) == 0 &&
+		!isColored &&
+		!mark &&
+		upChar == ' ' &&
+		downChar == ' ' &&
+		radiation == 0 &&
+		temperature == 0;
 }
 
 
@@ -161,6 +187,80 @@ bool ConsoleField::goRight()
 	}
 	roboCol++;
 	return true;
+}
+
+int ConsoleField::saveToFile(const QString &filename) const
+{
+	QFile f(filename);
+	bool ok = f.open(QIODevice::WriteOnly);
+	if (!ok) {
+		qDebug() << QString::fromUtf8("Ошибка сохранения обстановки ") << filename;
+		return 1;
+	}
+	int res = saveToDataStream(f);
+	f.close();
+	return res;
+}
+
+int ConsoleField::createWallMask(uint32_t x, uint32_t y, uint32_t mx, uint32_t my)
+{
+	int res = 0;
+	if (x == 0)
+		res |= LEFT_WALL;
+	if (y == 0)
+		res |= UP_WALL;
+	if (x + 1 == mx)
+		res |= RIGHT_WALL;
+	if (y + 1 == my)
+		res |= DOWN_WALL;
+	return res;
+}
+
+int ConsoleField::saveToDataStream(QIODevice &stream) const
+{
+	char ctmp[64];
+
+	uint32_t mx = roboCols, my = roboRows;
+	uint32_t rx = roboCol,  ry = roboRow;
+
+	stream.write("; Field Size: x, y\n");
+	sprintf(ctmp, "%u %u\n", mx, my);
+	stream.write(ctmp);
+	stream.write("; Robot position: x, y\n");
+	sprintf(ctmp, "%u %u\n", rx, ry);
+	stream.write(ctmp);
+	stream.write("; A set of special Fields: x, y, Walls, Color, Radiation, Temperature, USymbol, DSymbol, Point\n");
+
+	for (uint32_t y = 0; y < my; y++) {
+		for (uint32_t x = 0; x < mx; x++) {
+			int wMask = createWallMask(x, y, mx, my);
+
+			CFieldItem item = items[y][x];
+			if (item.isEmpty(wMask)) {
+				continue;
+			}
+			char uChar = item.upChar.cell();
+			if (uChar == ' ')
+				uChar = '$';
+			char dChar = item.downChar.cell();
+			if (dChar == ' ')
+				dChar = '$';
+			char mark = item.mark ? '1' : '0';
+			char color = item.isColored ? '1' : '0';
+			sprintf(
+				ctmp, "%d %d %d %c %f %f %c %c %c\n",
+				x, y,
+				item.getWalls() & ~wMask, color,
+				item.radiation, item.temperature,
+				uChar, dChar, mark
+			);
+			stream.write(ctmp);
+		}
+	}
+
+	stream.write("; End Of File\n");
+
+	return 0;
 }
 
 int ConsoleField::loadFromFile(const QString &filename)

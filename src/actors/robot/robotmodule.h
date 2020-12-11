@@ -121,6 +121,7 @@ private:
 	void prepareNewWindow();
 	int CurCellSize;
 	bool DISPLAY;
+	QString oName;
 	ExtensionSystem::SettingsPtr curSettings;
 	ConsoleField *curConsoleField;
 	QMutex mutex;

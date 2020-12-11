@@ -138,10 +138,11 @@ void RobotModule::reset()
 	This method is called when actor resets its state before program starts.
 	*/
 	//delete field;
-	qDebug() << "Reset!!";
 	if (!DISPLAY) { //console mode
-		qDebug() << "Reset::console mode";
+		qDebug() << "Robot::Reset::console mode";
 		return;
+	} else {
+		qDebug() << "Robot::Reset::gui mode";
 	}
 
 	field->destroyRobot();
@@ -168,7 +169,17 @@ void RobotModule::changeGlobalState(
 ) {
 	Q_UNUSED(old);
 	using namespace Shared;
-	qDebug() << "RobotModuleBase::changeGlobalState";
+	qDebug() << "RobotModuleBase::changeGlobalState from " << (int) old << " to " << (int) current;
+
+	if (!DISPLAY) {
+		if (current == PluginInterface::GS_Observe && !oName.isEmpty()) {
+			int res = curConsoleField->saveToFile(oName);
+			qDebug() << "Dumped state to" << oName << ", res = " << res;
+		}
+
+		return;
+	}
+
 	view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 	if (current == PluginInterface::GS_Running) {
 		view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
@@ -266,6 +277,12 @@ RobotModule::acceptableCommandLineParameters()
 			QVariant::String, false
 		)
 	);
+	params.append(
+		ExtensionSystem::CommandLineParameter(
+			true, 'o', "output", tr("Robot field output file name"),
+			QVariant::String, false
+		)
+	);
 	return params;
 }
 
@@ -277,6 +294,11 @@ QString RobotModule::initialize(
 	if (runtimeParameters.value('f').isValid()) {
 		fName = runtimeParameters.value('f').toString();
 		qDebug() << "FIELD: |" << fName << "| ";
+	}
+
+	if (runtimeParameters.value('o').isValid()) {
+		oName = runtimeParameters.value('o').toString();
+		qDebug() << "OUTPUT: |" << oName << "| ";
 	}
 
 	DISPLAY = (qobject_cast<QApplication*>(qApp) != 0);

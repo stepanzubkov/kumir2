@@ -712,11 +712,12 @@ KumirRunPlugin::acceptableCommandLineParameters() const
 	return result;
 }
 
-QString KumirRunPlugin::initialize(const QStringList &configurationArguments,
-	const ExtensionSystem::CommandLine &runtimeArguments)
-{
+QString KumirRunPlugin::initialize(
+	const QStringList &configurationArguments,
+	const ExtensionSystem::CommandLine &runtimeArguments
+) {
 	pRun_->programLoaded = false;
-	const bool noBreakpoints = configurationArguments.contains("nobreakpoints");
+	bool noBreakpoints = configurationArguments.contains("nobreakpoints");
 	pRun_->setSupportBreakpoints(!noBreakpoints);
 	qRegisterMetaType<QVariant::Type>("QVariant::Type");
 	qRegisterMetaType< QList<QVariant::Type> >("QList<QVariant::Type>");
@@ -833,6 +834,7 @@ void KumirRunPlugin::start()
 			pRun_->wait();
 			checkForErrorInConsole();
 			stop();
+			ExtensionSystem::PluginManager::instance()->switchGlobalState(Shared::PluginInterface::GS_Observe);
 		} else {
 			startTimer(0); // start thread after event loop started
 		}

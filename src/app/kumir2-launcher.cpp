@@ -283,6 +283,7 @@ public:
 			_qApp->exit(_qApp->property("returnCode").isValid()
 				? _qApp->property("returnCode").toInt() : 1);
 		}
+
 		if (!manager->isGuiRequired()) {
 			_qApp->quit();
 		}
