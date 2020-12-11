@@ -22,6 +22,58 @@ static QByteArray currentTemplate = CONFIGURATION_TEMPLATE;
 #error No default configuration passed to GCC
 #endif
 
+// template should be the same as in the launchers
+static struct AsIf {
+	const char *role;
+	const char *tmpl;
+} asifs[] = {
+	{"teacher", "CourseManager,Editor(teacher),Actor*,KumirAnalizer(teacher,preload=Files),KumirCodeGenerator,KumirCodeRun,!CoreGUI"},
+	{"ide",     "CourseManager,Editor,Actor*,KumirAnalizer(preload=Files),*CodeGenerator,KumirCodeRun,!CoreGUI"},
+	{"classic", "CourseManager,Editor,Actor*,KumirAnalizer(preload=Files),*CodeGenerator,KumirCodeRun,!CoreGUI(notabs,nostartpage,nosessions)"},
+	{"checkcourse", "ActorRobot,!CourseManager,KumirCodeGenerator,KumirCodeRun(console),KumirAnalizer(teacher,preload=Files,preload=Strings)"},
+	{"bc", "Actor*(tablesOnly),!KumirCompilerTool,KumirCodeGenerator,KumirAnalizer(teacher,preload=Files,preload=Strings)"},
+	{"xrun", "!KumirCodeRun(console),ActorRobot"},
+};
+static int asifs_size = sizeof(asifs) / sizeof(asifs[0]);
+
+
+static void parse_options(int argc, char **argv)
+{
+	for (int i = 1; i < argc; i++) {
+		QByteArray arg = argv[i];
+		if (arg == "--help" || arg == "-h" || arg == "/?") {
+			helpMode = true;
+		} else if (arg == "--version") {
+			versionMode = true;
+		} else if (arg == "--pipe" || arg == "-p") {
+			pipeMode = true;
+		} else if (arg == "--nopipe") {
+			pipeMode = false;
+		} else if (arg == "--gui") {
+			guiMode = true;
+		} else if (arg == "--nogui") {
+			guiMode = false;
+		} else if (arg.startsWith("--template=")) {
+			currentTemplate = arg.mid(11);
+		} else if (arg.startsWith("--asif=")) {
+			QByteArray asif = arg.mid(7);
+			bool found = false;
+			for (int i = 0; i < asifs_size; i++) {
+				if (asifs[i].role == asif) {
+					currentTemplate = asifs[i].tmpl;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				fprintf(stderr, "Unknown role '%s'\n", asif.data());
+			}
+		} else if (!arg.startsWith("-")) {
+			break;
+		}
+	}
+}
+
 static QString resolvePath(const char *what)
 {
 	static QString ExecDir = QString::fromLatin1(KUMIR2_EXEC_DIR);
@@ -396,26 +448,8 @@ int main(int argc, char **argv)
 	guiMode = guiMode && getenv("DISPLAY") != 0;
 #endif
 
-	for (int i = 1; i < argc; i++) {
-		QString arg = argv[i];
-		if (arg == "--help" || arg == "-h" || arg == "/?") {
-			helpMode = true;
-		} else if (arg == "--version") {
-			versionMode = true;
-		} else if (arg == "--pipe" || arg == "-p") {
-			pipeMode = true;
-		} else if (arg == "--nopipe") {
-			pipeMode = false;
-		} else if (arg == "--gui") {
-			guiMode = true;
-		} else if (arg == "--nogui") {
-			guiMode = false;
-		} else if (arg.startsWith("--template=")) {
-			currentTemplate = arg.toLatin1().mid(11);
-		} else if (!arg.startsWith("-")) {
-			break;
-		}
-	}
+
+	parse_options(argc, argv);
 
 #if QT_VERSION < 0x050000
 	qInstallMsgHandler((!pipeMode) ? LoggerMessageOutput : ConsoleMessageOutput);
