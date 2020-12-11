@@ -279,7 +279,7 @@ RobotModule::acceptableCommandLineParameters()
 	);
 	params.append(
 		ExtensionSystem::CommandLineParameter(
-			false, 0, "robotdump", tr("Robot field output file name"),
+			false, 255, "robotdump", tr("Robot field output file name"),
 			QVariant::String, false
 		)
 	);
