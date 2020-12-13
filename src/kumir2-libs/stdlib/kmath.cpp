@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 #include <float.h>
 
 #include <time.h>

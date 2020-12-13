@@ -1133,7 +1133,8 @@ bool IO::readBool(InputStream &is)
 		}
 	}
 #else
-	const BoolCode pat {.name = word.c_str()};
+	BoolCode pat;
+	pat.name = word.c_str();
 	const BoolCode *first = boolCodes, *last = boolCodes + boolCodesSize;
 	const BoolCode *here = std::lower_bound(first, last, pat);
 	if (here != last && word == here->name) {
