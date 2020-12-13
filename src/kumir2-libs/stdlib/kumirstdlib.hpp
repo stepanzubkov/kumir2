@@ -280,11 +280,11 @@ public:
 
 	static bool isCorrectIntegerConstant(const String &v);
 
-	static String sprintfInt(int value, char base, int width, char al);
+	static String sprintfInt(int value, unsigned int base, unsigned int width, char al);
 
 	static String sprintfReal(
 		real value, Char dot, bool expform,
-		int width, int decimals, char al
+		unsigned int width, int decimals, char al
 	);
 
 	static int stringToInt(const String &str, bool &ok)
@@ -479,20 +479,11 @@ public:
 			streamType_ = InternalBuffer;
 			file = 0;
 			encoding = UTF8;
-			buffer.reserve(100);
+			buffer.reserve(10);
 			externalBuffer_ = 0;
 		}
 
-		OutputStream(FILE *f, Encoding enc)
-		{
-			streamType_ = File;
-			file = f;
-			encoding = enc;
-			if (encoding == DefaultEncoding) {
-				encoding = UTF8;
-			}
-			externalBuffer_ = 0;
-		}
+		OutputStream(FILE *f, Encoding enc);
 
 		OutputStream(AbstractOutputBuffer *buffer)
 		{
@@ -556,7 +547,7 @@ public:
 		InputStream(FILE *f, Encoding enc);
 
 		StreamType type() const { return streamType_; }
-		int currentPosition() const { return currentPosition_; }
+		long currentPosition() const { return currentPosition_; }
 
 		void getError(String &text, int &start, int &len) const
 		{
@@ -583,6 +574,12 @@ public:
 			}
 		}
 
+		bool readRawChar(Char &x);
+		void pushLastCharBack();
+		String readUntil(const String &delimeters);
+		void skipDelimiters(const String &delim = String());
+
+	private:
 		void markPossibleErrorStart()
 		{
 			errStart_ = currentPosition_;
@@ -590,22 +587,18 @@ public:
 			error_.clear();
 		}
 
-		bool readRawChar(Char &x);
-		void pushLastCharBack();
-		String readUntil(const String &delimeters);
-		void skipDelimiters(const String &delim);
-
-	private:
 		StreamType streamType_;
 		FILE *file_;
-		long fileSize_;
+		long currentPosition_;
 		Encoding encoding_;
 		String buffer_;
 		String error_;
 		int errStart_;
 		int errLength_;
-		int currentPosition_;
-		char lastCharBuffer_[3];
+		//char lastCharBuffer_[3];
+		Char lastChar_;
+		int8_t lastCharLength_;
+		bool lastCharHere_;
 		AbstractInputBuffer *externalBuffer_;
 	}; // end inner class InputStream
 

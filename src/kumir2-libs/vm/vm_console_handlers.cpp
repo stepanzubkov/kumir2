@@ -1,5 +1,5 @@
 #include "vm_console_handlers.hpp"
-#include <iostream>
+#include <stdio.h>
 
 
 namespace VM {
@@ -8,14 +8,14 @@ namespace Console {
 static void do_output(const String &s, const Encoding locale)
 {
 	EncodingError encodingError;
-	std::string localstring = Coder::encode(locale, s, encodingError);
-	std::cout << localstring;
-	std::cout.flush();
+	std::string ls = Coder::encode(locale, s, encodingError);
+	fwrite(ls.data(), 1, ls.size(), stdout);
 }
 
 static void do_output(const std::string &s, const Encoding locale)
 {
-	do_output(Core::fromUtf8(s), locale);
+//	do_output(Core::fromUtf8(s), locale);
+	fwrite(s.data(), 1, s.size(), stdout);
 }
 
 
@@ -33,7 +33,8 @@ InputFunctor::InputFunctor() :
 
 bool InputFunctor::operator()(VariableReferencesList alist, Kumir::String *error)
 {
-	IO::InputStream stream = IO::makeInputStream(FileType(), true);
+	//IO::InputStream stream = IO::makeInputStream(FileType(), true);
+	IO::InputStream &stream = stdin_;
 	for (size_t i = 0; i < alist.size(); i++) {
 		VM::Variable &var = alist[i];
 		if (var.baseType() == VM::VT_int) {
@@ -121,11 +122,13 @@ void OutputFunctor::operator()(
 		}
 	}
 	do_output(os.getBuffer(), locale_);
+	fflush(stdout);
 }
 
 void OutputFunctor::writeRawString(const String &s)
 {
 	do_output(s, locale_);
+	fflush(stdout);
 }
 
 
@@ -256,6 +259,7 @@ void ReturnMainValueFunctor::operator()(
 	if (true) {
 		do_output("\n", locale_);
 	}
+	fflush(stdout);
 }
 
 GetMainArgumentFunctor::GetMainArgumentFunctor() :
@@ -267,7 +271,8 @@ GetMainArgumentFunctor::GetMainArgumentFunctor() :
 	locale_(UTF8),
 #endif
 	customTypeFromString_(nullptr),
-	quietMode_(false)
+	quietMode_(false),
+	stdin_(IO::makeInputStream(FileType(), true))
 {}
 
 void GetMainArgumentFunctor::init(const std::deque<std::string> args)
@@ -376,20 +381,20 @@ bool GetMainArgumentFunctor::readScalarArgument(
 		if (!quietMode_) {
 			IO::writeString(0, message);
 		}
-		stream = IO::InputStream(stdin, locale_);
+		//stream = IO::InputStream(stdin, locale_);
 	}
 	if (type == VM::VT_int) {
-		val = IO::readInteger(stream);
+		val = IO::readInteger(stdin_);
 	} else if (type == VM::VT_real) {
-		val = IO::readReal(stream);
+		val = IO::readReal(stdin_);
 	} else if (type == VM::VT_bool) {
-		val = IO::readBool(stream);
+		val = IO::readBool(stdin_);
 	} else if (type == VM::VT_char) {
-		val = IO::readChar(stream);
+		val = IO::readChar(stdin_);
 	} else if (type == VM::VT_string) {
-		val = IO::readString(stream);
+		val = IO::readString(stdin_);
 	} else if (type == VM::VT_record) {
-		String s = IO::readString(stream);
+		String s = IO::readString(stdin_);
 		VM::CustomTypeFromStringFunctor *f = customTypeFromString_;
 		if (!f) {
 			static VM::CustomTypeFromStringFunctor def;

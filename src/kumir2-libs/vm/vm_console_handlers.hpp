@@ -113,6 +113,7 @@ class VM_DLL GetMainArgumentFunctor : public VM::GetMainArgumentFunctor
 	Encoding locale_;
 	VM::CustomTypeFromStringFunctor *customTypeFromString_;
 	bool quietMode_;
+	IO::InputStream stdin_;
 
 public:
 	GetMainArgumentFunctor();

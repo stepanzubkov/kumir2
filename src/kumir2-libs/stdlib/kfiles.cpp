@@ -86,7 +86,7 @@ void Files::init()
 
 	assignedIN = stdin;
 	assignedOUT = stdout;
-	inputDelimiters = Kumir::Core::fromAscii(" \n\t");
+	inputDelimiters = Kumir::Core::fromAscii(" \n\r\t");
 }
 
 void Files::finalize()
@@ -574,8 +574,7 @@ void Files::reset(FileType &key)
 		Core::abort(Core::fromUtf8("Неверный ключ"));
 		return;
 	}
-	const FileType &f = (*it);
-	FILE *fh = f.handle;
+	FILE *fh = it->handle;
 	fseek(fh, 0, 0);
 }
 
@@ -592,21 +591,19 @@ bool Files::eof(const FileType &key)
 		Core::abort(Core::fromUtf8("Неверный ключ"));
 		return false;
 	}
-	const FileType &f = (*it);
-	FILE *fh = f.handle;
+	FILE *fh = it->handle;
+
 	if (feof(fh)) {
 		return true;
 	}
-	unsigned char ch = 0x00;
-	if (fh != stdin) {
-		ch = fgetc(fh);
-		ungetc(ch, fh);
-	} else {
-		long pos = ftell(fh);
-		ch = fgetc(fh);
-		fseek(fh, pos, SEEK_SET);
+
+	int ch = fgetc(fh);
+	if (ch < 0) {
+		return true;
 	}
-	return ch == 0xFF;
+
+	ungetc(ch, fh);
+	return false;
 }
 
 bool Files::hasData(const FileType &key)
@@ -618,11 +615,26 @@ bool Files::hasData(const FileType &key)
 			break;
 		}
 	}
+
 	if (it == openedFiles.end()) {
 		Core::abort(Core::fromUtf8("Неверный ключ"));
 		return false;
 	}
-	FILE *fh = (*it).handle;
+	FILE *fh = it->handle;
+#if 1
+	for (;;) {
+		int c = fgetc(fh);
+		if (c < 0) {
+			return false;
+		}
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+			continue;
+		}
+		ungetc(c, fh);
+		return true;
+	}
+
+#else
 	long backPos = -1;
 	if (fh != stdin) {
 		backPos = ftell(fh);
@@ -660,6 +672,7 @@ bool Files::hasData(const FileType &key)
 		fseek(fh, backPos, SEEK_SET);
 	}
 	return result;
+#endif
 }
 
 bool Files::overloadedStdIn()
@@ -708,16 +721,27 @@ void Files::assignOutStream(String fileName)
 	}
 }
 
+IO::OutputStream::OutputStream(FILE *f, Encoding enc)
+{
+	streamType_ = File;
+	file = f;
+	encoding = enc;
+	if (encoding == DefaultEncoding) {
+		encoding = UTF8;
+	}
+	externalBuffer_ = 0;
+
+	if (encoding == UTF8 && ftell(file) == 0) {
+		static const char *BOM = "\xEF\xBB\xBF";
+		fwrite(BOM, sizeof(char), 3, file);
+	}
+}
+
 void IO::OutputStream::writeRawString(const String &s)
 {
 	if (type() == File) {
-		if (encoding == UTF8 && ftell(file) == 0) {
-			static const char *BOM = "\xEF\xBB\xBF";
-			fwrite(BOM, sizeof(char), 3, file);
-		}
-		std::string bytes;
 		EncodingError encodingError;
-		bytes = Coder::encode(encoding, s, encodingError);
+		std::string bytes = Coder::encode(encoding, s, encodingError);
 		if (encodingError) {
 			Core::abort(Core::fromUtf8("Ошибка кодирования строки вывода: недопустимый символ"));
 		}
@@ -739,15 +763,18 @@ IO::InputStream::InputStream(FILE *f, Encoding enc)
 	file_ = f;
 	externalBuffer_ = 0;
 	encoding_ = enc;
+	lastChar_ = 0;
+	lastCharLength_ = 0;
+	lastCharHere_ = false;
 
 	if (encoding_ == DefaultEncoding) {
 		bool forceUtf8 = false;
-		if (f != stdin) {
+		if (f != stdin && UTF8 != Core::getSystemEncoding()) {
 			long curpos = ftell(f);
 			fseek(f, 0, SEEK_SET);
 			unsigned char B[3];
 			if (fread(B, 1, 3, f) == 3) {
-				forceUtf8 = B[0] == 0xEF && B[1] == 0xBB && B[2] == 0xBF;
+				forceUtf8 = (B[0] == 0xEF && B[1] == 0xBB && B[2] == 0xBF);
 			}
 			fseek(f, curpos, SEEK_SET);
 		}
@@ -761,19 +788,13 @@ IO::InputStream::InputStream(FILE *f, Encoding enc)
 	errLength_ = 0;
 	currentPosition_ = 0;
 
-	if (f == stdin) {
-		fileSize_ = -1;
-	} else {
-		long curpos = ftell(f);
-		fseek(f, 0L, SEEK_END);
-		fileSize_ = ftell(f);
-		fseek(f, curpos, SEEK_SET);
+	if (f != stdin) {
+		currentPosition_ = ftell(f);
 	}
 }
 
 bool IO::InputStream::readRawChar(Char &x)
 {
-	lastCharBuffer_[0] = lastCharBuffer_[1] = lastCharBuffer_[2] = '\0';
 	if (type() == InternalBuffer) {
 		if ((size_t) currentPosition_ == buffer_.length()) {
 			return false;
@@ -785,24 +806,27 @@ bool IO::InputStream::readRawChar(Char &x)
 	} else if (type() == ExternalBuffer) {
 		return externalBuffer_->readRawChar(x);
 	} else {
-		if (feof(file_)) {
+		if (lastCharHere_) {
+			lastCharHere_ = false;
+			currentPosition_ += lastCharLength_;
+			x = lastChar_;
+			return true;
+		}
+		lastCharLength_ = 0;
+		char buf[4] = {0, 0, 0, 0};
+		int ch = fgetc(file_);
+		if (ch < 0) {
 			return false;
 		}
-		long pos = ftell(file_);
-		if (fileSize_ != -1 && pos >= fileSize_) {
-			return false;
-		}
-		charptr buffer = reinterpret_cast<charptr>(&lastCharBuffer_);
+		buf[0] = ch;
 		if (encoding_ != UTF8) {
-			// Read only one byte
-			lastCharBuffer_[0] = fgetc(file_);
-			uint8_t firstByte = lastCharBuffer_[0];
-			if (firstByte == 255 && fileSize_ == -1) {
-				return false;
-			}
+			lastCharLength_ = 1;
+			currentPosition_ +=  lastCharLength_;
 		} else {
+#if 0
 			// More complex...
-			long cpos = ftell(file_);
+			long cpos = 1; //ftell(file_);
+			fprintf(stderr, "cpos=%ld\n", cpos);
 			if (cpos == 0) {
 				// Try to read BOM
 				static const char *BOM = "\xEF\xBB\xBF";
@@ -816,45 +840,53 @@ bool IO::InputStream::readRawChar(Char &x)
 					fseek(file_, 0, SEEK_SET);
 				}
 			}
-			lastCharBuffer_[0] = fgetc(file_);
-			uint8_t firstByte = lastCharBuffer_[0];
-			uint8_t oneSymbMark = firstByte >> 5;
-			uint8_t twoSymbMark = firstByte >> 4;
-			if (firstByte == 255 && file_ == Files::getAssignedIn()) {
-//         Core::abort(Core::fromUtf8("Ошибка чтения данных: входной поток закончился"));
-				return false;
-			} else if (firstByte == 255) {
-				return false;
+			int ch = fgetc(file_);
+			fprintf(stderr, "%s:%d ch=%d \n", __FILE__, __LINE__, ch);
+			if (ch < 0) {
+				return - 1;
 			}
+			lastCharBuffer_[0] = ch;
+#endif
+
+			uint8_t firstByte = buf[0];
 			int extraBytes = 0;
-			if (firstByte > 127) {
-				if (oneSymbMark & 0x06) {
+			if (firstByte & 0x80) {
+				if ((firstByte >> 5) == 0x06) {
 					extraBytes = 1;
-				} else if (twoSymbMark & 0x0E) {
+				} else if ((firstByte >> 4) == 0x0E) {
 					extraBytes = 2;
+				} else if ((firstByte >> 3) == 0x1E) {
+					extraBytes = 3;
 				}
 			}
+			lastCharLength_ = 1 + extraBytes;
+			currentPosition_ += lastCharLength_;
 			for (int i = 0; i < extraBytes; i++) {
-				if (feof(file_)) {
+				ch = fgetc(file_);
+				if ((ch >> 6) != 2) {
 					Core::abort(Core::fromUtf8("Ошибка чтения данных из файла: UTF-8 файл поврежден"));
 					return false;
 				}
-				lastCharBuffer_[i + 1] = fgetc(file_);
+				buf[i + 1] = ch;
 			}
 		}
-		std::string sb(buffer);
-		std::wstring res;
+
+		std::string sb(buf);
 		EncodingError encodingError;
-		res = Coder::decode(encoding_, sb, encodingError);
+		std::wstring res = Coder::decode(encoding_, sb, encodingError);
 		if (encodingError) {
 			Core::abort(Core::fromUtf8("Ошибка перекодирования при чтении данных из текстового файла"));
 			return false;
 		}
-		if (res.length() == 0) {
+		if (res.length() != 1) {
 			Core::abort(Core::fromUtf8("Ошибка перекодирования при чтении данных из текстового файла"));
 			return false;
 		}
-		x = res.at(0);
+		x = lastChar_ = res.at(0);
+		if (x == 0xfeff && currentPosition_ == lastCharLength_) {
+			// Initial BOM, transform it to space
+			x = lastChar_ = Char(' ');
+		}
 		return true;
 	}
 }
@@ -868,6 +900,8 @@ void IO::InputStream::pushLastCharBack()
 	} else if (type() == ExternalBuffer) {
 		externalBuffer_->pushLastCharBack();
 	} else { /* File */
+
+#if 0
 		if (file_ == stdin) {
 			if (lastCharBuffer_[2] != '\0') {
 				ungetc(lastCharBuffer_[2], file_);
@@ -875,10 +909,19 @@ void IO::InputStream::pushLastCharBack()
 			if (lastCharBuffer_[1] != '\0') {
 				ungetc(lastCharBuffer_[1], file_);
 			}
-			ungetc(lastCharBuffer_[0], file_);
+			int res = ungetc(lastCharBuffer_[0], file_);
+			fprintf(stderr, "%s:%d ungetc=%d \n", __FILE__, __LINE__, res);
 		} else {
 			fseek(file_, -1 * strlen(lastCharBuffer_), SEEK_CUR);
 		}
+#else
+		if (lastCharHere_) {
+			fprintf(stderr, "InputStream: cannot push back more than one character, doing nothing.");
+		} else {
+			lastCharHere_ = true;
+			currentPosition_ -= lastCharLength_;
+		}
+#endif
 	}
 }
 
@@ -886,18 +929,14 @@ void IO::InputStream::pushLastCharBack()
 String IO::InputStream::readUntil(const String &delimeters)
 {
 	String result;
-	result.reserve(100);
+	result.reserve(10);
 	Char current;
 	while (readRawChar(current)) {
-		if (delimeters.find_first_of(current) != String::npos
-			&& current != Char('\r')
-		) {
+		if (delimeters.find_first_of(current) != String::npos ) {
 			pushLastCharBack();
 			break;
 		} else {
-			if (current != Char('\r')) {
-				result.push_back(current);
-			}
+			result.push_back(current);
 		}
 	}
 	return result;
@@ -906,18 +945,17 @@ String IO::InputStream::readUntil(const String &delimeters)
 
 void IO::InputStream::skipDelimiters(const String &del)
 {
-	const String delim = del.empty() ? inputDelimiters : del;
+	const String &delim = del.empty() ? inputDelimiters : del;
 
 	// Skip delimiters until lexem
 	Char skip(32);
 	while (readRawChar(skip)) {
-		if (delim.find_first_of(skip) == String::npos
-			&& skip != Char('\r')
-		) {
+		if (delim.find_first_of(skip) == String::npos) {
 			pushLastCharBack();
 			break;
 		}
 	}
+	markPossibleErrorStart();
 }
 
 
@@ -933,7 +971,6 @@ StringList IO::splitIntoLexemsByDelimeter(
 		if (s[i] == delim) {
 			result.push_back(current);
 			current.clear();
-			current.reserve(10);
 		} else if (s[i] != ' ') {
 			current.push_back(s[i]);
 		}
@@ -947,9 +984,8 @@ StringList IO::splitIntoLexemsByDelimeter(
 String IO::readWord(InputStream &is)
 {
 	String delim = inputDelimiters;
-	is.skipDelimiters(delim);
 	// Mark as lexem begin position
-	is.markPossibleErrorStart();
+	is.skipDelimiters(delim);
 	return is.readUntil(delim);
 }
 
@@ -957,9 +993,8 @@ String IO::readWord(InputStream &is)
 String IO::readString(InputStream &is)
 {
 	String delim = inputDelimiters;
-	is.skipDelimiters(delim);
 	// Mark as lexem begin position
-	is.markPossibleErrorStart();
+	is.skipDelimiters(delim);
 	Char bracket = Char('\0');
 	if (!is.readRawChar(bracket)) {
 		is.setError(Core::fromUtf8("Не могу прочитать литерал: текст закончился"));
@@ -971,7 +1006,7 @@ String IO::readString(InputStream &is)
 	}
 	Char current;
 	String result;
-	result.reserve(100);
+	result.reserve(10);
 	while (is.readRawChar(current)) {
 		if (current != bracket) {
 			result.push_back(current);
@@ -980,10 +1015,7 @@ String IO::readString(InputStream &is)
 		}
 	}
 	if (current != bracket) {
-//            is.setError(Core::fromUtf8("Ошибка чтения литерала: текст закончился раньше, чем появилась закрывающая кавычка"));
-	} else {
-		// Skip closing bracket
-		is.readRawChar(bracket);
+//		is.setError(Core::fromUtf8("Ошибка чтения литерала: текст закончился раньше, чем появилась закрывающая кавычка"));
 	}
 	return result;
 }
@@ -991,16 +1023,17 @@ String IO::readString(InputStream &is)
 String IO::readLine(InputStream &is)
 {
 	String result;
-	result.reserve(100);
+	result.reserve(10);
 	Char current;
 	while (is.readRawChar(current)) {
-		if (current != 10 && current != 13) {
-			result.push_back(current);
-		}
-		if (current == 10) {
+		if (current == '\n') {
 			break;
 		}
+		if (current != '\r') {
+			result.push_back(current);
+		}
 	}
+
 	return result;
 }
 
@@ -1011,8 +1044,7 @@ Char IO::readChar(InputStream &is)
 		return result;
 	}
 
-	bool ok;
-	ok = is.readRawChar(result);
+	bool ok = is.readRawChar(result);
 	if (!ok) {
 		is.setError(Core::fromUtf8("Ошибка ввода символа: текст закончился"));
 	}
@@ -1023,6 +1055,7 @@ Char IO::readChar(InputStream &is)
 int IO::readInteger(InputStream &is)
 {
 	String word = readWord(is);
+	//fprintf(stderr, "%s:%d word='%S' \n", __FILE__, __LINE__, word.c_str());
 	if (is.hasError()) {
 		return 0;
 	}
@@ -1060,6 +1093,28 @@ real IO::readReal(InputStream &is)
 	return result;
 }
 
+static struct BoolCode {
+	bool value;
+	const wchar_t *name;
+} boolCodes[] = {
+	{0, L"0"},
+	{1, L"1"},
+	{0, L"false"},
+	{0, L"no"},
+	{1, L"true"},
+	{1, L"yes"},
+	{1, L"да"},
+	{1, L"истина"},
+	{0, L"ложь"},
+	{0, L"нет"},
+}; // should be lexicographically ordered
+static int boolCodesSize = sizeof(boolCodes) / sizeof(boolCodes[0]);
+
+static bool operator <(const BoolCode &x, const BoolCode &y) {
+	return String(x.name) < String(y.name);
+}
+
+
 bool IO::readBool(InputStream &is)
 {
 	String word = Core::toLowerCaseW(readWord(is));
@@ -1069,32 +1124,24 @@ bool IO::readBool(InputStream &is)
 	if (word.length() == 0) {
 		is.setError(Core::fromUtf8("Ошибка ввода логического значения: ничего не введено"));
 	}
-	bool yes = false;
-	bool no = false;
-	static std::set<String> YES, NO;
-	YES.insert(Core::fromAscii("true"));
-	YES.insert(Core::fromAscii("yes"));
-	YES.insert(Core::fromAscii("1"));
-	YES.insert(Core::fromUtf8("да"));
-	YES.insert(Core::fromUtf8("истина"));
-	NO.insert(Core::fromAscii("false"));
-	NO.insert(Core::fromAscii("no"));
-	NO.insert(Core::fromAscii("0"));
-	NO.insert(Core::fromUtf8("нет"));
-	NO.insert(Core::fromUtf8("ложь"));
 
-	if (YES.count(word)) {
-		yes = true;
+#if 0
+	for (int i = 0; i < boolCodesSize; i++) {
+		if (word == boolCodes[i].name) {
+			return boolCodes[i].value;
+		}
 	}
+#else
+	const BoolCode pat {.name = word.c_str()};
+	const BoolCode *first = boolCodes, *last = boolCodes + boolCodesSize;
+	const BoolCode *here = std::lower_bound(first, last, pat);
+	if (here != last && word == here->name) {
+		return here->value;
+	}
+#endif
 
-	if (NO.count(word)) {
-		no = true;
-	}
-
-	if (!yes && !no) {
-		is.setError(Core::fromUtf8("Ошибка ввода логического значения: неизвестное значение"));
-	}
-	return yes;
+	is.setError(Core::fromUtf8("Ошибка ввода логического значения: неизвестное значение"));
+	return false;
 }
 
 void IO::writeString(OutputStream &os, const String &str, int width)
@@ -1108,8 +1155,7 @@ void IO::writeString(OutputStream &os, const String &str, int width)
 
 void IO::writeChar(OutputStream &os, const Char &chr, int width)
 {
-	String data;
-	data.push_back(chr);
+	String data(1, chr);
 	if (width) {
 		// TODO implement me
 	}
@@ -1118,21 +1164,22 @@ void IO::writeChar(OutputStream &os, const Char &chr, int width)
 
 void IO::writeInteger(OutputStream &os, int value, int width)
 {
-	const String strval = Converter::sprintfInt(value, 10, width, 'r');
+	String strval = Converter::sprintfInt(value, 10, width, 'r');
 	os.writeRawString(strval);
 }
 
 void IO::writeReal(OutputStream &os, real value, int width, int decimals)
 {
-	const String strval = Converter::sprintfReal(value, '.', false, width, decimals, 'r');
+	String strval = Converter::sprintfReal(value, '.', false, width, decimals, 'r');
 	os.writeRawString(strval);
 }
 
 void IO::writeBool(OutputStream &os, bool value, int width)
 {
-	static const String YES = Core::fromUtf8("да");
-	static const String NO = Core::fromUtf8("нет");
-	const String &sval = value ? YES : NO;
+	static const wchar_t *names[2] = {L"нет", L"да"};
+//	static const String YES = Core::fromUtf8("да");
+//	static const String NO = Core::fromUtf8("нет");
+	String sval = names[value ? 1 : 0];
 	if (width) {
 		// TODO implement me
 	}
@@ -1162,12 +1209,11 @@ IO::InputStream IO::makeInputStream(FileType fileNo, bool fromStdIn)
 			Core::abort(Core::fromUtf8("Файл с таким ключем не открыт"));
 			return InputStream();
 		}
-		const FileType file = (*it);
-		if (file.getMode() != FileType::Read) {
+		if (it->getMode() != FileType::Read) {
 			Core::abort(Core::fromUtf8("Файл с таким ключем открыт на запись"));
 			return InputStream();
 		}
-		return InputStream((*it).handle, fileEncoding);
+		return InputStream(it->handle, fileEncoding);
 	}
 }
 
@@ -1188,12 +1234,11 @@ IO::OutputStream IO::makeOutputStream(FileType fileNo, bool toStdOut)
 			Core::abort(Core::fromUtf8("Файл с таким ключем не открыт"));
 			return OutputStream();
 		}
-		const FileType file = (*it);
-		if (file.getMode() == FileType::Read) {
+		if (it->getMode() == FileType::Read) {
 			Core::abort(Core::fromUtf8("Файл с таким ключем открыт на чтение"));
 			return OutputStream();
 		}
-		return OutputStream((*it).handle, fileEncoding);
+		return OutputStream(it->handle, fileEncoding);
 	}
 }
 

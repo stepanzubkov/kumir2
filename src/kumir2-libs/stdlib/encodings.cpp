@@ -136,13 +136,13 @@ MultiByte UTF8CodingTable::enc(uint32_t k, EncodingError &error)
 	// for implementation details see:
 	//   man utf-8
 	error = NoEncodingError;
-	uint32_t v = static_cast<uint32_t>(k);
+	uint32_t v = k;
 	MultiByte result;
 	if (v <= 0x7F) {
 		// 0xxxxxxx
 		result.size = 1;
 		result.data[0] = v & 0x7F; // 0x7F = 01111111
-	} else if (v >= 0x80 && v <= 0x7FF) {
+	} else if (v <= 0x7FF) {
 		// 110xxxxx,10xxxxxx
 		result.size = 2;
 		result.data[1] = v & 0x3F; // 0x3F = 00111111
@@ -150,7 +150,7 @@ MultiByte UTF8CodingTable::enc(uint32_t k, EncodingError &error)
 		v = v >> 6;
 		result.data[0] = v & 0x1F; // 0x1F = 00011111
 		result.data[0] |= 0xC0; // 0xC0 = 11000000
-	} else if (v >= 0x800 && v <= 0xFFFF) {
+	} else if (v <= 0xFFFF) {
 		// 1110xxxx, 10xxxxxx, 10xxxxxx
 		result.size = 3;
 		result.data[2] = v & 0x3F; // 0x3F = 00111111
@@ -189,27 +189,27 @@ uint32_t UTF8CodingTable::dec(charptr &from, EncodingError &error)
 		// first byte mask: 110xxxxx
 		// -- use two bytes
 		v = byte & 0x1F; // 0x1F = 000xxxxx
-		if (from == 0 || (*from) == '\0') {
+		byte = (*from++);
+		if (byte == '\0') {
 			error = StreamEnded;
 			return L'?';
 		}
-		byte = (*from++);
 		v = (v << 6) | (byte & 0x3F); // 0x3F = 00111111
 	} else if (byte_first_4_bits == 0x0E) {
 		// first byte mask: 1110xxxx
 		// -- use three bytes
 		v = byte & 0x0F; // 0x0F = 00001111
-		if (from == 0 || (*from) == '\0') {
+		byte = (*from++);
+		if (byte == '\0') {
 			error = StreamEnded;
 			return L'?';
 		}
-		byte = (*from++);
 		v = (v << 6) | (byte & 0x3F); // 0x3F = 00111111
-		if (from == 0 || (*from) == '\0') {
+		byte = (*from++);
+		if (byte == '\0') {
 			error = StreamEnded;
 			return L'?';
 		}
-		byte = (*from++);
 		v = (v << 6) | (byte & 0x3F); // 0x3F = 00111111
 	} else {
 		// Something going wrong:

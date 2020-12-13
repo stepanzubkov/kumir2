@@ -529,9 +529,12 @@ int Converter::parseInt(String word, unsigned int base, ParseError &error)
 			base = 10;
 		}
 	}
-	assert(base);
+	if (base <= 1 || base > 36) {
+		fprintf(stderr, "Bad conversion base %u, setting to 10 \n", base);
+		base = 10;
+	}
 
-	if (l == 0) {
+	if (l == pos) {
 		error = EmptyWord;
 		return 0;
 	}
@@ -701,45 +704,44 @@ real Converter::parseReal(String word, Char dot, ParseError &error)
 	return result;
 }
 
-String Converter::sprintfInt(int value, char base, int width, char al)
+String Converter::sprintfInt(int value, unsigned int base, unsigned int width, char al)
 {
 	String result;
-	result.reserve(30);
+	result.reserve(10);
 	static const char *digits = "0123456789abcdefghijklmnopqrstuvwxyz";
-	int q, r;
 	bool negative = value < 0;
-	if (int64_t(value) == -2147483648LL) {
-		if (base == 10) {
-			result = Core::fromAscii(std::string("-2147483648"));
-		}
-	} else {
-		q = negative ? -value : value;
-		if (q > 0) {
-			while (q > 0) {
-				r = q % base;
-				result.insert(0, 1, digits[r]);
-				q = q / base;
-			}
-		} else {
-			result.insert(0, 1, '0');
-		}
-		if (base == 16) {
-			result.insert(0, 1, '$');
-		}
-		if (negative) {
-			result.insert(0, 1, '-');
-		}
+	unsigned int va = negative ? -value : value;
+#if 0
+	fprintf(stderr, "%s:%d value=%d, base=%u, width = %u, char = %d \n",
+		__FILE__, __LINE__, value, base, width, (int) al);
+#endif
+	if (base <= 1 || base > 36) {
+		fprintf(stderr, "Bad conversion base %u, setting to 10 \n", base);
+		base = 10;
 	}
-	if (width > 0) {
-		int leftSpaces = 0;
-		int rightSpaces = 0;
+
+	do {
+		result.push_back(digits[va % base]);
+		va /= base;
+	} while (va);
+
+	if (negative) {
+		result.push_back('-');
+	}
+
+	std::reverse(result.begin(), result.end());
+
+	unsigned int len = result.length();
+	if (width > len) {
+		unsigned int leftSpaces = 0;
+		unsigned int rightSpaces = 0;
 		if (al == 'l') {
-			rightSpaces = width - result.length();
+			rightSpaces = width - len;
 		} else if (al == 'r') {
-			leftSpaces = width - result.length();
+			leftSpaces = width - len;
 		} else {
-			leftSpaces = (width - result.length()) / 2;
-			rightSpaces = width - result.length() - leftSpaces;
+			leftSpaces = (width - len) / 2;
+			rightSpaces = width - len - leftSpaces;
 		}
 		if (leftSpaces > 0) {
 			result.insert(0, leftSpaces, ' ');
@@ -753,7 +755,7 @@ String Converter::sprintfInt(int value, char base, int width, char al)
 
 String Converter::sprintfReal(
 	real value, Char dot, bool expform,
-	int width, int decimals, char al
+	unsigned int width, int decimals, char al
 )
 {
 	(void) dot;
@@ -793,7 +795,7 @@ String Converter::sprintfReal(
 	}
 
 	// Replace ',' with '.' (for some locales like Russian)
-	const size_t dotPos = rpart.find(',');
+	size_t dotPos = rpart.find(',');
 	if (std::string::npos != dotPos) {
 		rpart.replace(dotPos, 1, ".");
 	}
@@ -810,11 +812,12 @@ String Converter::sprintfReal(
 		}
 	}
 	std::string ascii = rpart + expPart;
-	while (width > 0 && ascii.length() < static_cast<size_t>(width)) {
+	unsigned int len = ascii.size();
+	if (width > len) {
 		if ('r' == al) {
-			ascii = std::string(" ") + ascii;
+			ascii.insert(0, width - len, ' ');
 		} else {
-			ascii.push_back(' ');
+			ascii.append(width - len, ' ');
 		}
 	}
 
