@@ -11,7 +11,7 @@
 
 #include <string.h>
 #include <vector>
-#include <set>
+#include <algorithm>
 
 namespace Kumir {
 
@@ -1093,7 +1093,8 @@ real IO::readReal(InputStream &is)
 	return result;
 }
 
-static struct BoolCode {
+static class BoolCode {
+ public:
 	bool value;
 	const wchar_t *name;
 } boolCodes[] = {
