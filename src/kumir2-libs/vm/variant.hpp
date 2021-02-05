@@ -265,6 +265,16 @@ public:
 		}
 	}
 
+	const String &toStringRef() const
+	{
+		static const String empty;
+		if (svalue_ == 0) {
+			Kumir::Core::abort(Kumir::Core::fromUtf8("Значение не строковое"));
+			return empty;
+		}
+		return *svalue_;
+	}
+
 	String toString() const
 	{
 		if (type_ == VT_int) {
@@ -701,6 +711,7 @@ public:
 		return value().toChar();
 	}
 
+	const String &toStringRef() const;
 	String toString() const;
 	String toString(int indeces[4]) const;
 

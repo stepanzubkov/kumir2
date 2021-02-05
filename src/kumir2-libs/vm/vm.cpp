@@ -1272,9 +1272,10 @@ void KumirVM::do_stdcall(uint16_t alg)
 	}
 	/* алг цел длин(лит s) */
 	case 0x001f: {
-		const String x = valuesStack_.pop().toString();
-		int y = x.length();
-		valuesStack_.push(Variable(y));
+		const String &s = valuesStack_.top().toStringRef();
+		size_t l = s.length();
+		valuesStack_.pop();
+		valuesStack_.push(Variable((int) l));
 		break;
 	}
 	/* алг цел код(сим ch) */
@@ -1889,13 +1890,17 @@ void KumirVM::do_specialcall(uint16_t alg)
 		if (stacksMutex_) {
 			stacksMutex_->lock();
 		}
+
 		Variable second = valuesStack_.pop();
-		Variable first = valuesStack_.pop();
 		int index = second.value().toInt();
-		const String &s = first.value().toString();
+
+		Variable first = valuesStack_.pop();
+		//const String &s = first.value().toString();
+		const String &s = first.toStringRef();
+
 		error_ = Kumir::Core::getError();
 		if (error_.length() == 0) {
-			if (index < 1 || index > (int)s.length()) {
+			if (index < 1 || index > (int) s.length()) {
 				error_ = Kumir::Core::fromUtf8("Индекс символа больше длины строки");
 			} else {
 				Char result = s[index - 1];
@@ -1903,6 +1908,7 @@ void KumirVM::do_specialcall(uint16_t alg)
 				valuesStack_.push(r);
 			}
 		}
+
 		if (stacksMutex_) {
 			stacksMutex_->unlock();
 		}
@@ -1942,7 +1948,7 @@ void KumirVM::do_specialcall(uint16_t alg)
 		Variable first = valuesStack_.pop();
 		int start = second.value().toInt();
 		int end   = third.value().toInt();
-		const String &s = first.value().toString();
+		const String &s = first.toStringRef();
 		error_ = Kumir::Core::getError();
 		if (error_.length() == 0) {
 			if (start < 1 || start > (int)s.length()) {
@@ -1950,7 +1956,7 @@ void KumirVM::do_specialcall(uint16_t alg)
 			} else if (end < start) {
 				String empty;
 				valuesStack_.push(Variable(empty));
-			} else if (end < 1 || end > (int)s.length()) {
+			} else if (end < 1 || end > (int) s.length()) {
 				error_ = Kumir::Core::fromUtf8("Правая граница вырезки за пределами строки");
 			} else {
 				String result = s.substr(start - 1, end - start + 1);

@@ -77,7 +77,25 @@ void Variable::setValue(const AnyValue &v)
 
 }
 
+const String &Variable::toStringRef() const
+{
+	static const String empty;
 
+	if (reference_) {
+		if (referenceIndeces_[3] != 0) {
+			Kumir::Core::abort(Kumir::Core::fromUtf8("Плохая ссылка на строку"));
+			return empty;
+		}
+		return reference_->toStringRef();
+	}
+
+	if (baseType_ != VT_string) {
+		Kumir::Core::abort(Kumir::Core::fromUtf8("Величина не строковая"));
+		return empty;
+	}
+
+	return value_.toStringRef();
+}
 
 
 String Variable::toString() const
