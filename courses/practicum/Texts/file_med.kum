@@ -7,7 +7,7 @@
 дано |  Имя файла со случайными числами |@protected
      |от -100 до 100|@protected
 надо |  Среднее арифметическое чисел в файле|@protected
-|    | |@protected
+     | |@protected
 нач|@protected
 вещ сред ар=0|@protected
 
