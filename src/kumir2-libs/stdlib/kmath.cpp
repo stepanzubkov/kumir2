@@ -16,6 +16,7 @@
 #include <time.h>
 #if !defined(APPLE) && !defined(USE_MINGW_TOOLCHAIN)
 #include <random>
+static std::random_device rd;
 #endif
 
 namespace Kumir
@@ -49,7 +50,6 @@ unsigned int Random::get_sample()
 #if !defined(WIN32) || defined(USE_MINGW_TOOLCHAIN)
 	return rand();
 #else
-	std::random_device rd;
 	return rd() - rd.min();
 #endif
 }
@@ -66,6 +66,11 @@ int Random::irand(int a, int b)
 	}
 
 	unsigned int d = b - a + 1;
+	if (d == 0) {
+		Core::abort(Core::fromUtf8("Неверный диапазон чисел"));
+		return 0;
+	}
+
 	unsigned int rd = get_max(), rq = rd / d + (rd % d + 1) / d;
 	assert (0 < rq);
 
@@ -105,7 +110,7 @@ real Random::rrand(real a, real b)
 	if (v < res) {
 		res = v;
 	}
-	return res;
+	return a + res;
 }
 
 real Random::rrnd(real x)
