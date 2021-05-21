@@ -900,8 +900,6 @@ void MainWindowTask::closeEvent(QCloseEvent *event)
 		settings->flush();
 	}
 
-	qDebug() << ui->splitter->saveGeometry();
-	qDebug() << "CLOSE TASK WINDOW";
 	if (!course) {
 		return;
 	}
@@ -911,8 +909,8 @@ void MainWindowTask::closeEvent(QCloseEvent *event)
 	qDebug() << "CLOSE TASK WINDOW";
 	event->accept();
 	close();
-
 };
+
 bool MainWindowTask::safeToQuit()
 {
 	if (!course) {
