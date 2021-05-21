@@ -117,15 +117,14 @@ void KeyboardModule::finalizeRun()
 /* public slot */ bool KeyboardModule::runKeyHit()
 {
 	/* алг лог клавиша нажата */
-	const bool result = ! buffer_.empty();
+	bool result = ! buffer_.empty();
 	return result;
-
 }
 
 /* public slot */ int KeyboardModule::runKeyCode()
 {
 	/* алг цел код клавиши */
-	const int result = buffer_.dequeue().kumirCode;
+	int result = buffer_.dequeue().kumirCode;
 	return result;
 
 }

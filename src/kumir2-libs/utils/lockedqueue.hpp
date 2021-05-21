@@ -60,25 +60,28 @@ template <typename T, class Semaphore = QSemaphore, class Mutex = QMutex>
 class LockedQueue
 {
 public:
-	inline bool empty() const
+	bool empty() const
 	{
 		mutex_.lock();
-		const bool result = buffer_.empty();
+		bool result = buffer_.empty();
 		mutex_.unlock();
 		return result;
 	}
 
-	inline T dequeue()
+	T dequeue()
 	{
+		T result = nullitem_;
 		semaphore_.acquire();
 		mutex_.lock();
-		const T result = buffer_.empty() ? nullitem_ : buffer_.front();
-		buffer_.pop();
+		if (!buffer_.empty()) {
+			result = buffer_.front();
+			buffer_.pop();
+		}
 		mutex_.unlock();
 		return result;
 	}
 
-	inline void enqueue(const T &item)
+	void enqueue(const T &item)
 	{
 		mutex_.lock();
 		buffer_.push(item);
@@ -86,23 +89,17 @@ public:
 		semaphore_.release();
 	}
 
-	// for STL iterators compatibility
-	inline void push_back(const T &item)
-	{
-		enqueue(item);
-	}
-
-	inline void reset(const T &nullitem)
+	void reset(const T &nullitem)
 	{
 		mutex_.lock();
 		nullitem_ = nullitem;
 		mutex_.unlock();
-		while (! static_cast<bool>(semaphore_.available())) {
+		while (! semaphore_.available()) {
 			semaphore_.release();
 		}
 	}
 
-	inline void clear()
+	void clear()
 	{
 		mutex_.lock();
 		while (! buffer_.empty()) {

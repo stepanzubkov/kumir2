@@ -22,9 +22,21 @@ You should change it corresponding to functionality.
 namespace ActorKeyboard
 {
 
+struct KeyEvent {
+	static const qint64 MAX_DELTA = 10;
+	int kumirCode;
+	qint64 timestamp;
 
-class KeyboardModule
-	: public KeyboardModuleBase
+	explicit KeyEvent(int kumirCode_) : kumirCode(kumirCode_)
+	{
+		timestamp = QDateTime::currentMSecsSinceEpoch();
+	}
+	explicit KeyEvent(): kumirCode(0), timestamp(0) {}
+	~KeyEvent() {}
+};
+
+
+class KeyboardModule : public KeyboardModuleBase
 {
 	Q_OBJECT
 public /* methods */:
@@ -82,28 +94,12 @@ public slots:
 	int runOperatorASTERISK(const int self, const ActorKeyboard::Keycode &other);
 
 protected:
-	struct KeyEvent {
-		static const qint64 MAX_DELTA = 10;
-		int kumirCode;
-		qint64 timestamp;
-
-		inline explicit KeyEvent(int kumirCodee) : kumirCode(kumirCodee)
-		{
-			timestamp = QDateTime::currentMSecsSinceEpoch();
-		}
-		inline explicit KeyEvent(): kumirCode(0), timestamp(0) {}
-	};
-
 	bool eventFilter(QObject *obj, QEvent *event);
 	static int polyakovCodeOfKey(int qtCode, const QString &text);
 
 	kumir2::LockedQueue<KeyEvent> buffer_;
 	KeyEvent lastPressed_;
 	QMutex lastPressedLock_;
-
-
-
-
 };
 
 
