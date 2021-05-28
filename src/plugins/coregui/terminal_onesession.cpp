@@ -97,9 +97,9 @@ QSize OneSession::visibleSize() const
 
 QString OneSession::plainText(bool footer_header) const
 {
-	const QString body = lines_.join("\n");
-	const QString header = headerText();
-	const QString footer = footerText();
+	QString body = lines_.join("\n");
+	QString header = headerText();
+	QString footer = footerText();
 	if (footer_header) {
 		return header + "\n" + body + "\n" + footer + "\n";
 	} else {
@@ -110,8 +110,8 @@ QString OneSession::plainText(bool footer_header) const
 
 QSize OneSession::minimumSizeHint() const
 {
-	const QFontMetrics headingFM(utilityFont());
-	const QFontMetrics mainFM(font());
+	QFontMetrics headingFM(utilityFont());
+	QFontMetrics mainFM(font());
 	int minH = 2 * (headingFM.height() + BodyPadding + HeaderPadding) +
 		mainFM.height();
 	int minWidthInChars = fixedWidth_ == -1 ? 10 : fixedWidth_;
@@ -793,13 +793,18 @@ QString OneSession::headerText() const
 
 QString OneSession::footerText() const
 {
-	return endTime_.isValid()
+	QString res = endTime_.isValid()
 		? tr(">> %1:%2:%3 - %4 - Process finished")
 		.arg(endTime_.time().hour(), 2, 10, QChar(' '))
 		.arg(endTime_.time().minute(), 2, 10, QChar('0'))
 		.arg(endTime_.time().second(), 2, 10, QChar('0'))
 		.arg(fileName_)
 		: "";
+	if (startTime_.isValid() && endTime_.isValid()) {
+		double dt = startTime_.msecsTo(endTime_) * 1e-3;
+		res += " " + QString::number(dt, 'f', 3) + " ";
+	}
+	return res;
 }
 
 QFont OneSession::utilityFont() const
