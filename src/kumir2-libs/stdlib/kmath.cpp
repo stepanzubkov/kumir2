@@ -14,6 +14,10 @@
 #include <float.h>
 
 #include <time.h>
+#if !defined(_WIN32) || defined(__MINGW32__) 
+#include <sys/time.h>
+#endif
+
 #if !defined(APPLE) && !defined(__MINGW32__)
 #include <random>
 static std::random_device rd;
