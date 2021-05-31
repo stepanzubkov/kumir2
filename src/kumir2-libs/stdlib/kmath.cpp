@@ -14,7 +14,7 @@
 #include <float.h>
 
 #include <time.h>
-#if !defined(APPLE) && !defined(USE_MINGW_TOOLCHAIN)
+#if !defined(APPLE) && !defined(__MINGW32__)
 #include <random>
 static std::random_device rd;
 #endif
@@ -24,20 +24,23 @@ namespace Kumir
 
 void Random::init()
 {
-#if !defined(WIN32)
+#if defined(APPLE)
 	unsigned int seed = 0xDEADBEEF;
 	FILE *urandom = fopen("/dev/urandom", "rb");
-	fread(&seed, 1, sizeof(unsigned), urandom);
+	fread(&seed, 1, sizeof(seed), urandom);
 	fclose(urandom);
 	srand(seed);
-#elif defined(USE_MINGW_TOOLCHAIN)
-	srand(time(NULL));
+#elif defined(__MINGW32__)
+	struct timeval tv;
+	gettimeofday(&tv, 0);
+	unsigned int seed = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	srand(seed);
 #endif
 }
 
 inline unsigned int Random::get_max()
 {
-#if !defined(WIN32) || defined(USE_MINGW_TOOLCHAIN)
+#if defined(APPLE) || defined(__MINGW32__)
 	return RAND_MAX;
 #else
 	return std::random_device::max() - std::random_device::min();
@@ -47,7 +50,7 @@ inline unsigned int Random::get_max()
 
 unsigned int Random::get_sample()
 {
-#if !defined(WIN32) || defined(USE_MINGW_TOOLCHAIN)
+#if defined(APPLE) || defined(__MINGW32__)
 	return rand();
 #else
 	return rd() - rd.min();
@@ -65,13 +68,14 @@ int Random::irand(int a, int b)
 		return a;
 	}
 
-	unsigned int d = b - a + 1;
-	if (d == 0) {
-		Core::abort(Core::fromUtf8("Неверный диапазон чисел"));
+	unsigned int d = b - a, rd = get_max();
+	if ((d + 1 == 0) || (d > rd)) {
+		Core::abort(Core::fromUtf8("Слишком широкий диапазон чисел"));
 		return 0;
 	}
 
-	unsigned int rd = get_max(), rq = rd / d + (rd % d + 1) / d;
+	d += 1;
+	unsigned int rq = rd / d + (rd % d + 1) / d;
 	assert (0 < rq);
 
 	for (;;) {
@@ -107,8 +111,8 @@ real Random::rrand(real a, real b)
 	real rd = get_max() + 1.0;
 	real v = get_sample() + 0.5;
 	real res = v / rd * d;
-	if (v < res) {
-		res = v;
+	if (d < res) {
+		res = d;
 	}
 	return a + res;
 }
