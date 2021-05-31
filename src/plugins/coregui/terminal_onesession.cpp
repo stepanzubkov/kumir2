@@ -16,6 +16,7 @@ namespace Terminal
 
 static const uint BodyPadding = 4u;
 static const uint HeaderPadding = 4u;
+static const uint FooterPadding = 6u;
 static const uint LineWidth = 1u;
 static const uint ShadowOffset = 4u;
 static const uint SessionMargin = 4u;
@@ -85,13 +86,14 @@ int OneSession::flexibleWidth() const
 
 QSize OneSession::visibleSize() const
 {
-	const QRegion region = QRegion() +
-		headerRect_ + mainTextRegion_ + footerRect_;
+	QRegion region = QRegion() + headerRect_ + mainTextRegion_ + footerRect_;
 	QSize result = region.boundingRect().size();
-	int visibleCharsInLine =
-		-1 == fixedWidth()
-		? flexibleWidth() : fixedWidth();
-	result.rwidth() = qMax(result.rwidth(), charSize().width() * (visibleCharsInLine));
+	int visibleCharsInLine = (-1 == fixedWidth()) ?
+		flexibleWidth() : fixedWidth();
+	result.rwidth() = qMax(
+		result.rwidth(),
+		charSize().width() * (visibleCharsInLine)
+	);
 	return result;
 }
 
@@ -217,15 +219,17 @@ void OneSession::relayout(uint realWidth, size_t fromLine, bool headerAndFooter)
 				footerProp_[i] = old[i];
 			}
 		}
-		footerRect_ = footerText().isEmpty()
+		footerRect_ = visibleFooter_.isEmpty()
 			? QRect(BodyPadding,
 				mainTextRegion_.bottom() + HeaderPadding + BodyPadding,
 				0,
 				0)
-			: QRect(BodyPadding,
+			: QRect(
+				BodyPadding,
 				mainTextRegion_.bottom() + HeaderPadding + BodyPadding,
 				QFontMetrics(utilityFont()).width(visibleFooter_),
-				QFontMetrics(utilityFont()).height());
+				QFontMetrics(utilityFont()).lineSpacing() + FooterPadding
+			);
 	}
 }
 
@@ -250,7 +254,6 @@ void OneSession::draw(QPainter &p, const QRect &dirtyRect) const
 		p.restore();
 	}
 	drawUtilityText(p, visibleHeader_, headerProp_, headerRect_.topLeft());
-//    drawInputRect(p, 0);
 	drawMainText(p, mainTextRegion_.topLeft(), dirtyRect);
 	drawUtilityText(p, visibleFooter_, footerProp_, footerRect_.topLeft());
 	drawCursor(p);
