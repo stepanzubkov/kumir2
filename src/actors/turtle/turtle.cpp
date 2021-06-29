@@ -25,6 +25,7 @@
 #include <QGraphicsSvgItem>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QPainterPath>
 #include <QDebug>
 #include <QMessageBox>
 

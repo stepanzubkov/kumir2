@@ -12,6 +12,8 @@ You should change it corresponding to functionality.
 // Base class include
 #include "turtlemodulebase.h"
 
+#include <QPainter>
+#include <QPainterPath>
 #include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QGraphicsSvgItem>

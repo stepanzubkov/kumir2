@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QScrollBar>
 #include <QPainter>
+#include <QPainterPath>
 #include <QContextMenuEvent>
 #include <QMouseEvent>
 #include <QDrag>
