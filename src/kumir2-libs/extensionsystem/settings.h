@@ -35,7 +35,6 @@ public:
 protected:
 	explicit Settings(const QString & pluginName_);
 	void changeWorkingDirectory(const QString & workDirPath);
-	static QString defaultSettingsScope();
 
 private:
 	QString pluginName_;
@@ -46,6 +45,7 @@ private:
 };
 
 typedef QSharedPointer<Settings> SettingsPtr;
+extern QString defaultSettingsScope();
 
 } // namespace ExtensionSystem
 

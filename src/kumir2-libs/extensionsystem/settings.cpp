@@ -103,7 +103,7 @@ QString Settings::settingsFilePath() const
 	return result;
 }
 
-QString Settings::defaultSettingsScope()
+QString defaultSettingsScope()
 {
 #ifdef Q_OS_MAC
 	static const QString result = "kumir2";

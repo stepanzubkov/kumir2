@@ -312,16 +312,7 @@ QString Plugin::initialize(const QStringList &parameters, const ExtensionSystem:
 		"/userdocs/";
 
 
-	const QString applicationLanucher = QDir::fromNativeSeparators(qApp->arguments().at(0));
-	QString applicationName =
-		applicationLanucher.startsWith(qApp->applicationDirPath())
-		? applicationLanucher.mid(qApp->applicationDirPath().length() + 1)
-		: applicationLanucher;
-#ifdef Q_OS_WIN32
-	if (applicationName.endsWith(".exe")) {
-		applicationName.remove(applicationName.length() - 4, 4);
-	}
-#endif
+	QString applicationName = defaultSettingsScope();
 
 #ifndef Q_OS_MACX
 	QString indexFileName = applicationName + ".xml";
@@ -329,6 +320,8 @@ QString Plugin::initialize(const QStringList &parameters, const ExtensionSystem:
 #else
 	QString indexFileName = "index-macx.xml";
 #endif
+
+	qDebug() << "IndexFileName:" << indexFileName;
 
 	Shared::AnalizerInterface *analizerPlugin =
 		ExtensionSystem::PluginManager::instance()
@@ -364,11 +357,11 @@ QString Plugin::initialize(const QStringList &parameters, const ExtensionSystem:
 	}
 
 	indexFileName = helpPath + indexFileName;
+	qDebug() << "Full indexFileName:" << indexFileName;
+
 	if (QFile::exists(indexFileName)) {
 		helpViewer_->addDocument(QUrl::fromLocalFile(indexFileName));
 	}
-
-
 
 	helpWindow_ = Widgets::SecondaryWindow::createSecondaryWindow(
 			helpViewer_,
