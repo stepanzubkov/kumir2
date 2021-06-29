@@ -9,7 +9,7 @@
 #include <kumir2/actorinterface.h>
 
 #include <QWidget>
-#include <QCoreApplication>
+#include <QApplication>
 #include <QDebug>
 #include <iostream>
 #include <locale.h>
@@ -482,7 +482,7 @@ void KumirRunPlugin::terminateAndWaitForStopped()
 	}
 	pRun_->wait();
 #ifdef Q_OS_LINUX
-	bool gui = getenv("DISPLAY") != 0;
+	bool gui = (qobject_cast<QApplication*>(qApp) != 0);
 	if (gui) {
 		usleep(50000);
 	}

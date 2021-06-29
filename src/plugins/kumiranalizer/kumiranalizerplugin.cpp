@@ -6,6 +6,7 @@
 
 #include "kumfilehandler.h"
 #include "quickreferencewidget.h"
+#include <QApplication>
 
 using namespace KumirAnalizer;
 
@@ -31,10 +32,7 @@ KumirAnalizerPlugin::~KumirAnalizerPlugin()
 
 QWidget *KumirAnalizerPlugin::languageQuickReferenceWidget()
 {
-	bool hasGui = true;
-#ifdef Q_WS_X11
-	hasGui = getenv("DISPLAY") != 0;
-#endif
+	bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 	if (!_quickReferenceWidget && hasGui) {
 		_quickReferenceWidget = new QuickReferenceWidget(this);
 	}

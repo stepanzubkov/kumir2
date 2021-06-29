@@ -6,6 +6,7 @@
 #include <QBrush>
 #include <QIcon>
 #include <QMessageBox>
+#include <QApplication>
 
 static const int MARK_BLOCK  = 12;
 
@@ -34,34 +35,12 @@ courseModel::courseModel() : QAbstractItemModel()
 {
 	isTeacher = false;
 	itemFont = QFont("Helvetica [Cronyx]");
-//#ifdef Q_OS_WIN32
-//           markIcons.append(QIcon(":/out_stand.png"));
-//           markIcons.append(QIcon(":/1.png"));
-//           markIcons.append(QIcon(":/2.png"));
-//           markIcons.append(QIcon(":/3.png"));
-//           markIcons.append(QIcon(":/4.png"));
-//           markIcons.append(QIcon(":/5.png"));
-//           markIcons.append(QIcon(":/6.png"));
-//           markIcons.append(QIcon(":/7.png"));
-//           markIcons.append(QIcon(":/8.png"));
-//           markIcons.append(QIcon(":/9.png"));
-//           markIcons.append(QIcon(":/10.png"));
-//           markIcons.append(QIcon(":/m.png"));
-//
-//           markIcons.append(QIcon(":/folder_close.png"));
-//           markIcons.append(QIcon(":/folder_1.png"));
-//           markIcons.append(QIcon(":/folder_2.png"));
-//           markIcons.append(QIcon(":/folder_3.png"));
-//           markIcons.append(QIcon(":/folder_4.png"));
-//           markIcons.append(QIcon(":/folder_5.png"));
-//           markIcons.append(QIcon(":/folder_6.png"));
-//           markIcons.append(QIcon(":/folder_7.png"));
-//           markIcons.append(QIcon(":/folder_8.png"));
-//           markIcons.append(QIcon(":/folder_9.png"));
-//           markIcons.append(QIcon(":/folder_10.png"));
-//           markIcons.append(QIcon(":/folder_open.png"));
-//           return;
-//#endif
+
+	bool hasX11 = (qobject_cast<QApplication*>(qApp) != 0);
+	if (!hasX11) {
+		return;
+	}
+
 	const ExtensionSystem::KPlugin *csmanager =
 		ExtensionSystem::PluginManager::instance()
 		->findKPlugin<Shared::CoursesInterface>();
@@ -71,11 +50,8 @@ courseModel::courseModel() : QAbstractItemModel()
 //         QUrl::fromLocalFile(qApp->property("sharePath").toString()+
 //                                            "/coursemanager/out_stand.svg"
 //                                            );     // WTF?
-	bool hasX11 = true;
-#ifdef Q_OS_LINUX
-	hasX11 = 0 != getenv("DISPLAY");
-#endif
-	if (hasX11) {
+
+	{
 		markIcons.append(QIcon(resourcesRoot.absoluteFilePath("out_stand.png")));
 		markIcons.append(QIcon(resourcesRoot.absoluteFilePath("1.png")));
 		markIcons.append(QIcon(resourcesRoot.absoluteFilePath("2.png")));

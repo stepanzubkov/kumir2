@@ -21,30 +21,23 @@ typedef Shared::ActorInterface AI;
 namespace CourseManager
 {
 
-Plugin::Plugin()
-	: ExtensionSystem::KPlugin()
-	, mainWindow_(nullptr)
-	, actionPerformCheck_(nullptr)
-	, settingsEditorPage_(nullptr)
-	, cur_task(nullptr)
+Plugin::Plugin() :
+	ExtensionSystem::KPlugin(),
+	mainWindow_(nullptr),
+	actionPerformCheck_(nullptr),
+	settingsEditorPage_(nullptr),
+	cur_task(nullptr),
+	course(nullptr)
 {
 	field_no = 0;
-	DISPLAY = false;
+	DISPLAY = (qobject_cast<QApplication*>(qApp) != 0);
 
-#ifdef Q_OS_LINUX
-	QProcessEnvironment pe = QProcessEnvironment::systemEnvironment();
-	// qDebug()<<"PE"<<pe.toStringList();
-	qDebug() << "Display" << pe.value("DISPLAY");
-
-	if (pe.value("DISPLAY").isEmpty()) { //NO DISPLAY
-		qDebug() << "CourseManager:Console mode";
+	if (!DISPLAY) {
+		qDebug() << "CourseManager: Console mode";
 		return;
 	}
 
-#endif
-
-	qDebug() << "CourseManager:GUI Mode";
-	DISPLAY = true;
+	qDebug() << "CourseManager: GUI Mode";
 	courseMenu = new QMenu(trUtf8("Практикум"));
 	MenuList.append(courseMenu);
 	rescentMenu = new QMenu(trUtf8("Недавние тетради/курсы..."));
@@ -271,6 +264,10 @@ int Plugin::checkTaskFromConsole(const int taskID)
 void Plugin::start()
 {
 	qDebug() << "Starts with coursemanager";
+	if (!course) {
+		return;
+	}
+
 	QList<int> taskIds = course->getIDs();
 	for (int i = 0; i < taskIds.count(); i++) {
 		field_no = 0;
@@ -629,7 +626,6 @@ QString Plugin::initialize(
 	const QStringList &configurationArguments,
 	const ExtensionSystem::CommandLine &runtimeArguments
 ) {
-	qDebug() << "DIPLSY" << DISPLAY;
 	if (!DISPLAY) {
 		if (!runtimeArguments.value('w').isValid()) {
 			return trUtf8("Нет тетради");

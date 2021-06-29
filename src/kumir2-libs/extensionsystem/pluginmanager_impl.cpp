@@ -242,6 +242,7 @@ QString PluginManagerImpl::initializePlugin(KPlugin *entryPoint)
 		return error;
 	}
 
+	qDebug() << "Initializing plugin" << entryPoint->pluginName();
 	error = entryPoint->initialize(spec.arguments, runtimeParameters);
 	if (error.length() == 0) {
 		entryPoint->_state = KPlugin::Initialized;

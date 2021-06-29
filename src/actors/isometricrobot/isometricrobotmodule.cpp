@@ -11,6 +11,7 @@ You should change it corresponding to functionality.
 #include "sch_game.h"
 #include "remotecontrol.h"
 
+#include <QApplication>
 #include <QScriptEngine>
 #include <QLayout>
 #include <QTextStream>
@@ -89,19 +90,18 @@ void IsometricRobotModule::loadDefaultEnvironment()
 
 
 
-QString IsometricRobotModule::initialize(const QStringList &configurationParameters, const ExtensionSystem::CommandLine &cmdLine)
-{
+QString IsometricRobotModule::initialize(
+	const QStringList &configurationParameters,
+	const ExtensionSystem::CommandLine &cmdLine
+) {
 	if (!configurationParameters.contains("tablesOnly")) {
 		_model = new Robot25D::RobotModel;
 
-		bool hasGui = true;
-#ifdef Q_OS_LINUX
-		hasGui = 0 != getenv("DISPLAY");
-#endif
+		bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 		if (hasGui) {
 			createGui();
 		} else {
-			const QString envFileName = cmdLine.value('e').toString();
+			QString envFileName = cmdLine.value('e').toString();
 			if (envFileName.isEmpty()) {
 				loadDefaultEnvironment();
 			} else {

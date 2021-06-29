@@ -87,9 +87,6 @@ ExternalModuleLoadFunctor::operator()(
 	}
 
 	bool gui = (qobject_cast<QApplication*>(qApp) != 0);
-#ifdef Q_OS_LINUX
-	gui = gui && getenv("DISPLAY") != 0;
-#endif
 
 	if (actor && gui && actor->mainWidget()) {
 		if (!ACTOR_WINDOWS.contains(actor)) {

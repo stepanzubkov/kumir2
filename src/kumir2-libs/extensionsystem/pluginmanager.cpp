@@ -49,12 +49,6 @@ PluginManager::PluginManager()
 		}
 	}
 
-#ifdef Q_WS_X11
-	bool gui = getenv("DISPLAY") != 0;
-	if (!gui) {
-		return;
-	}
-#endif
 }
 
 

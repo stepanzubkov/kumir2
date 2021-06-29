@@ -290,6 +290,7 @@ QString RobotModule::initialize(
 	const QStringList &configurationParameters,
 	const ExtensionSystem::CommandLine &runtimeParameters
 ) {
+
 	QString fName = "";
 	if (runtimeParameters.value('f').isValid()) {
 		fName = runtimeParameters.value('f').toString();
@@ -306,22 +307,18 @@ QString RobotModule::initialize(
 #ifdef Q_OS_LINUX
 	QProcessEnvironment pe = QProcessEnvironment::systemEnvironment();
 	qDebug() << "Display" << pe.value("DISPLAY");
-	if (pe.keys().indexOf("DISPLAY") < 0 || pe.value("DISPLAY").isEmpty()) {
-		DISPLAY = false;
-	}
 #endif
 
 	if (!DISPLAY) {
-		qDebug() << "Robot:Console mode";
+		qDebug() << "Robot: Console mode";
 		curConsoleField = new ConsoleField(10, 15);
-		DISPLAY = false;
 		if (!fName.isEmpty()) {
 			qDebug() << "LOAD FIELD ERR CODE:" << curConsoleField->loadFromFile(fName);
 		}
 		return "";
 	}
 
-	qDebug() << "Robot:GuiMode";
+	qDebug() << "Robot: GUI mode";
 
 	if (!configurationParameters.contains("tablesOnly")) {
 		createGui();

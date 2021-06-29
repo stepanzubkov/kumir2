@@ -1186,7 +1186,7 @@ class Settings:
         result += """
 bool guiAvailable = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
-guiAvailable = 0 != getenv("DISPLAY");
+//guiAvailable = 0 != getenv("DISPLAY");
 #endif
 if (guiAvailable) {
     %s = new Widgets::DeclarativeSettingsPage(
@@ -2703,10 +2703,9 @@ class ModuleBaseCppClass(CppClassBase):
 %s::%s(ExtensionSystem::KPlugin* parent)
     : QObject(parent)
 {
-    //bool hasGui = true;
     bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
-    hasGui = getenv("DISPLAY")!=0;
+    //hasGui = getenv("DISPLAY")!=0;
 #endif
     if (hasGui) {
 %s
@@ -2795,10 +2794,9 @@ class ModuleBaseCppClass(CppClassBase):
         return """
 /* public */ QList<QMenu*> %s::moduleMenus() const
 {
-    //bool hasGui = true;
     bool hasGui = (qobject_cast<QApplication*>(qApp) != 0);
 #ifdef Q_OS_LINUX
-    hasGui = getenv("DISPLAY")!=0;
+    //hasGui = getenv("DISPLAY")!=0;
 #endif
     if (hasGui) {
         QList<QMenu*> result;
