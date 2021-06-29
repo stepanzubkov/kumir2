@@ -45,7 +45,7 @@ private:
 };
 
 typedef QSharedPointer<Settings> SettingsPtr;
-extern QString defaultSettingsScope();
+EXTENSIONSYSTEM_EXPORT QString defaultSettingsScope();
 
 } // namespace ExtensionSystem
 
