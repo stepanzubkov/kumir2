@@ -220,6 +220,7 @@ void RobotModule::reloadSettings(
 	field->reloadSettings();
 	CurCellSize = settings->value("Robot/CellSize", FIELD_SIZE_SMALL).toInt();
 	view->reloadSett(settings);
+#if 0
 	if (RobotModule::robotSettings()->value("Robot/SFF").isValid()) {
 		if (LoadFromFile(RobotModule::robotSettings()->value("Robot/SFF").toString()) != 0) {
 			createEmptyField(7, 7);
@@ -227,6 +228,7 @@ void RobotModule::reloadSettings(
 		}
 		setWindowSize();
 	}
+#endif
 	createRescentMenu();
 }
 
@@ -916,6 +918,9 @@ int RobotModule::LoadFromFile(QString p_FileName)
 	if (field->loadFromFile(p_FileName) != 0)
 		return 1;
 
+	robotSettings()->setValue("Robot/SFF", p_FileName);
+	updateLastFiles(p_FileName);
+
 	startField = field->Clone();
 	field->dropWasEdit();
 
@@ -925,9 +930,9 @@ int RobotModule::LoadFromFile(QString p_FileName)
 	QString Title = trUtf8("Robot") + " - " + name;
 	m_mainWidget->setWindowTitle(Title);
 
-	RobotModule::robotSettings()->setValue("Robot/SFF", p_FileName);
 	field->drawField(FIELD_SIZE_SMALL);
-	qDebug() << "File " << p_FileName ;
+	qDebug() << "File " << p_FileName;
+
 
 	return 0;
 }
@@ -1051,11 +1056,8 @@ void RobotModule::loadEnv()
 		return;
 	}
 
-	updateLastFiles(RobotFile);
-
 	setWindowSize();
 	view->setWindowTitle(trUtf8("Робот  - ") + info.baseName());
-	robotSettings()->setValue("Robot/SFF", QVariant(RobotFile));
 }
 
 void RobotModule::resetEnv()
