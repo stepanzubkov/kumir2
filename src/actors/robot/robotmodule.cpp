@@ -1219,7 +1219,7 @@ void RobotModule::saveEnv()
 
 	SaveToFile(RobotFile);
 
-	RobotModule::robotSettings()->setValue("Robot/StartField/File", RobotFile);
+	RobotModule::robotSettings()->setValue("Robot/SFF", RobotFile);
 	updateLastFiles(RobotFile);
 
 	mainWidget()->setWindowTitle(trUtf8("Робот - ") + info.baseName());
