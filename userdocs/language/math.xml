@@ -621,7 +621,7 @@
         <title>irand</title>
         <funcsynopsis role="кумир">
             <funcprototype>
-                <funcdef>алг цел <function>irnd</function></funcdef>
+                <funcdef>алг цел <function>irand</function></funcdef>
                 <paramdef>цел <parameter>x</parameter></paramdef>
 				<paramdef>цел <parameter>y</parameter></paramdef>
             </funcprototype>
