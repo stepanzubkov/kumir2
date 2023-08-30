@@ -1,6 +1,18 @@
+cmake_minimum_required(VERSION 3.10)
 project(Kumir2)
-cmake_minimum_required(VERSION 3.0)
-find_package(PythonInterp 3.2.0 REQUIRED)
+
+if (${CMAKE_VERSION} VERSION_LESS "3.12.0")
+	find_package(PythonInterp 3.2.0 REQUIRED)
+else()
+	find_package(Python3 3.2.0 REQUIRED COMPONENTS Interpreter)
+	set (PYTHON_EXECUTABLE "${Python3_EXECUTABLE}")
+endif()
+
+message(STATUS "Python is ${PYTHON_EXECUTABLE}")
+if (NOT DEFINED PYTHON_EXECUTABLE)
+	message(FATAL_ERROR "Variable PYTHON_EXECUTABLE is not set.")
+endif()
+
 message(STATUS "Cmake prefix path: ${CMAKE_PREFIX_PATH}")
 
 # Query for version info and pass it as compile definitions

@@ -1,7 +1,11 @@
 project(KumirAnalizer)
 #cmake_minimum_required(VERSION 3.0)
 #find_package(Kumir2 REQUIRED)
-find_package(PythonInterp 3.2.0 REQUIRED)
+#find_package(PythonInterp 3.2.0 REQUIRED)
+if (NOT DEFINED PYTHON_EXECUTABLE)
+	message(FATAL_ERROR "Variable PYTHON_EXECUTABLE is not set.")
+endif()
+
 
 kumir2_use_qt(Core Gui)
 

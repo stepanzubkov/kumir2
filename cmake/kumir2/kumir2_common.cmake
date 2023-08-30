@@ -1,4 +1,8 @@
-find_package(PythonInterp 3.2.0 REQUIRED)
+#find_package(Python3 3.2.0 REQUIRED)
+if (NOT DEFINED PYTHON_EXECUTABLE)
+	message(FATAL_ERROR "Variable PYTHON_EXECUTABLE is not set.")
+endif()
+
 include(CMakeParseArguments)
 
 if(NOT DEFINED KUMIR2_INSTALL_PREFIX)
