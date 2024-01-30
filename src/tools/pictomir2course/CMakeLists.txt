@@ -45,7 +45,7 @@ if(NOT WIN32)
 	#   1. -fexceptions:    Exceptions is widely used by Boost
 	#   2. -std=c++03:      Due to bug in boost 1.49 (Ticket #6785)
 	#   set(CXXFLAGS    "-fexceptions -std=c++03")
-	set(CXXFLAGS "-DBOOST_EXCEPTION_DISABLE -Wall -Wno-deprecated-declarations -Wno-parentheses -Wno-unused-local-typedefs -Wno-deprecated-builtins")
+	set(CXXFLAGS "-DBOOST_EXCEPTION_DISABLE -Wall -Wno-deprecated-declarations -Wno-parentheses -Wno-unused-local-typedefs -Wno-deprecated-builtins -Wno-nonnull")
 endif()
 
 
