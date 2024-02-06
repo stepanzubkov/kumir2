@@ -45,6 +45,7 @@ set(MOC_HEADERS
 	terminal_onesession.h
 	terminal_plane.h
 	tabbar.h
+	menubar.h
 	aboutdialog.h
 	tabwidgetelement.h
 	statusbar.h

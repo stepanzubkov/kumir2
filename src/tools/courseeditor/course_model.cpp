@@ -2,7 +2,7 @@
 #include <QSize>
 #include <QColor>
 #include <QBrush>
-#include <QIcon>
+#include <QFile>
 
 int courseModel::loadCourse(QString file)
 {

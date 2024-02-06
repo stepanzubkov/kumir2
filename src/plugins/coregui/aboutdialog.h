@@ -2,36 +2,37 @@
 #define ABOUTDIALOG_H
 
 #include <QDialog>
-#include <QShowEvent>
-#include <QTextBrowser>
+class QShowEvent;
 
-namespace CoreGUI {
+namespace CoreGUI
+{
 
-namespace Ui {
-    class AboutDialog;
+namespace Ui
+{
+	class AboutDialog;
 }
 
 class AboutDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit AboutDialog(QWidget *parent = 0);
-    ~AboutDialog();
+	explicit AboutDialog(QWidget *parent = 0);
+	~AboutDialog();
 
 private slots:
-    void copySystemInformationToClipboard();
-    void initializeEnvironmentData();
+	void copySystemInformationToClipboard();
+	void initializeEnvironmentData();
 
 private:
-    void showEvent(QShowEvent *event);
+	void showEvent(QShowEvent *event);
 
-    void addQtVersion();
-    void addOsVersion();
-    void addExecuablePath();
-    void addLoadedModules();
-    void addSettingsFilesPaths();
-    Ui::AboutDialog *ui;
+	void addQtVersion();
+	void addOsVersion();
+	void addExecuablePath();
+	void addLoadedModules();
+	void addSettingsFilesPaths();
+	Ui::AboutDialog *ui;
 };
 
 } // namespace CoreGUI

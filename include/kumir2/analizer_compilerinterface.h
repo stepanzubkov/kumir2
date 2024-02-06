@@ -2,6 +2,7 @@
 #define ANALIZER_COMPILERINTERFACE_H
 
 #include <QtPlugin>
+#include <QSharedPointer>
 
 namespace AST
 {

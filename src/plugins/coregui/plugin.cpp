@@ -2,20 +2,30 @@
 #include "switchworkspacedialog.h"
 #include "plugin.h"
 #include "mainwindow.h"
+#include "kumirprogram.h"
+#include "terminal.h"
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2-libs/widgets/secondarywindow.h>
+#include <kumir2-libs/widgets/dockwindowplace.h>
+#include <kumir2-libs/widgets/iconprovider.h>
+#include <kumir2-libs/widgets/actionproxy.h>
+#include <kumir2-libs/docbookviewer/docbookview.h>
 #include "debuggerview.h"
 #include "ui_mainwindow.h"
 #include "statusbar.h"
 #include "tabwidget.h"
-#include <kumir2-libs/widgets/iconprovider.h>
-#include <kumir2-libs/widgets/actionproxy.h>
+#include <kumir2/analizerinterface.h>
+#include <kumir2/browserinterface.h>
+#include <kumir2/coursesinterface.h>
 #include "kumir2/browser_instanceinterface.h"
 
 #include "guisettingspage.h"
 #include "iosettingseditorpage.h"
 
 #include "defaultstartpage.h"
+
+#include <QProcess>
+#include <QDebug>
 
 #ifdef Q_OS_MACX
 #include "mac-fixes.h"
@@ -39,6 +49,7 @@ namespace CoreGUI
 {
 
 using namespace Shared;
+using ExtensionSystem::CommandLineParameter;
 
 Plugin::Plugin() : KPlugin()
 {
@@ -165,7 +176,7 @@ QString Plugin::initialize(const QStringList &parameters, const ExtensionSystem:
 	//MacFixes::setLionFullscreenButton(mac_mainWindow);
 #endif
 
-	plugin_editor = PluginManager::instance()->findPlugin<EditorInterface>();
+	plugin_editor = ExtensionSystem::PluginManager::instance()->findPlugin<EditorInterface>();
 
 
 
@@ -179,7 +190,7 @@ QString Plugin::initialize(const QStringList &parameters, const ExtensionSystem:
 		return "Can't load editor plugin!";
 	}
 
-	terminal_ = new Term(mainWindow_);
+	terminal_ = new Terminal::Term(mainWindow_);
 	terminal_->setTerminalFont(plugin_editor->defaultEditorFont());
 	terminal_->setSettings(mySettings());
 
@@ -813,7 +824,6 @@ void Plugin::showActorWindow(const QByteArray &asciiName)
 
 void Plugin::changeGlobalState(ExtensionSystem::GlobalState old, ExtensionSystem::GlobalState state)
 {
-	using namespace Shared;
 	if (state == PluginInterface::GS_Unlocked) {
 //        m_kumirStateLabel->setText(tr("Editing"));
 		mainWindow_->clearMessage();
@@ -942,8 +952,7 @@ void Plugin::setStartTabStyle(const QString &tabStyle)
 
 void Plugin::createStartPage()
 {
-	using namespace ExtensionSystem;
-	using namespace Shared;
+	using ExtensionSystem::PluginManager;
 
 	StartpageWidgetInterface *plugin = PluginManager::instance()->findPlugin<StartpageWidgetInterface>();
 	if (plugin) {

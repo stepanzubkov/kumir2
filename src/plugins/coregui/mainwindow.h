@@ -1,31 +1,51 @@
 #ifndef COREGUI_MAINWINDOW_H
 #define COREGUI_MAINWINDOW_H
 
-#include "plugin.h"
-#include <kumir2-libs/widgets/dockwindowplace.h>
-#include <kumir2-libs/widgets/secondarywindow.h>
-#include <kumir2-libs/widgets/multipagedialog.h>
+#include <kumir2-libs/extensionsystem/settings.h>
+#include <kumir2/guiinterface.h>
+
 
 #include <QThread>
 #include <QMainWindow>
 class QMessageBox;
 class QToolButton;
+class QLabel;
+class QActionGroup;
+
+namespace Shared {
+	namespace Analizer {
+		class InstanceInterface;
+	}
+	namespace Browser {
+		class InstanceInterface;
+	}
+	namespace Editor {
+		class InstanceInterface;
+	}
+	class GeneratorInterface;
+	class GuiInterface;
+	class StartpageWidgetInterface;
+}
+
+
+namespace Widgets {
+	class DockWindowPlace;
+	class SecondaryWindow;
+	class MultiPageDialog;
+}
 
 namespace ExtensionSystem
 {
-class VisualComponent;
+	class VisualComponent;
 }
 
 namespace CoreGUI
 {
-
-
-using namespace Shared;
-using namespace ExtensionSystem;
+class Plugin;
 
 namespace Ui
 {
-class MainWindow;
+	class MainWindow;
 }
 
 
@@ -202,7 +222,7 @@ private:
 		const QString &dirName = ""
 	) const;
 	void createTopLevelMenus(const QList<QMenu *> &c, bool tabDependent);
-	bool checkForSaved(VisualComponent *c);
+	bool checkForSaved(ExtensionSystem::VisualComponent *c);
 	static QIcon actionIcon(const QString &name);
 
 	QActionGroup *gr_fileActions;

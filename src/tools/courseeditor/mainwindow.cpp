@@ -2,6 +2,10 @@
 #include "ui_mainwindow.h"
 #include "interface.h"
 #include "csInterface.h"
+#include <QMessageBox>
+#include <QCloseEvent>
+#include <QSettings>
+#include <QProcess>
 
 MainWindowTask::MainWindowTask(QWidget *parent) :
 	QMainWindow(parent),

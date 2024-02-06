@@ -1,17 +1,25 @@
 #include "mainwindow.h"
+#include "plugin.h"
+#include "terminal.h"
 #include "side.h"
 #include "ui_mainwindow.h"
 #include "tabwidgetelement.h"
-#include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include "aboutdialog.h"
 #include "kumirprogram.h"
-#include <kumir2-libs/dataformats/kumfile.h>
 #include "statusbar.h"
 #include "tabwidget.h"
 #include "systemopenfilesettings.h"
 #include "guisettingspage.h"
-#include <kumir2-libs/widgets/iconprovider.h>
 #include "toolbarcontextmenu.h"
+#include <kumir2-libs/extensionsystem/pluginmanager.h>
+#include <kumir2-libs/dataformats/kumfile.h>
+#include <kumir2-libs/widgets/iconprovider.h>
+#include <kumir2-libs/widgets/dockwindowplace.h>
+#include <kumir2-libs/widgets/secondarywindow.h>
+#include <kumir2-libs/widgets/multipagedialog.h>
+#include <kumir2-libs/docbookviewer/docbookview.h>
+#include <kumir2/analizerinterface.h>
+#include <kumir2/browserinterface.h>
 #include "kumir2/editor_instanceinterface.h"
 #include "kumir2/browser_instanceinterface.h"
 #include "kumir2/analizer_instanceinterface.h"
@@ -19,7 +27,12 @@
 #include <algorithm>
 #include <QSharedPointer>
 #include <QMenuBar>
+#include <QFileDialog>
+#include <QDesktopWidget>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QMimeData>
+#include <QDebug>
 
 namespace CoreGUI
 {
@@ -2290,8 +2303,8 @@ TabWidgetElement *MainWindow::loadFromUrl(const QUrl &url, bool addToRecentFiles
 	if (url.scheme().startsWith("file")) {
 		const QString fileName = url.toLocalFile();
 		const QString suffix = QFileInfo(fileName).suffix();
-		AnalizerInterface *analizer =
-			PluginManager::instance()->findPlugin<AnalizerInterface>();
+		Shared::AnalizerInterface *analizer =
+			PluginManager::instance()->findPlugin<Shared::AnalizerInterface>();
 		const QString programSuffix = analizer->defaultDocumentFileNameSuffix().remove(".");
 		using namespace ExtensionSystem;
 		using namespace Shared;
@@ -2385,12 +2398,12 @@ TabWidgetElement *MainWindow::loadFromUrl(const QUrl &url, bool addToRecentFiles
 		tabWidget_->currentWidget()->setFocus();
 	}
 	setTitleForTab(tabWidget_->currentIndex());
-	ExtensionSystem::PluginManager::instance()->switchGlobalState(PluginInterface::GS_Unlocked);
+	ExtensionSystem::PluginManager::instance()->switchGlobalState(Shared::PluginInterface::GS_Unlocked);
 	return result;
 }
 
 TabWidgetElement *MainWindow::loadFromCourseManager(
-	const GuiInterface::ProgramSourceText &data
+	const Shared::GuiInterface::ProgramSourceText &data
 )
 {
 	TabWidgetElement *courseManagerTab = nullptr;
@@ -2451,7 +2464,7 @@ TabWidgetElement *MainWindow::loadFromCourseManager(
 Shared::GuiInterface::ProgramSourceText
 MainWindow::courseManagerProgramSource() const
 {
-	typedef GuiInterface::ProgramSourceText ST;
+	typedef Shared::GuiInterface::ProgramSourceText ST;
 	ST result;
 	result.language = ST::Kumir; // TODO implement for other languages
 	TabWidgetElement *courseManagerTab = nullptr;

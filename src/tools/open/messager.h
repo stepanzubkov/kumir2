@@ -3,7 +3,6 @@
 
 #include <QtGlobal>
 #ifdef Q_OS_WIN32
-//#include <Windows.h>
 typedef quint32 Pid;
 #else
 #include <sys/types.h>

@@ -1,4 +1,5 @@
 #include "toolbarcontextmenu.h"
+#include <kumir2-libs/widgets/actionproxy.h>
 
 #include <QCheckBox>
 #include <QFrame>

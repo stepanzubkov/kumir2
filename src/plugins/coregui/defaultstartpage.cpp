@@ -19,8 +19,8 @@ CoreGUI::DefaultStartPage::DefaultStartPage(Plugin *plugin, MainWindow *mw, QWid
 	this->setObjectName("startPageRoot");
 	ui->setupUi(this);
 
-	CoursesInterface *cs =
-		ExtensionSystem::PluginManager::instance()->findPlugin<CoursesInterface>();
+	Shared::CoursesInterface *cs =
+		ExtensionSystem::PluginManager::instance()->findPlugin<Shared::CoursesInterface>();
 	_coursesAvailable = 0 != cs;
 
 	ui->coursesBox->setVisible(_coursesAvailable);

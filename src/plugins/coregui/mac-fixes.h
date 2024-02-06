@@ -3,7 +3,7 @@
 
 class MacFixes {
 public:
-    static void setLionFullscreenButton(void * nsview);
+	static void setLionFullscreenButton(void * nsview);
 };
 
 #endif

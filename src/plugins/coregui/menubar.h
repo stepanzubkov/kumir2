@@ -1,36 +1,35 @@
 #ifndef MENUBAR_H
 #define MENUBAR_H
 
-#include <QtCore>
-#if QT_VERSION >= 0x050000
-#include <QtWidgets>
-#else
-#include <QtGui>
-#endif
+#include <QMenuBar>
+#include <QKeyEvent>
+#include <QLabel>
 
-class MenuBar
-        : public QMenuBar
+class MenuBar : public QMenuBar
 {
+	Q_OBJECT
 public:
-    inline MenuBar(QWidget * parent)
-        : QMenuBar(parent)
-        , contextMenuWidget_(0)
-    {}
+	MenuBar(QWidget *parent) :
+		QMenuBar(parent),
+		contextMenuWidget_(0)
+	{}
 
-    inline void setContextMenuWidget(QWidget * w) {
-        contextMenuWidget_ = w;
-    }
+	void setContextMenuWidget(QWidget *w)
+	{
+		contextMenuWidget_ = w;
+	}
 
 protected:
-    inline bool eventFilter(QObject *object, QEvent *event) {
-        bool catched = false;
+	bool eventFilter(QObject *object, QEvent *event)
+	{
+		bool catched = false;
 
-        if (event->type()==QEvent::KeyRelease) {
-            QKeyEvent *kev = static_cast<QKeyEvent*>(event);
-            if (kev->key() == Qt::Key_Alt || kev->key() == Qt::Key_Meta) {
-                catched = true;
-            }
-        }
+		if (event->type() == QEvent::KeyRelease) {
+			QKeyEvent *kev = static_cast<QKeyEvent *>(event);
+			if (kev->key() == Qt::Key_Alt || kev->key() == Qt::Key_Meta) {
+				catched = true;
+			}
+		}
 //        if (QEvent::ContextMenu == event->type()) {
 //            QContextMenuEvent * e =
 //                    static_cast<QContextMenuEvent*>(event);
@@ -51,12 +50,13 @@ protected:
 //            }
 //        }
 
-        if (catched)
-            return false;
-        else
-            return QMenuBar::eventFilter(object, event);
-    }
-    QWidget* contextMenuWidget_;
+		if (catched) {
+			return false;
+		} else {
+			return QMenuBar::eventFilter(object, event);
+		}
+	}
+	QWidget *contextMenuWidget_;
 };
 
 #endif // MENUBAR_H

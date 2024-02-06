@@ -1,4 +1,5 @@
 #include "kumirprogram.h"
+#include "terminal.h"
 #include <kumir2-libs/extensionsystem/pluginmanager.h>
 #include <kumir2/actorinterface.h>
 #include <kumir2/analizerinterface.h>
@@ -260,7 +261,7 @@ void KumirProgram::handleMarginClearRequest(int fromLine, int toLine)
 	editor_->clearMarginText(fromLine, toLine);
 }
 
-void KumirProgram::setTerminal(Term *t, QDockWidget *w)
+void KumirProgram::setTerminal(Terminal::Term *t, QDockWidget *w)
 {
 	using namespace ExtensionSystem;
 	using namespace Shared;

@@ -2,29 +2,50 @@
 #define COREGUI_PLUGIN_H
 
 #include <kumir2-libs/extensionsystem/kplugin.h>
-#include <kumir2/editorinterface.h>
-#include <kumir2/browserinterface.h>
-#include <kumir2/generatorinterface.h>
-#include <kumir2/actorinterface.h>
-#include <kumir2/runinterface.h>
 #include <kumir2/guiinterface.h>
-#include <kumir2/coursesinterface.h>
-#include <kumir2/analizerinterface.h>
-#include <kumir2/startpage_widget_interface.h>
-#include <kumir2-libs/widgets/secondarywindow.h>
-#include <kumir2-libs/widgets/dockwindowplace.h>
-#include <kumir2-libs/docbookviewer/docbookview.h>
-#include <kumir2-libs/extensionsystem/pluginspec.h>
-#include "terminal.h"
-#include "kumirprogram.h"
+
+namespace Shared {
+	namespace Analizer {
+		class InstanceInterface;
+	}
+	namespace Browser {
+		class InstanceInterface;
+	}
+	namespace Editor {
+		class InstanceInterface;
+	}
+
+	class ActorInterface;
+	class AnalizerInterface;
+	class BrowserInterface;
+	class CoursesInterface;
+	class EditorInterface;
+	class RunInterface;
+	class GeneratorInterface;
+	class GuiInterface;
+	class StartpageWidgetInterface;
+}
+
+namespace DocBookViewer {
+	class DocBookView;
+}
+
+namespace Widgets {
+	class DockWindowPlace;
+	class SecondaryWindow;
+}
+
+namespace Terminal {
+class Term;
+};
+
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 #include <signal.h>
 #endif
-//#if defined(Q_OS_WIN32)
-//#include <Windows.h>
-//#endif
+
 class QLabel;
+class QAction;
 class QMainWindow;
 class QTimerEvent;
 class QSharedMemory;
@@ -33,10 +54,11 @@ class QSharedMemory;
 namespace CoreGUI
 {
 
-using namespace Terminal;
-using namespace Shared;
 class GUISettingsPage;
 class IOSettingsEditorPage;
+class KumirProgram;
+class MainWindow;
+class DebuggerView;
 
 class Plugin :
 	public ExtensionSystem::KPlugin,
@@ -106,10 +128,8 @@ protected slots:
 	void updateAppFontSize(const int pointSize);
 	void showActorWindow(const QByteArray &asciiName);
 
-
-
 protected:
-	QList<CommandLineParameter> acceptableCommandLineParameters() const;
+	QList<ExtensionSystem::CommandLineParameter> acceptableCommandLineParameters() const;
 	QString initialize(const QStringList &configurationArguments,
 		const ExtensionSystem::CommandLine &runtimeArguments);
 	void saveSession() const;
@@ -133,24 +153,23 @@ protected:
 	QSharedMemory *ipcShm_;
 #endif
 
-
-	class MainWindow *mainWindow_;
+	MainWindow *mainWindow_;
 	QLabel *m_kumirStateLabel;
 	QLabel *m_genericCounterLabel;
-	EditorInterface *plugin_editor;
-	GeneratorInterface *plugin_NativeGenerator;
-	GeneratorInterface *plugin_BytecodeGenerator;
-	BrowserInterface *plugin_browser;
-	RunInterface *plugin_kumirCodeRun;
-	QList<ActorInterface *> l_plugin_actors;
+	Shared::EditorInterface *plugin_editor;
+	Shared::GeneratorInterface *plugin_NativeGenerator;
+	Shared::GeneratorInterface *plugin_BytecodeGenerator;
+	Shared::BrowserInterface *plugin_browser;
+	Shared::RunInterface *plugin_kumirCodeRun;
+	QList<Shared::ActorInterface *> l_plugin_actors;
 	QList<Widgets::SecondaryWindow *> secondaryWindows_;
 	Widgets::SecondaryWindow *helpWindow_;
 	Widgets::SecondaryWindow *coursesWindow_;
 	Widgets::SecondaryWindow *quickRefWindow_;
-	Term *terminal_;
+	Terminal::Term *terminal_;
 	QMap<QString, QObject *> m_browserObjects;
 	KumirProgram *kumirProgram_;
-	class DebuggerView *_debugger;
+	DebuggerView *_debugger;
 	DocBookViewer::DocBookView *helpViewer_;
 	Shared::CoursesInterface *courseManager_;
 	bool sessionsDisableFlag_;
@@ -162,7 +181,6 @@ protected:
 
 signals:
 	void externalProcessCommandReceived(const QString &command);
-
 };
 
 } // namespace CoreGUI

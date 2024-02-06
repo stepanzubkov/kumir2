@@ -1,7 +1,10 @@
 #ifndef COREGUI_KUMIRPROGRAM_H
 #define COREGUI_KUMIRPROGRAM_H
 
-#include "terminal.h"
+namespace Terminal {
+class Term;
+};
+
 #include <kumir2/generatorinterface.h>
 #include <kumir2/actorinterface.h>
 #include <kumir2/runinterface.h>
@@ -9,6 +12,7 @@
 #include <kumir2-libs/extensionsystem/kplugin.h>
 
 #include <QObject>
+#include <QAction>
 class QActionGroup;
 class QDockWidget;
 
@@ -19,7 +23,6 @@ using Shared::GeneratorInterface;
 using Shared::ActorInterface;
 using Shared::RunInterface;
 using Shared::EditorInterface;
-using Terminal::Term;
 using namespace ExtensionSystem;
 
 class KumirProgram : public QObject
@@ -57,7 +60,7 @@ public:
 	{
 		mainWidget_ = w;
 	}
-	void setTerminal(Term *t, QDockWidget *w);
+	void setTerminal(Terminal::Term *t, QDockWidget *w);
 	static Shared::GeneratorInterface *kumirCodeGenerator();
 	static Shared::GeneratorInterface *kumirNativeGenerator();
 
@@ -106,7 +109,7 @@ private /*fields*/:
 	enum State { Idle, RegularRun, BlindRun, StepRun, TestingRun } state_;
 	RunEndStatus endStatus_;
 	QString endStatusText_;
-	Term *terminal_;
+	Terminal::Term *terminal_;
 	Shared::Editor::InstanceInterface *editor_;
 	QWidget *mainWidget_;
 

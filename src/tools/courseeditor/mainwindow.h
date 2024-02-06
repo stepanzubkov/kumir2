@@ -17,12 +17,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSettings>
+#include <QMenu>
+class QSettings;
+
 #include "kumfiledialog.h"
 #include "course_model.h"
 #include "taskControlInterface.h"
 #include "editdialog.h"
 #include "newkursdialog.h"
+
 class CSInterface;
 namespace Ui
 {

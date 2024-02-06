@@ -2,6 +2,7 @@
 #define GENERATOR_INTERFACE_H
 
 #include <QtPlugin>
+#include <QSharedPointer>
 
 namespace AST
 {
