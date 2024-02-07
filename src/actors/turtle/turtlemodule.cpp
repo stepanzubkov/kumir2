@@ -287,30 +287,27 @@ void TurtleScene::drawNet(
 	dr_mutex->unlock();
 }
 
-int   TurtleScene::loadFromFile(const QString &p_FileName)
+int TurtleScene::loadFromFile(const QString &p_FileName)
 {
 	QFileInfo fi(p_FileName);
 	QString name = fi.fileName();
 	QString Title = QString::fromUtf8("Чертежник - ") + name;
 	qreal CurrentScale = 1.0;
+	qreal x1 = 0.0, y1 = 0.0;
+	QColor CurColor;
+	int NStrok = 0;
 
-	QString tmp = "";
-	char ctmp[200];
+	QString tmp;
+	QByteArray ttt;
 	QString l_String;
 	QFile l_File(p_FileName);
-	QColor CurColor;
 
-	int NStrok;
-	NStrok = 0;
-
-	qreal x1, y1, x2, y2;
 	if (!l_File.open(QIODevice::ReadOnly)) {
 		QMessageBox::information(NULL, "", QString::fromUtf8("Ошибка открытия файла"), 0, 0, 0);
 		return 1;
 	}
 
 	//QMessageBox::information( 0, "", tmp, 0,0,0);
-	QByteArray ttt;
 	ttt = l_File.readLine();
 	l_String = QString::fromUtf8(ttt);
 
@@ -343,13 +340,10 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 	if (!(l_List[1] == "Cherteznik"))
 		//if (!(l_String == "%Creator: Cherteznik"))
 	{
-
 		QMessageBox::information(NULL, "", QString::fromUtf8("Это не файл чережника"), 0, 0, 0);
-
 		l_File.close();
 		return 1;
 	}
-
 
 	for (int i = 0; i < 15; i++) {
 		//  l_String = l_File.readLine();
@@ -358,16 +352,10 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 		NStrok++;
 	}
 
-	// koordinaty vektorov
-	// CurZ = 1.;
 	while (!l_File.atEnd()) {
-		//считываем цвет
-
-		//  l_String = l_File.readLine();
 		ttt = l_File.readLine();
 		l_String = QString::fromUtf8(ttt);
 		NStrok++;
-
 
 		if (l_String.isNull()) {
 			QMessageBox::information(NULL, "", QString::fromUtf8("Ошибка чтения строки"), 0, 0, 0);
@@ -381,13 +369,12 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 			continue;
 		}
 
-
 		if (l_List[l_List.count() - 1] == "stroke") {
 			break;
 		}
 
 		if (l_List[l_List.count() - 1] == "setfont") {
-			CurrentScale = x1 = l_List[2].toFloat();
+			CurrentScale = l_List[2].toFloat();
 			continue;
 		}
 
@@ -412,9 +399,6 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 			continue;
 		}
 
-
-
-
 		if (l_List[l_List.count() - 1] == "moveto") {
 			x1 = l_List[0].toFloat();
 			y1 = -l_List[1].toFloat();
@@ -422,19 +406,15 @@ int   TurtleScene::loadFromFile(const QString &p_FileName)
 		}
 
 		if (l_List[l_List.count() - 1] == "lineto") {
-			x2 = l_List[0].toFloat();
-			y2 = -l_List[1].toFloat();
+			qreal x2 = l_List[0].toFloat();
+			qreal y2 = -l_List[1].toFloat();
 			lines.append(addLine(x1, y1, x2, y2));
 			lines.last()->setZValue(10);
 			lines.last()->setPen(QPen(CurColor));
-			// CurZ += 0.01;
 			continue;
 		}
 
-		sprintf(ctmp, "%4i", NStrok);
-		tmp = QString::fromUtf8("Ошибка в строке ");
-		tmp.append(QString(ctmp));
-
+		tmp = QString::fromUtf8("Ошибка в строке %i").arg(NStrok);
 		break;
 	}
 
@@ -456,26 +436,17 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 	l_File.write("%%Pages: 1\n");
 	l_File.write("%%Orientation: Portrait\n");
 
-
 	// maximum, minimum
-
-	qreal MinX, MaxX, MinY, MaxY, VecX1, VecX2, VecY1, VecY2;
-
-	QLineF TmpLine;
-	MinX = 1000000;
-	MinY = 1000000;
-
-	MaxX = -1000000;
-	MaxY = -1000000;
-
+	qreal MinX = 100000, MaxX = -100000, MinY = 100000, MaxY = -100000;
 
 	for (int i = 0; i < lines.count(); i++) {
 
-		TmpLine = lines[i]->line();
-		VecX1 = TmpLine.x1();
-		VecY1 = -TmpLine.y1();
-		VecX2 = TmpLine.x2();
-		VecY2 = -TmpLine.y2();
+		QLineF TmpLine = lines[i]->line();
+		qreal VecX1 = TmpLine.x1();
+		qreal VecY1 = -TmpLine.y1();
+		qreal VecX2 = TmpLine.x2();
+		qreal VecY2 = -TmpLine.y2();
+
 		if (VecX1 < MinX) {
 			MinX = VecX1;
 		}
@@ -503,14 +474,14 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 		}
 	}
 
-	double Scale;
+	double Scale = 1.0;
 
 	if (MaxX - MinX > MaxY - MinY) {
 		Scale = (596 - 10) / (MaxX - MinX);
 	} else {
 		Scale = (842 - 10) / (MaxY - MinY);
 	}
-	Scale = Scale * 0.9;
+	Scale *= 0.9;
 
 	l_File.write("%%BoundingBox: 0 0 596 842\n");
 	l_File.write("%%HiResBoundingBox: 0 0 596 842\n");
@@ -527,50 +498,39 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 	l_File.write("0 setlinejoin\n");
 	l_File.write("0 setlinecap\n");
 	l_File.write("newpath\n");
-	//QColor TmpColor;
-	QPen TmpPen;
-	QColor TmpColor;
-	for (int i = 0; i < lines.count(); i++) {
 
-		TmpLine = lines[i]->line();
-		TmpPen = lines[i]->pen();
-		TmpColor = TmpPen.color();
-		sprintf(ctmp, "%i %i %i setrgbcolor\n", TmpColor.red(),  TmpColor.green(), TmpColor.blue());
+	for (int i = 0; i < lines.count(); i++) {
+		QLineF TmpLine = lines[i]->line();
+		QColor color = lines[i]->pen().color();
+		sprintf(ctmp, "%i %i %i setrgbcolor\n", color.red(), color.green(), color.blue());
 		l_File.write(ctmp);
 
-		VecX1 = TmpLine.x1();
-		VecY1 = -TmpLine.y1();
-		VecX2 = TmpLine.x2();
-		VecY2 = -TmpLine.y2();
+		qreal VecX1 = TmpLine.x1();
+		qreal VecY1 = -TmpLine.y1();
+		qreal VecX2 = TmpLine.x2();
+		qreal VecY2 = -TmpLine.y2();
 
 		sprintf(ctmp, "%f %f moveto\n", VecX1, VecY1);
 		l_File.write(ctmp);
 
 		sprintf(ctmp, "%f %f lineto\n", VecX2, VecY2);
-
 		l_File.write(ctmp);
-
-
 	}
 
-	//77777777777777777777777777777777777
 	QString TmpText;
 	QByteArray ccc;
-	qreal tmpX, tmpY, FontSize;
 	for (int i = 0; i < texts.count(); i++) {
-		FontSize = texts[i]->font().pointSizeF();
-		sprintf(ctmp, "/Curier findfont %f scalefont setfont\n", FontSize);
+		qreal FontSize = texts[i]->font().pointSizeF();
+		sprintf(ctmp, "/Courier findfont %f scalefont setfont\n", FontSize);
 		l_File.write(ctmp);
 
-		tmpX = texts[i]->pos().x();
-		tmpY = texts[i]->pos().x();
+		qreal tmpX = texts[i]->pos().x();
+		qreal tmpY = texts[i]->pos().y();
 		sprintf(ctmp, "%f %f moveto\n", tmpX, tmpY);
 		l_File.write(ctmp);
 
-
-		//TmpPen = texts[i]->pen();
-		//TColor = TmpPen.color();
-		sprintf(ctmp, "%i %i %i setrgbcolor\n", texts[i]->pen().color().red(), texts[i]->pen().color().green(), texts[i]->pen().color().blue());
+		QColor color = texts[i]->pen().color();
+		sprintf(ctmp, "%i %i %i setrgbcolor\n", color.red(), color.green(), color.blue());
 		l_File.write(ctmp);
 
 		TmpText = "(" + texts[i]->text() + ") show\n";
@@ -578,16 +538,13 @@ int TurtleScene::saveToFile(const QString &p_FileName)
 		l_File.write(ccc);
 	}
 
-
-
 	l_File.write("stroke\n");
 	l_File.write("grestore\n");
 	l_File.write("showpage\n");
 	l_File.close();
 	return 0;
+}
 
-
-};
 void TurtleView::paintEvent(QPaintEvent *event)
 {
 	//dr_mutex->lock();
