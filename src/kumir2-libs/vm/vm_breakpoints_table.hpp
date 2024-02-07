@@ -1,6 +1,7 @@
 #ifndef VM_BREAKPOINTS_TABLE_HPP
 #define VM_BREAKPOINTS_TABLE_HPP
 
+#include <inttypes.h>
 #include <map>
 #include <utility>
 #include <string>

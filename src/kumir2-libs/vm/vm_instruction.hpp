@@ -1,6 +1,7 @@
 #ifndef BYTECODEGENERATOR_INSTRUCTION_H
 #define BYTECODEGENERATOR_INSTRUCTION_H
 
+#include <inttypes.h>
 #include <string>
 #include <map>
 #include <utility>
