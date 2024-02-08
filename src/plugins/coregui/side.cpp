@@ -181,10 +181,6 @@ void Side::ensureEnoughtSpaceForComponent(QWidget *component, const QSize &size)
 {
 	int index = indexOf(component);
 	QList<int> szs = sizes();
-	int summ = 0;
-	for (int i = 0; i < szs.size(); i++) {
-		summ += szs[i];
-	}
 	int w = size.isValid() ? size.width() : component->minimumSizeHint().width();
 	int diff = w - szs[index];
 	if (diff <= 0) {
