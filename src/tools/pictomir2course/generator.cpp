@@ -319,6 +319,8 @@ string generator::create_task(
 	size_t task_index,
 	const string &resources_path
 ) {
+	(void) task;
+
 	string title = "Задание " + lexical_cast<string>(1 + task_index);
 	string result = "    <T xml:id=\"" + lexical_cast<string>(1 + task_index) +
 		"\" " +
