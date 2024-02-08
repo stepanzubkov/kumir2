@@ -4,7 +4,7 @@
 #include "graphicsimageitem.h"
 #include "cellgraphicsitem.h"
 
-#include <qmath.h>
+#include <QtCore/qmath.h>
 #include <QMutex>
 #include <QApplication>
 #include <QGraphicsScene>
