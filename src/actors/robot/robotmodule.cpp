@@ -26,7 +26,7 @@ You should change it corresponding to functionality.
 #include <QTimer>
 #include <QProcessEnvironment>
 
-static const int AnimTime = 70;
+static const int AnimTime = 0;
 #define MAX_COLUMNS 255
 #define MAX_ROWS 128
 
@@ -381,7 +381,7 @@ void RobotModule::runGoUp()
 	if (animation) {
 		msleep(AnimTime);
 	}
-	msleep(qrand() % 10);
+	// msleep(qrand() % 10);
 	mutex.unlock();
 	// view->update();
 	return;
@@ -411,7 +411,7 @@ void RobotModule::runGoDown()
 	if (animation) {
 		msleep(AnimTime);
 	}
-	msleep(qrand() % 10);
+	// msleep(qrand() % 10);
 	mutex.unlock();
 	return;
 }
@@ -441,7 +441,7 @@ void RobotModule::runGoLeft()
 	if (animation) {
 		msleep(AnimTime);
 	}
-	msleep(qrand() % 10);
+	// msleep(qrand() % 10);
 	mutex.unlock();
 	return;
 }
@@ -471,7 +471,7 @@ void RobotModule::runGoRight()
 	if (animation) {
 		msleep(AnimTime);
 	}
-	msleep(qrand() % 10);
+	// msleep(qrand() % 10);
 	mutex.unlock();
 
 	return;
@@ -502,6 +502,33 @@ void RobotModule::runDoPaint()
 	msleep(AnimTime);
 	//  }
 	return;
+}
+
+
+void RobotModule::runUndoPaint()
+{
+
+    if (!DISPLAY) {
+        curConsoleField->getCurItem()->isColored = false;
+        return;
+    }
+
+    if (field->currentCell()->IsColored) {
+        field->reverseColorCurrent();
+    }
+    QString status = "OK";
+//    if (sender() && qobject_cast<QDeclarativeItem*>(sender())) {
+//        emit sendToPultLog(status);
+//    }
+    // if (sender() == m_pultWidget) {
+    //     m_pultWidget->Logger->appendText(trUtf8("закрасить"), trUtf8("закрасить"), "OK");
+    // }
+    //  if(animation)
+//   {
+    view->update();
+    msleep(AnimTime);
+    //  }
+    return;
 }
 
 

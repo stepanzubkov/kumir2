@@ -47,6 +47,7 @@ public:
 	void moveTo(int x, int y);
 	void moveRobot(int x, int y);
 	void doPaint();
+    void undoPaint();
 	bool goForward();
 	bool isWall() const;
 	bool isPainted() const;

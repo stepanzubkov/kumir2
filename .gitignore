@@ -1,6 +1,5 @@
 .directory
-.DS_Store
-CMakeLists.txt.user*
+.DS_Store CMakeLists.txt.user*
 testing/scripts/*.pyc
 testing/scripts/*.pyo
 scripts/*.pyc
@@ -34,3 +33,5 @@ __pycache__
 /userdocs/*.aux
 /userdocs/*.out
 *.log
+
+build/

@@ -1,4 +1,5 @@
 #include "robotmodel.h"
+#include "roboterrors.h"
 #include "sch_environment.h"
 
 namespace Robot25D {
@@ -77,6 +78,12 @@ void RobotModel::doPaint()
 {
     _lastError = Robot25D::NoRuntimeError;
     updateCell(scenePosition().x, scenePosition().y, true);
+}
+
+void RobotModel::undoPaint()
+{
+    _lastError = Robot25D::NoRuntimeError;
+    updateCell(scenePosition().x, scenePosition().y, false);
 }
 
 bool RobotModel::goForward()

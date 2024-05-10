@@ -50,6 +50,7 @@ private:
 	void runGoLeft();
 	void runGoRight();
 	void runDoPaint();
+    void runUndoPaint();
 	bool runIsWallAtTop();
 	bool runIsWallAtBottom();
 	bool runIsWallAtLeft();
